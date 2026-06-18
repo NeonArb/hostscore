@@ -222,6 +222,43 @@
 
   footer { text-align: center; font-size: 0.75rem; color: var(--muted); padding: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
 
+  /* Financial underwriting card */
+  .fin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .fin-grid { grid-template-columns: 1fr 1fr; } }
+  .fin-computed { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 640px) { .fin-computed { grid-template-columns: 1fr 1fr; } }
+  input[type="number"] {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 7px;
+    font-size: 0.9rem; color: var(--text); background: #fafafa;
+    outline: none; transition: border-color 0.15s;
+  }
+  input[type="number"]:focus { border-color: var(--accent); background: white; }
+  .metric-box {
+    border-radius: 8px; padding: 14px 12px; background: var(--bg);
+    border: 1px solid var(--border); text-align: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .metric-box .metric-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+  .metric-box .metric-value { font-size: 1.6rem; font-weight: 800; color: var(--text); line-height: 1.1; }
+  .metric-box .metric-hint  { font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+  .metric-box.good { background: #f0fdf4; border-color: #bbf7d0; }
+  .metric-box.good .metric-value { color: var(--advance); }
+  .metric-box.warn { background: #fffbeb; border-color: #fde68a; }
+  .metric-box.warn .metric-value { color: var(--watch); }
+  .metric-box.bad  { background: #fef2f2; border-color: #fecaca; }
+  .metric-box.bad  .metric-value { color: var(--pass); }
+  .fin-note { font-size: 0.78rem; color: var(--muted); margin-top: 14px; font-style: italic; border-top: 1px solid var(--border); padding-top: 10px; }
+  .estimator {
+    background: var(--accent-light); border: 1px solid #99f6e4; border-radius: 8px;
+    padding: 14px 16px; margin: 16px 0 0;
+  }
+  .estimator h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 10px; }
+  .est-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .est-grid { grid-template-columns: 1fr 1fr; } }
+  .est-result { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  .est-pill { background: white; border: 1px solid #99f6e4; border-radius: 20px; padding: 4px 14px; font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+  .est-autofill { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
   @media print {
     header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .btn-row { display: none; }
@@ -285,7 +322,7 @@
       </div>
       <div>
         <label for="propPrice">Asking Price</label>
-        <input type="text" id="propPrice" placeholder="e.g. $899,000">
+        <input type="text" id="propPrice" placeholder="e.g. $899,000" oninput="syncPriceField()">
       </div>
       <div>
         <label for="propUnits">Units / Sites / Keys</label>
@@ -296,6 +333,91 @@
         <input type="text" id="scoredBy" placeholder="Your name">
       </div>
     </div>
+  </div>
+
+  <!-- Financial Underwriting -->
+  <div class="card">
+    <h2>Financial Underwriting</h2>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Enter verified financials to calculate key metrics. Values update live. Leave blank if data not yet available — use 0 only for confirmed zeroes.</p>
+
+    <div class="fin-grid">
+      <div>
+        <label for="finGrossRev">Gross Revenue — annual ($)</label>
+        <input type="number" id="finGrossRev" placeholder="e.g. 280000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finOpEx">Operating Expenses — annual ($)</label>
+        <input type="number" id="finOpEx" placeholder="e.g. 180000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finDebtSvc">Annual Debt Service ($)</label>
+        <input type="number" id="finDebtSvc" placeholder="e.g. 72000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finPrice">Purchase Price ($)</label>
+        <input type="number" id="finPrice" placeholder="e.g. 899000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finCash">Cash Invested / Down Payment ($)</label>
+        <input type="number" id="finCash" placeholder="e.g. 200000" min="0" oninput="calcFinancials()">
+      </div>
+    </div>
+
+    <div class="fin-computed">
+      <div class="metric-box" id="metNOI">
+        <div class="metric-label">NOI</div>
+        <div class="metric-value" id="metNOIVal">—</div>
+        <div class="metric-hint">Target ≥ $50K/yr net</div>
+      </div>
+      <div class="metric-box" id="metDSCR">
+        <div class="metric-label">DSCR</div>
+        <div class="metric-value" id="metDSCRVal">—</div>
+        <div class="metric-hint">Required ≥ 1.25x</div>
+      </div>
+      <div class="metric-box" id="metCapRate">
+        <div class="metric-label">Cap Rate</div>
+        <div class="metric-value" id="metCapRateVal">—</div>
+        <div class="metric-hint">Target ≥ 8%</div>
+      </div>
+      <div class="metric-box" id="metROI">
+        <div class="metric-label">Cash-on-Cash ROI</div>
+        <div class="metric-value" id="metROIVal">—</div>
+        <div class="metric-hint">Target ≥ 10%</div>
+      </div>
+    </div>
+
+    <!-- Debt Service Estimator -->
+    <div class="estimator">
+      <h4>🔢 Debt Service Estimator</h4>
+      <div class="est-grid">
+        <div>
+          <label for="estLoan">Loan Amount ($)</label>
+          <input type="number" id="estLoan" placeholder="e.g. 720000" min="0" oninput="calcDebtService()">
+        </div>
+        <div>
+          <label for="estRate">Interest Rate (% annual)</label>
+          <input type="number" id="estRate" placeholder="e.g. 7.5" min="0" step="0.01" oninput="calcDebtService()">
+        </div>
+        <div>
+          <label for="estTerm">Amortization Term</label>
+          <select id="estTerm" onchange="calcDebtService()" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:0.9rem;background:#fafafa;">
+            <option value="">Select…</option>
+            <option value="10">10 years</option>
+            <option value="15">15 years</option>
+            <option value="20">20 years (SBA 504 typical)</option>
+            <option value="25">25 years (SBA 7a max)</option>
+            <option value="30">30 years</option>
+          </select>
+        </div>
+      </div>
+      <div class="est-result" id="estResult" style="display:none">
+        <span class="est-pill" id="estMonthly"></span>
+        <span class="est-pill" id="estAnnual"></span>
+        <span class="est-autofill" id="estAutofillNote"></span>
+      </div>
+    </div>
+
+    <p class="fin-note">⚠ Unverified seller P&amp;L is not evidence. Require 2 years of tax returns, STR platform data, or bank statements before advancing to LOI. DSCR must hold at low-season occupancy + 1.5% rate shock.</p>
   </div>
 
   <!-- Scoring -->
@@ -655,208 +777,4 @@ function buildUI() {
       </div>
       <div class="cat-desc">${cat.desc}</div>
       <div class="slider-row">
-        <input type="range" id="slider_${cat.id}" min="0" max="5" step="1" value="0"
-          oninput="updateSlider('${cat.id}', this.value)"
-          style="--pct:0%">
-        <div class="score-badge" id="badge_${cat.id}">0</div>
-      </div>
-      <div class="slider-labels">
-        <span>0 – Poor</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5 – Excellent</span>
-      </div>
-      <div class="level-hint" id="hint_${cat.id}">${cat.levels[0]}</div>
-    `;
-    container.appendChild(div);
-  });
-
-  // Knock-outs
-  const koList = document.getElementById('koList');
-  KNOCKOUTS.forEach(ko => {
-    const div = document.createElement('div');
-    div.className = 'ko-item';
-    div.id = 'koitem_' + ko.id;
-    div.innerHTML = `
-      <input type="checkbox" id="${ko.id}" onchange="updateKO('${ko.id}')">
-      <label for="${ko.id}">${ko.text}</label>
-    `;
-    koList.appendChild(div);
-  });
-}
-
-function updateSlider(id, val) {
-  const v = parseInt(val);
-  const pct = (v / 5 * 100) + '%';
-  const slider = document.getElementById('slider_' + id);
-  slider.style.setProperty('--pct', pct);
-  document.getElementById('badge_' + id).textContent = v;
-  const cat = CATEGORIES.find(c => c.id === id);
-  document.getElementById('hint_' + id).textContent = cat.levels[v];
-}
-
-function updateKO(id) {
-  const checked = document.getElementById(id).checked;
-  document.getElementById('koitem_' + id).classList.toggle('triggered', checked);
-}
-
-function calculate() {
-  // Gather scores
-  const scores = {};
-  let total = 0;
-  CATEGORIES.forEach(cat => {
-    const v = parseInt(document.getElementById('slider_' + cat.id).value);
-    scores[cat.id] = v;
-    total += (v / 5) * cat.weight * 100;
-  });
-  total = Math.round(total * 10) / 10;
-
-  // Knock-outs
-  const triggeredKOs = KNOCKOUTS.filter(ko => document.getElementById(ko.id).checked);
-  const hasKO = triggeredKOs.length > 0;
-
-  // Verdict
-  let band, bandClass, sub;
-  if (hasKO) {
-    band = 'NO-GO (Knock-Out)';
-    bandClass = 'knockout';
-    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
-  } else if (total >= 75) {
-    band = 'ADVANCE';
-    bandClass = 'advance';
-    sub = 'Score ≥ 75 — proceed to underwriting and revenue verification.';
-  } else if (total >= 60) {
-    band = 'WATCH';
-    bandClass = 'watch';
-    sub = 'Score 60–74 — monitor, negotiate, or request more information.';
-  } else {
-    band = 'PASS';
-    bandClass = 'pass';
-    sub = 'Score < 60 — does not meet threshold. Move on or revisit if terms change significantly.';
-  }
-
-  // Show results
-  const propName = document.getElementById('propName').value || 'Unnamed Property';
-  document.getElementById('resPropertyName').textContent = propName;
-
-  const vbox = document.getElementById('verdictBox');
-  vbox.className = 'verdict-box ' + bandClass;
-  document.getElementById('totalScore').textContent = hasKO ? '—' : total.toFixed(1);
-  document.getElementById('verdictBand').textContent = band;
-  document.getElementById('verdictSub').textContent = sub;
-
-  // KO box
-  const koBox = document.getElementById('koTriggered');
-  if (hasKO) {
-    koBox.style.display = 'block';
-    const list = document.getElementById('koTriggeredList');
-    list.innerHTML = '';
-    triggeredKOs.forEach(ko => {
-      const li = document.createElement('li');
-      li.textContent = ko.text;
-      list.appendChild(li);
-    });
-  } else {
-    koBox.style.display = 'none';
-  }
-
-  // Radar chart
-  const labels = CATEGORIES.map(c => c.name.split('&')[0].split('/')[0].trim());
-  const data = CATEGORIES.map(c => scores[c.id]);
-
-  if (radarChart) radarChart.destroy();
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels,
-      datasets: [{
-        label: propName,
-        data,
-        backgroundColor: 'rgba(15, 118, 110, 0.15)',
-        borderColor: 'rgba(15, 118, 110, 0.9)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(15, 118, 110, 1)',
-        pointRadius: 4
-      }]
-    },
-    options: {
-      responsive: false,
-      scales: {
-        r: {
-          min: 0, max: 5,
-          ticks: { stepSize: 1, font: { size: 9 } },
-          pointLabels: { font: { size: 9 } },
-          grid: { color: '#e2e8f0' }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-
-  // Bar breakdown
-  const barDiv = document.getElementById('barBreakdown');
-  barDiv.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const v = scores[cat.id];
-    const pts = (v / 5) * cat.weight * 100;
-    const maxPts = cat.weight * 100;
-    const pct = (v / 5) * 100;
-    barDiv.innerHTML += `
-      <div class="bar-row">
-        <div class="bar-name">${cat.name}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <div class="bar-pts">${pts.toFixed(1)}/${maxPts.toFixed(0)}</div>
-      </div>
-    `;
-  });
-
-  // Strengths & risks
-  const ranked = [...CATEGORIES].map(cat => ({
-    cat,
-    pct: scores[cat.id] / 5,
-    pts: (scores[cat.id] / 5) * cat.weight * 100
-  })).sort((a, b) => b.pct - a.pct);
-
-  const strengthsList = document.getElementById('strengthsList');
-  strengthsList.innerHTML = '';
-  ranked.slice(0, 3).forEach(r => {
-    const li = document.createElement('li');
-    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
-    strengthsList.appendChild(li);
-  });
-
-  const risksList = document.getElementById('risksList');
-  risksList.innerHTML = '';
-  ranked.slice(-3).reverse().forEach(r => {
-    const li = document.createElement('li');
-    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
-    risksList.appendChild(li);
-  });
-
-  // Show & scroll
-  const results = document.getElementById('results');
-  results.style.display = 'block';
-  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-}
-
-function resetAll() {
-  CATEGORIES.forEach(cat => {
-    const slider = document.getElementById('slider_' + cat.id);
-    slider.value = 0;
-    updateSlider(cat.id, 0);
-  });
-  KNOCKOUTS.forEach(ko => {
-    document.getElementById(ko.id).checked = false;
-    updateKO(ko.id);
-  });
-  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('propType').value = '';
-  document.getElementById('results').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-buildUI();
-buildPipelineSelect();
-</script>
-</body>
-</html>
+        <i
