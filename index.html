@@ -696,6 +696,62 @@ const PIPELINE = [
     score: 45, band: 'dead',
     scores: [0, 2, 2, 2, 3, 2, 2, 2, 2],
     note: 'DEAD — Income ceiling fail. <$50K net at this price.' },
+
+  // ── SCAN #4 — 2026-06-18 (all PASS) ───────────────────────────────────────
+  { group: 'Pass', name: 'Bradford Place Inn & Gardens', type: "B&B / Inn",
+    location: 'Sonora, Tuolumne County, CA', price: '$825,000', units: '5 rooms + 2BR detached unit',
+    score: 45, band: 'pass',
+    scores: [1, 3, 2, 2, 3, 3, 3, 3, 2],
+    // financial=1: unverified | financeability=3: active inn, R-2 zoning slight concern
+    // dealterms=2: SF unknown, price budget-friendly | operating=2: small B&B, owner-intensive
+    // condition=3: 1889 Victorian, 2016 renovation | location=3: Gold Rush/Yosemite approach
+    // regulatory=3: CA Gold Country, B&B-friendly | resale=3: Victorian in tourist town
+    // seasonality=2: CA wildfire risk, summer-heavy
+    note: 'Scan #4. CA Sierras target region. Income ceiling tight at 6 units for $100K net floor. SF unconfirmed — call Avery Bryant 209-753-8327.' },
+
+  { group: 'Pass', name: '1899 Inn B&B', type: "B&B / Inn",
+    location: 'La Veta, Huerfano County, CO', price: '$879,000', units: '5 rooms',
+    score: 49, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 3, 3, 2, 3],
+    // financial=1: unverified | financeability=4: established inn, SBA-eligible
+    // dealterms=2: SF unknown | operating=3: 40-yr established, good systems
+    // condition=3: National Register, maintained | location=3: Cuchara Valley, Spanish Peaks — small draw
+    // regulatory=3: historic property, likely fully permitted | resale=2: NR limits renovations
+    // seasonality=3: CO mountain, year-round but no active ski area nearby
+    note: 'Scan #4. 40-year established B&B, National Register. 5 rooms = income ceiling risk vs $100K net floor. La Veta is quieter than major CO mountain towns.' },
+
+  { group: 'Pass', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
+    location: 'Mariposa, Mariposa County, CA', price: '$899,000', units: 'Unknown (ranch inn)',
+    score: 49, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 4, 2, 3, 2],
+    // financial=1: unverified | financeability=4: ranch inn, SBA-eligible
+    // dealterms=2: SF unknown | operating=3: ranch format, moderate complexity
+    // condition=3: unknown, actively listed | location=4: near Yosemite NP — premium ADR potential
+    // regulatory=2: CA fire zone regulations, permit complexity | resale=3: near Yosemite = good buyer pool
+    // seasonality=2: 2022 Oak Fire severely burned Mariposa area — wildfire/insurance risk ACUTE
+    note: 'Scan #4. Best location of new batch — near Yosemite. ⚠️ Wildfire insurance check MANDATORY before contact (2022 Oak Fire). Room count unknown — if ≥8 rooms + insurable, revisit for Watch.' },
+
+  { group: 'Pass', name: 'Starry Nights B&B', type: "B&B / Inn",
+    location: 'Mancos, Montezuma County, CO', price: '$1,275,000', units: 'Unknown + event venue',
+    score: 50, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 3, 3, 3, 3],
+    // financial=1: unverified | financeability=4: 20-yr established B&B + event, SBA-eligible
+    // dealterms=2: $1.275M consumes capital, SF unknown | operating=3: event venue adds complexity
+    // condition=3: maintained 20+ yr | location=3: Mesa Verde NP, decent draw but remote
+    // regulatory=3: established, likely fully permitted | resale=3: rural CO, limited pool
+    // seasonality=3: Mesa Verde: strong summer, mild winter
+    note: 'Scan #4. ⚑ Over $1.2M flag. 20-year established business (lowest ramp risk of batch). Price is the killer — $1.275M leaves <$70K reserve after SBA down. Only advances if SF confirmed + revenue verified ≥$350K gross.' },
+
+  { group: 'Pass', name: 'St James Hotel', type: "B&B / Inn",
+    location: 'Georgetown, Clear Creek County, CO', price: '$1,200,000', units: 'Unknown (all suites)',
+    score: 51, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 4, 3, 3, 2],
+    // financial=1: unverified | financeability=4: established hotel, SBA-eligible
+    // dealterms=2: $1.2M at edge of capital, SF unknown | operating=3: hotel, manageable
+    // condition=3: 1875 building, unknown recent capex | location=4: Georgetown — I-70, ski proximity, historic district
+    // regulatory=3: historic district may restrict changes | resale=3: CO mountain town, good pool
+    // seasonality=2: 1875 capex unknown; I-70 corridor year-round but older building risk
+    note: 'Scan #4. ⚑ At $1.2M flag threshold. Georgetown = strong destination (I-70, ski, National Historic District). 1875 building = capex uncertainty. Pass until SF confirmed + revenue verified.' },
 ];
 
 function buildPipelineSelect() {
@@ -913,143 +969,4 @@ function calculate() {
   } else if (total >= 75) {
     band = 'ADVANCE';
     bandClass = 'advance';
-    sub = 'Score >= 75 — proceed to underwriting and revenue verification.';
-  } else if (total >= 60) {
-    band = 'WATCH';
-    bandClass = 'watch';
-    sub = 'Score 60-74 — monitor, negotiate, or request more information.';
-  } else {
-    band = 'PASS';
-    bandClass = 'pass';
-    sub = 'Score < 60 — does not meet threshold. Move on or revisit if terms change significantly.';
-  }
-
-  const propName = document.getElementById('propName').value || 'Unnamed Property';
-  document.getElementById('resPropertyName').textContent = propName;
-
-  const vbox = document.getElementById('verdictBox');
-  vbox.className = 'verdict-box ' + bandClass;
-  document.getElementById('totalScore').textContent = hasKO ? '—' : total.toFixed(1);
-  document.getElementById('verdictBand').textContent = band;
-  document.getElementById('verdictSub').textContent = sub;
-
-  const koBox = document.getElementById('koTriggered');
-  if (hasKO) {
-    koBox.style.display = 'block';
-    const list = document.getElementById('koTriggeredList');
-    list.innerHTML = '';
-    triggeredKOs.forEach(ko => {
-      const li = document.createElement('li');
-      li.textContent = ko.text;
-      list.appendChild(li);
-    });
-  } else {
-    koBox.style.display = 'none';
-  }
-
-  const labels = CATEGORIES.map(c => c.name.split('&')[0].split('/')[0].trim());
-  const data = CATEGORIES.map(c => scores[c.id]);
-
-  if (radarChart) radarChart.destroy();
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels,
-      datasets: [{
-        label: propName,
-        data,
-        backgroundColor: 'rgba(15, 118, 110, 0.15)',
-        borderColor: 'rgba(15, 118, 110, 0.9)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(15, 118, 110, 1)',
-        pointRadius: 4
-      }]
-    },
-    options: {
-      responsive: false,
-      scales: {
-        r: {
-          min: 0, max: 5,
-          ticks: { stepSize: 1, font: { size: 9 } },
-          pointLabels: { font: { size: 9 } },
-          grid: { color: '#e2e8f0' }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-
-  const barDiv = document.getElementById('barBreakdown');
-  barDiv.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const v = scores[cat.id];
-    const pts = (v / 5) * cat.weight * 100;
-    const maxPts = cat.weight * 100;
-    const pct = (v / 5) * 100;
-    barDiv.innerHTML += `
-      <div class="bar-row">
-        <div class="bar-name">${cat.name}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-        <div class="bar-pts">${pts.toFixed(1)}/${maxPts.toFixed(0)}</div>
-      </div>
-    `;
-  });
-
-  const ranked = [...CATEGORIES].map(cat => ({
-    cat,
-    pct: scores[cat.id] / 5,
-    pts: (scores[cat.id] / 5) * cat.weight * 100
-  })).sort((a, b) => b.pct - a.pct);
-
-  const strengthsList = document.getElementById('strengthsList');
-  strengthsList.innerHTML = '';
-  ranked.slice(0, 3).forEach(r => {
-    const li = document.createElement('li');
-    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
-    strengthsList.appendChild(li);
-  });
-
-  const risksList = document.getElementById('risksList');
-  risksList.innerHTML = '';
-  ranked.slice(-3).reverse().forEach(r => {
-    const li = document.createElement('li');
-    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
-    risksList.appendChild(li);
-  });
-
-  const results = document.getElementById('results');
-  results.style.display = 'block';
-  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-}
-
-function resetAll() {
-  CATEGORIES.forEach(cat => {
-    const slider = document.getElementById('slider_' + cat.id);
-    slider.value = 0;
-    updateSlider(cat.id, 0);
-  });
-  KNOCKOUTS.forEach(ko => {
-    document.getElementById(ko.id).checked = false;
-    updateKO(ko.id);
-  });
-  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('propType').value = '';
-  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('estTerm').value = '';
-  document.getElementById('estResult').style.display = 'none';
-  calcFinancials();
-  document.getElementById('results').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-buildUI();
-buildPipelineSelect();
-</script>
-</body>
-</html>
+    sub = 'Score >= 75
