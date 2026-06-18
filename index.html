@@ -1002,20 +1002,41 @@ function calculate() {
     koBox.style.display = 'none';
   }
 
-  // Score breakdown table
-  const tbody = document.getElementById('scoreBreakdown');
-  tbody.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const v = scores[cat.id];
-    const contrib = Math.round((v / 5) * cat.weight * 100 * 10) / 10;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${cat.name}</td>
-      <td style="text-align:center">${Math.round(cat.weight*100)}%</td>
-      <td style="text-align:center">${v}/5</td>
-      <td style="text-align:center">${contrib}</td>
+  // Bar breakdown
+  const barDiv = document.getElementById('barBreakdown');
+  barDiv.innerHTML = '';
+  const sorted = [...CATEGORIES].map(cat => ({
+    cat,
+    v: scores[cat.id],
+    contrib: Math.round((scores[cat.id] / 5) * cat.weight * 100 * 10) / 10
+  }));
+  sorted.forEach(({ cat, v, contrib }) => {
+    const pct = (v / 5) * 100;
+    const barColor = v >= 4 ? 'var(--advance)' : v >= 2 ? 'var(--watch)' : 'var(--pass)';
+    const row = document.createElement('div');
+    row.style.marginBottom = '10px';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">${Math.round(cat.weight*100)}% wt · ${v}/5 · ${contrib} pts</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
     `;
-    tbody.appendChild(tr);
+    barDiv.appendChild(row);
+  });
+
+  // Strengths & risks
+  const ranked = [...sorted].sort((a, b) => b.v - a.v);
+  const sl = document.getElementById('strengthsList');
+  const rl = document.getElementById('risksList');
+  sl.innerHTML = '';
+  rl.innerHTML = '';
+  ranked.slice(0, 3).forEach(({ cat, v }) => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.name} (${v}/5)`;
+    sl.appendChild(li);
+  });
+  ranked.slice(-3).reverse().forEach(({ cat, v }) => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.name} (${v}/5)`;
+    rl.appendChild(li);
   });
 
   // Radar chart
