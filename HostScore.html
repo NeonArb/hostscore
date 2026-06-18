@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HostScore — Hospitality Property Scorecard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --advance: #16a34a;
+    --watch: #d97706;
+    --pass: #dc2626;
+    --ko: #7c3aed;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --accent: #0f766e;
+    --accent-light: #f0fdfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+
+  header {
+    background: var(--accent);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; }
+  header span { font-size: 0.9rem; opacity: 0.8; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  /* Mode toggle */
+  .mode-toggle {
+    display: flex; gap: 0; margin-bottom: 20px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    width: fit-content;
+  }
+  .mode-btn {
+    padding: 8px 20px; font-size: 0.85rem; font-weight: 600;
+    border: none; cursor: pointer; background: var(--bg); color: var(--muted);
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn.active { background: var(--accent); color: white; }
+  .mode-btn:first-child { border-right: 1px solid var(--border); }
+
+  /* Pipeline panel */
+  .pipeline-panel {
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+    padding: 16px 20px; margin-bottom: 20px;
+  }
+  .pipeline-panel h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #92400e; margin-bottom: 10px; }
+  .pipeline-panel select { width: 100%; padding: 9px 12px; border: 1px solid #fcd34d; border-radius: 7px; font-size: 0.9rem; background: white; color: var(--text); outline: none; }
+  .pipeline-panel select:focus { border-color: var(--watch); }
+  .pipeline-badge { display: inline-block; margin-top: 8px; font-size: 0.75rem; padding: 2px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-watch   { background: #fffbeb; color: var(--watch);   border: 1px solid #fcd34d; }
+  .badge-pass    { background: #fef2f2; color: var(--pass);    border: 1px solid #fecaca; }
+  .badge-dead    { background: #f1f5f9; color: var(--muted);   border: 1px solid var(--border); }
+  .badge-nogo    { background: #faf5ff; color: var(--ko);      border: 1px solid #ddd6fe; }
+
+  .intro {
+    background: var(--accent-light);
+    border: 1px solid #99f6e4;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: #0f4c3a;
+    line-height: 1.5;
+  }
+
+  /* Property info */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.8rem; }
+
+  .prop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .prop-grid { grid-template-columns: 1fr; } }
+
+  label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+  input[type="text"], select {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 7px;
+    font-size: 0.9rem; color: var(--text); background: #fafafa;
+    outline: none; transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, select:focus { border-color: var(--accent); background: white; }
+
+  /* Categories */
+  .category {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+  }
+  .category:last-child { border-bottom: none; }
+
+  .cat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 12px; }
+  .cat-name { font-weight: 600; font-size: 0.95rem; }
+  .cat-weight { font-size: 0.78rem; color: var(--muted); white-space: nowrap; background: var(--bg); padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); }
+  .cat-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; line-height: 1.4; }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; }
+  input[type="range"] {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 0%), var(--border) var(--pct, 0%), var(--border) 100%);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: pointer;
+  }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+
+  .score-badge {
+    min-width: 44px; text-align: center;
+    font-weight: 700; font-size: 1rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #99f6e4;
+  }
+
+  .level-hint {
+    font-size: 0.75rem; color: var(--muted); margin-top: 6px; font-style: italic;
+  }
+
+  /* Knock-outs */
+  .ko-list { display: flex; flex-direction: column; gap: 10px; }
+  .ko-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+  .ko-item:hover { background: #fef2f2; }
+  .ko-item.triggered { background: #fef2f2; border-color: #fca5a5; }
+  .ko-item input[type="checkbox"] { margin-top: 1px; accent-color: var(--pass); width: 16px; height: 16px; flex-shrink: 0; }
+  .ko-item label { cursor: pointer; font-size: 0.85rem; line-height: 1.4; color: var(--text); }
+
+  /* Results */
+  #results { display: none; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .results-grid { grid-template-columns: 1fr; } }
+
+  .verdict-box {
+    border-radius: 12px; padding: 28px 24px; text-align: center;
+    border: 2px solid;
+  }
+  .verdict-box.advance { background: #f0fdf4; border-color: var(--advance); }
+  .verdict-box.watch   { background: #fffbeb; border-color: var(--watch); }
+  .verdict-box.pass    { background: #fef2f2; border-color: var(--pass); }
+  .verdict-box.knockout { background: #faf5ff; border-color: var(--ko); }
+
+  .verdict-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .verdict-score { font-size: 3.5rem; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+  .verdict-band { font-size: 1.1rem; font-weight: 700; }
+  .verdict-sub { font-size: 0.82rem; margin-top: 8px; color: var(--muted); }
+
+  .advance .verdict-label, .advance .verdict-band, .advance .verdict-score { color: var(--advance); }
+  .watch .verdict-label,   .watch .verdict-band,   .watch .verdict-score   { color: var(--watch); }
+  .pass .verdict-label,    .pass .verdict-band,    .pass .verdict-score    { color: var(--pass); }
+  .knockout .verdict-label,.knockout .verdict-band,.knockout .verdict-score { color: var(--ko); }
+
+  .chart-box { display: flex; align-items: center; justify-content: center; }
+
+  .bar-breakdown { margin-top: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .bar-name { font-size: 0.78rem; width: 190px; flex-shrink: 0; color: var(--text); }
+  .bar-track { flex: 1; background: var(--border); border-radius: 3px; height: 8px; }
+  .bar-fill { height: 8px; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
+  .bar-pts { font-size: 0.75rem; color: var(--muted); width: 38px; text-align: right; }
+
+  .sr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 0; }
+  @media (max-width: 640px) { .sr-grid { grid-template-columns: 1fr; } }
+
+  .sr-box { border-radius: 8px; padding: 14px 16px; }
+  .sr-box.strengths { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .sr-box.risks     { background: #fef2f2; border: 1px solid #fecaca; }
+  .sr-box h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .sr-box.strengths h4 { color: var(--advance); }
+  .sr-box.risks h4     { color: var(--pass); }
+  .sr-box ul { padding-left: 0; list-style: none; }
+  .sr-box ul li { font-size: 0.82rem; padding: 3px 0; color: var(--text); display: flex; gap: 6px; }
+  .sr-box ul li::before { content: "▸"; flex-shrink: 0; }
+  .sr-box.strengths ul li::before { color: var(--advance); }
+  .sr-box.risks ul li::before     { color: var(--pass); }
+
+  .ko-triggered-box { background: #faf5ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+  .ko-triggered-box h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ko); margin-bottom: 8px; }
+  .ko-triggered-box ul { padding-left: 0; list-style: none; }
+  .ko-triggered-box ul li { font-size: 0.82rem; padding: 3px 0; display: flex; gap: 6px; }
+  .ko-triggered-box ul li::before { content: "⛔"; font-size: 0.75rem; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 28px; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+    border: none; cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: var(--bg); border: 1px solid var(--border); color: var(--text); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-print { background: #1e293b; color: white; }
+  .btn-print:hover { opacity: 0.85; }
+
+  .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  footer { text-align: center; font-size: 0.75rem; color: var(--muted); padding: 24px; border-top: 1px solid var(--border); margin-top: 24px; }
+
+  /* Financial underwriting card */
+  .fin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .fin-grid { grid-template-columns: 1fr 1fr; } }
+  .fin-computed { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 640px) { .fin-computed { grid-template-columns: 1fr 1fr; } }
+  input[type="number"] {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 7px;
+    font-size: 0.9rem; color: var(--text); background: #fafafa;
+    outline: none; transition: border-color 0.15s;
+  }
+  input[type="number"]:focus { border-color: var(--accent); background: white; }
+  .metric-box {
+    border-radius: 8px; padding: 14px 12px; background: var(--bg);
+    border: 1px solid var(--border); text-align: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .metric-box .metric-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+  .metric-box .metric-value { font-size: 1.6rem; font-weight: 800; color: var(--text); line-height: 1.1; }
+  .metric-box .metric-hint  { font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+  .metric-box.good { background: #f0fdf4; border-color: #bbf7d0; }
+  .metric-box.good .metric-value { color: var(--advance); }
+  .metric-box.warn { background: #fffbeb; border-color: #fde68a; }
+  .metric-box.warn .metric-value { color: var(--watch); }
+  .metric-box.bad  { background: #fef2f2; border-color: #fecaca; }
+  .metric-box.bad  .metric-value { color: var(--pass); }
+  .fin-note { font-size: 0.78rem; color: var(--muted); margin-top: 14px; font-style: italic; border-top: 1px solid var(--border); padding-top: 10px; }
+  .estimator {
+    background: var(--accent-light); border: 1px solid #99f6e4; border-radius: 8px;
+    padding: 14px 16px; margin: 16px 0 0;
+  }
+  .estimator h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 10px; }
+  .est-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .est-grid { grid-template-columns: 1fr 1fr; } }
+  .est-result { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+  .est-pill { background: white; border: 1px solid #99f6e4; border-radius: 20px; padding: 4px 14px; font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+  .est-autofill { font-size: 0.75rem; color: var(--muted); font-style: italic; }
+
+  @media print {
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .btn-row { display: none; }
+    #results { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>HostScore</h1>
+  <span>Hospitality Property Investment Scorecard</span>
+</header>
+
+<div class="container">
+
+  <!-- Mode Toggle -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btnPublic" onclick="setMode('public')">🌐 Public</button>
+    <button class="mode-btn" id="btnPipeline" onclick="setMode('pipeline')">📋 IP Pipeline</button>
+  </div>
+
+  <!-- Pipeline Panel (hidden in public mode) -->
+  <div class="pipeline-panel" id="pipelinePanel" style="display:none">
+    <h3>Load from IP Deal Pipeline</h3>
+    <select id="pipelineSelect" onchange="loadPipelineProperty(this.value)">
+      <option value="">— Select a pipeline candidate —</option>
+    </select>
+    <div id="pipelineBadge"></div>
+  </div>
+
+  <div class="intro">
+    <strong>How it works:</strong> Rate the property on 9 weighted criteria (0 = poor / 5 = excellent). Check any knock-out conditions that apply. HostScore calculates a 0–100 weighted score and returns a verdict: <strong style="color:var(--advance)">Advance</strong> (≥75), <strong style="color:var(--watch)">Watch</strong> (60–74), or <strong style="color:var(--pass)">Pass</strong> (&lt;60). Works for B&amp;Bs, motels, hotels, RV parks, campgrounds, and boutique lodges.
+  </div>
+
+  <!-- Property Info -->
+  <div class="card">
+    <h2>Property Info</h2>
+    <div class="prop-grid">
+      <div>
+        <label for="propName">Property Name</label>
+        <input type="text" id="propName" placeholder="e.g. Myers Inn">
+      </div>
+      <div>
+        <label for="propType">Property Type</label>
+        <select id="propType">
+          <option value="">Select type…</option>
+          <option>B&amp;B / Inn</option>
+          <option>Motel</option>
+          <option>Hotel (boutique)</option>
+          <option>RV Park / Campground</option>
+          <option>Glamping / Eco-resort</option>
+          <option>Lodge / Retreat</option>
+          <option>Mixed (lodging + other)</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="propLocation">Location (City, State)</label>
+        <input type="text" id="propLocation" placeholder="e.g. Ferndale, CA">
+      </div>
+      <div>
+        <label for="propPrice">Asking Price</label>
+        <input type="text" id="propPrice" placeholder="e.g. $899,000" oninput="syncPriceField()">
+      </div>
+      <div>
+        <label for="propUnits">Units / Sites / Keys</label>
+        <input type="text" id="propUnits" placeholder="e.g. 7 rooms">
+      </div>
+      <div>
+        <label for="scoredBy">Scored By</label>
+        <input type="text" id="scoredBy" placeholder="Your name">
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Underwriting -->
+  <div class="card">
+    <h2>Financial Underwriting</h2>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Enter verified financials to calculate key metrics. Values update live. Leave blank if data not yet available — use 0 only for confirmed zeroes.</p>
+
+    <div class="fin-grid">
+      <div>
+        <label for="finGrossRev">Gross Revenue — annual ($)</label>
+        <input type="number" id="finGrossRev" placeholder="e.g. 280000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finOpEx">Operating Expenses — annual ($)</label>
+        <input type="number" id="finOpEx" placeholder="e.g. 180000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finDebtSvc">Annual Debt Service ($)</label>
+        <input type="number" id="finDebtSvc" placeholder="e.g. 72000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finPrice">Purchase Price ($)</label>
+        <input type="number" id="finPrice" placeholder="e.g. 899000" min="0" oninput="calcFinancials()">
+      </div>
+      <div>
+        <label for="finCash">Cash Invested / Down Payment ($)</label>
+        <input type="number" id="finCash" placeholder="e.g. 200000" min="0" oninput="calcFinancials()">
+      </div>
+    </div>
+
+    <div class="fin-computed">
+      <div class="metric-box" id="metNOI">
+        <div class="metric-label">NOI</div>
+        <div class="metric-value" id="metNOIVal">—</div>
+        <div class="metric-hint">Target ≥ $50K/yr net</div>
+      </div>
+      <div class="metric-box" id="metDSCR">
+        <div class="metric-label">DSCR</div>
+        <div class="metric-value" id="metDSCRVal">—</div>
+        <div class="metric-hint">Required ≥ 1.25x</div>
+      </div>
+      <div class="metric-box" id="metCapRate">
+        <div class="metric-label">Cap Rate</div>
+        <div class="metric-value" id="metCapRateVal">—</div>
+        <div class="metric-hint">Target ≥ 8%</div>
+      </div>
+      <div class="metric-box" id="metROI">
+        <div class="metric-label">Cash-on-Cash ROI</div>
+        <div class="metric-value" id="metROIVal">—</div>
+        <div class="metric-hint">Target ≥ 10%</div>
+      </div>
+    </div>
+
+    <!-- Debt Service Estimator -->
+    <div class="estimator">
+      <h4>🔢 Debt Service Estimator</h4>
+      <div class="est-grid">
+        <div>
+          <label for="estLoan">Loan Amount ($)</label>
+          <input type="number" id="estLoan" placeholder="e.g. 720000" min="0" oninput="calcDebtService()">
+        </div>
+        <div>
+          <label for="estRate">Interest Rate (% annual)</label>
+          <input type="number" id="estRate" placeholder="e.g. 7.5" min="0" step="0.01" oninput="calcDebtService()">
+        </div>
+        <div>
+          <label for="estTerm">Amortization Term</label>
+          <select id="estTerm" onchange="calcDebtService()" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:7px;font-size:0.9rem;background:#fafafa;">
+            <option value="">Select…</option>
+            <option value="10">10 years</option>
+            <option value="15">15 years</option>
+            <option value="20">20 years (SBA 504 typical)</option>
+            <option value="25">25 years (SBA 7a max)</option>
+            <option value="30">30 years</option>
+          </select>
+        </div>
+      </div>
+      <div class="est-result" id="estResult" style="display:none">
+        <span class="est-pill" id="estMonthly"></span>
+        <span class="est-pill" id="estAnnual"></span>
+        <span class="est-autofill" id="estAutofillNote"></span>
+      </div>
+    </div>
+
+    <p class="fin-note">⚠ Unverified seller P&amp;L is not evidence. Require 2 years of tax returns, STR platform data, or bank statements before advancing to LOI. DSCR must hold at low-season occupancy + 1.5% rate shock.</p>
+  </div>
+
+  <!-- Scoring -->
+  <div class="card">
+    <h2>Scoring Criteria</h2>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:4px;">Drag each slider from 0 (poor/unknown) to 5 (excellent). Hover the guide text for scoring hints.</p>
+
+    <div id="categories"></div>
+  </div>
+
+  <!-- Knock-outs -->
+  <div class="card">
+    <h2>⛔ Knock-Out Conditions</h2>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Check any that apply. A single knock-out forces NO-GO regardless of score.</p>
+    <div class="ko-list" id="koList"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="calculate()">Score This Property</button>
+    <button class="btn btn-secondary" onclick="resetAll()">Reset</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="section-divider"></div>
+    <div class="card">
+      <h2>HostScore Results — <span id="resPropertyName" style="color:var(--accent)"></span></h2>
+
+      <div id="koTriggered" class="ko-triggered-box" style="display:none">
+        <h4>Knock-Out(s) Triggered — NO-GO</h4>
+        <ul id="koTriggeredList"></ul>
+      </div>
+
+      <div class="results-grid">
+        <div class="verdict-box" id="verdictBox">
+          <div class="verdict-label">HostScore</div>
+          <div class="verdict-score" id="totalScore">—</div>
+          <div class="verdict-band" id="verdictBand">—</div>
+          <div class="verdict-sub" id="verdictSub"></div>
+        </div>
+        <div class="chart-box">
+          <canvas id="radarChart" width="280" height="280"></canvas>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <h3 style="font-size:0.85rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Category Breakdown</h3>
+      <div id="barBreakdown" class="bar-breakdown"></div>
+
+      <div class="section-divider"></div>
+
+      <div class="sr-grid">
+        <div class="sr-box strengths">
+          <h4>Top Strengths</h4>
+          <ul id="strengthsList"></ul>
+        </div>
+        <div class="sr-box risks">
+          <h4>Key Risks</h4>
+          <ul id="risksList"></ul>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('results').style.display='none';window.scrollTo(0,0)">Edit Scores</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  HostScore · Hospitality Property Investment Scorecard · Not financial advice · Verify all data before LOI
+</footer>
+
+<script>
+const CATEGORIES = [
+  {
+    id: 'financial',
+    name: 'Financial Performance & DSCR',
+    weight: 0.25,
+    desc: 'Verified P&L and tax returns; DSCR at realistic occupancy; revenue trend. Use 0 if no financials available.',
+    levels: ['0 – Unverified / negative cash flow', '1 – Verified but DSCR <1.0', '2 – DSCR 1.0–1.15 (tight)', '3 – DSCR ~1.25 (meets threshold)', '4 – DSCR 1.25–1.5, verified', '5 – DSCR ≥1.5, multi-year verified']
+  },
+  {
+    id: 'financeability',
+    name: 'Financeability (SBA/USDA)',
+    weight: 0.15,
+    desc: 'SBA 7(a)/504 or USDA B&I eligibility; active-operation test; not >50% residential; rural USDA bonus.',
+    levels: ['0 – Passive/ineligible, no path to SBA', '1 – High risk, special-purpose concerns', '2 – Possible but significant hurdles', '3 – Likely financeable with work', '4 – Clean SBA fit, minor issues', '5 – Clean SBA 7(a) + possible USDA B&I']
+  },
+  {
+    id: 'dealterms',
+    name: 'Owner-Finance / Deal Terms',
+    weight: 0.15,
+    desc: 'Seller carry availability, down %, balloon length, price vs. supportable value. Seller carry is near-mandatory given capital timing.',
+    levels: ['0 – Full cash, overpriced, no flexibility', '1 – Conventional only, some negotiation', '2 – Seller carry possible, unconfirmed', '3 – Seller carry confirmed, fair price', '4 – Seller carry + reasonable balloon + fair price', '5 – Seller carry, low down, long balloon, motivated seller']
+  },
+  {
+    id: 'operating',
+    name: 'Operating Intensity & Manager Fit',
+    weight: 0.07,
+    desc: 'Revenue supports a manager salary ($40–55K); systems and staff in place; owner-transition feasibility.',
+    levels: ['0 – Requires constant owner presence, no systems', '1 – Very intensive, hard to delegate', '2 – Manageable but will need overhaul', '3 – Some systems in place, coachable staff', '4 – Good systems, manager-ready with ramp', '5 – Easily managed remotely, staff + playbook in place']
+  },
+  {
+    id: 'condition',
+    name: 'Condition & Capex Risk',
+    weight: 0.10,
+    desc: 'Age, roof/septic/HVAC/ADA/fire/seismic condition; estimated PIP cost. Deferred maintenance is the silent deal-killer.',
+    levels: ['0 – Major capex bomb (>$200K immediately)', '1 – Significant deferred maintenance', '2 – Moderate capex needed ($50–100K)', '3 – Minor updates needed (<$50K)', '4 – Good condition, cosmetic only', '5 – Turnkey, recently renovated']
+  },
+  {
+    id: 'location',
+    name: 'Location & Demand',
+    weight: 0.10,
+    desc: 'Proximity to attractions, road access, year-round vs. seasonal demand, comp set strength.',
+    levels: ['0 – Remote/declining, no demand drivers', '1 – Weak demand, limited access', '2 – Decent but seasonal/niche', '3 – Solid location, some year-round draw', '4 – Strong draw, good access, healthy comps', '5 – Prime location, strong year-round demand']
+  },
+  {
+    id: 'regulatory',
+    name: 'Regulatory / Zoning',
+    weight: 0.08,
+    desc: 'STR/lodging permits current and transferable; no looming bans; ADA/fire/septic compliance.',
+    levels: ['0 – Zoning prohibits use or permits not transferable', '1 – Major compliance risk', '2 – Permits unclear or partial', '3 – Permits in place, minor gaps', '4 – Fully permitted, likely transferable', '5 – Fully permitted, confirmed transferable, no risk']
+  },
+  {
+    id: 'resale',
+    name: 'Resale / Exit & Convertibility',
+    weight: 0.05,
+    desc: 'Multi-use potential, buyer pool depth, alternative uses if lodging fails.',
+    levels: ['0 – Single-purpose, thin buyer pool', '1 – Limited market, hard to convert', '2 – Modest exit options', '3 – Reasonable resale market', '4 – Multiple viable exits', '5 – Broadly marketable, strong conversion options']
+  },
+  {
+    id: 'seasonality',
+    name: 'Seasonality & Climate Resilience',
+    weight: 0.05,
+    desc: 'Revenue spread across year; wildfire/flood/storm exposure; water rights; insurability.',
+    levels: ['0 – Single-season only, high hazard exposure', '1 – Heavy seasonality, some hazard risk', '2 – 2-season, moderate hazard', '3 – 3-season, manageable risk', '4 – Near year-round, low hazard', '5 – Year-round demand, low hazard, fully insurable']
+  }
+];
+
+const KNOCKOUTS = [
+  { id: 'ko_passive', text: 'Fails SBA active-operation test AND property is not convertible (pure passive income, no hands-on role).' },
+  { id: 'ko_unverified', text: 'Revenue cannot be verified before LOI — seller refuses to provide 2 years of tax returns, STR platform data, or bank statements.' },
+  { id: 'ko_zoning', text: 'Zoning or permit prohibits the intended lodging use (and variance is not reasonably achievable).' },
+  { id: 'ko_capital', text: 'All-in cash to close exceeds available capital + required reserves (currently ~$200K cash).' },
+  { id: 'ko_dscr', text: 'DSCR <1.15 at realistic occupancy and cannot be cured by price reduction or favorable seller-carry terms.' }
+];
+
+// ── Pipeline data ──────────────────────────────────────────────────────────
+// scores array order: [financial, financeability, dealterms, operating, condition, location, regulatory, resale, seasonality]
+// Weights:              25%         15%            15%         7%          10%        10%       8%           5%       5%
+// Watch candidates: scores reconstructed from session analysis to match documented totals.
+// Pass/Dead: approximate reconstructions — useful for reference, less critical.
+const PIPELINE = [
+  // ── WATCH ──────────────────────────────────────────────────────────────────
+  { group: 'Watch', name: 'Myers Inn', type: "B&B / Inn",
+    location: 'Myers Flat, Humboldt County, CA', price: '$899,000', units: '10 rooms',
+    score: 68, band: 'watch',
+    scores: [2, 4, 5, 3, 2, 5, 4, 3, 3],
+    // financial=2: DSCR<1 at 15% occ; turnaround needed | financeability=4: clean SBA+USDA B&I
+    // dealterms=5: confirmed SF | operating=3: rural thin labor | condition=2: 1876 bldg/2010 reno unknown
+    // location=5: Avenue of Giants, constrained market | regulatory=4: operating inn
+    // resale=3: rural B&B | seasonality=3: redwood coast, wildfire risk
+    note: 'Confirmed seller-finance. Turnaround — 15% occ today, major upside. Structural inspection + P&L needed before LOI.' },
+
+  { group: 'Watch', name: 'Inn of Escalante', type: "B&B / Inn",
+    location: 'Escalante, Garfield County, UT', price: '$1,290,000', units: '8 rooms',
+    score: 63, band: 'watch',
+    scores: [2, 4, 3, 3, 3, 5, 3, 3, 3],
+    // financial=2: no financials; ADR inferred only | financeability=4: SBA+USDA eligible
+    // dealterms=3: SF not indicated | operating=3: 8-room manageable | condition=3: operating inn assumed decent
+    // location=5: Byway 12, Grand Staircase — best geographic fit | regulatory=3: operating inn
+    // resale=3: S. Utah corridor | seasonality=3: shoulder seasons
+    note: 'Listing went dark on LoopNet — verify status first. SF unknown. Best geographic fit in S. Utah scan.' },
+
+  { group: 'Watch', name: 'River Rock Inn', type: "B&B / Inn",
+    location: 'Green River, Emery County, UT', price: 'Withheld', units: '12 rooms + gift shop',
+    score: 61, band: 'watch',
+    scores: [2, 4, 3, 4, 4, 3, 3, 2, 3],
+    // financial=2: no revenue disclosed | financeability=4: rural, SBA eligible
+    // dealterms=3: motivated seller/"all reasonable offers", SF likely | operating=4: 2021 reno, gift shop + apt structure
+    // condition=4: 2021 renovation | location=3: I-70 highway stop, off-corridor
+    // regulatory=3: operating inn | resale=2: Green River thin buyer pool | seasonality=3: central Utah
+    note: 'Motivated seller, 2021 reno, low near-term capex. I-70 highway stop — demand ceiling risk.' },
+
+  // ── PASS ───────────────────────────────────────────────────────────────────
+  { group: 'Pass', name: 'Southern Colorado RV Park & Cabins', type: "RV Park / Campground",
+    location: 'Antonito, Conejos County, CO', price: '$875,000', units: '36 sites + cabins',
+    score: 55, band: 'pass',
+    scores: [1, 4, 3, 4, 4, 3, 3, 3, 2],
+    // financial=1: no revenue published | financeability=4: RV active-op, SBA eligible
+    // dealterms=3: SF unconfirmed | operating=4: turnkey, manager + owner residences
+    // condition=4: turnkey described | location=3: mountain CO, rural/seasonal
+    // regulatory=3: operating RV park | resale=3: RV parks have decent pool | seasonality=2: high-altitude CO winter
+    note: 'Year-round, turnkey. No revenue disclosed. SF unconfirmed. Re-scored 64→55 with locked weights.' },
+
+  { group: 'Pass', name: 'Inn at Harbour Village', type: "B&B / Inn",
+    location: 'Ilwaco, Pacific County, WA', price: 'Unknown', units: '11 rooms + event venue',
+    score: 57, band: 'pass',
+    scores: [1, 3, 2, 3, 4, 4, 3, 4, 2],
+    // financial=1: no revenue or price verified | financeability=3: inn+event = some SBA complexity
+    // dealterms=2: unknown | operating=3: inn + event needs coordination | condition=4: new roof, furnished
+    // location=4: Long Beach peninsula coastal corridor | regulatory=3: assumed permitted
+    // resale=4: inn+event dual use | seasonality=2: WA coast heavy winter seasonality
+    note: 'Price not verified (JS-blocked). Inn + event venue dual income. Revisit if price + SF confirmed.' },
+
+  { group: 'Pass', name: 'Nehalem River Inn', type: "B&B / Inn",
+    location: 'Nehalem, OR', price: '$1,950,000', units: '6 rooms + cabin',
+    score: 59, band: 'pass',
+    scores: [1, 3, 1, 2, 5, 5, 4, 4, 3],
+    // financial=1: no revenue, $1.95M price unaffordable | financeability=3: 6-room marginal scale
+    // dealterms=1: no SF indicated, overpriced | operating=2: 6 rooms won't fund manager
+    // condition=5: fully renovated 2021-23 | location=5: strong OR coast corridor
+    // regulatory=4: operating inn | resale=4: convertible to high-end residence | seasonality=3: coastal
+    note: 'Over budget (~2× ceiling). No SF. 6 rooms can\'t fund a manager at this price. Monitor for big price cut.' },
+
+  { group: 'Pass', name: 'CA Eastern Sierra KOA', type: "RV Park / Campground",
+    location: 'Eastern Sierra Nevada, CA', price: '$1,990,000', units: '43 FHU + 19-room motel',
+    score: 62, band: 'pass',
+    scores: [1, 4, 2, 3, 4, 5, 3, 4, 2],
+    // financial=1: no revenue; price KO | financeability=4: large RV+motel, SBA eligible
+    // dealterms=2: SF unknown, price ~2× budget | operating=3: large dual operation
+    // condition=4: recent capex (fiber, generators) | location=5: Yosemite/Reno corridor, perfect region
+    // regulatory=3: KOA franchise, assumed current | resale=4: large asset, multi-use
+    // seasonality=2: Eastern Sierra wildfire/winter
+    note: 'Perfect region. Price KO (~2× budget). Monitor for drop to ~$1.2–1.4M.' },
+
+  // ── DEAD / NO-GO ───────────────────────────────────────────────────────────
+  { group: 'Dead / No-Go', name: 'Central NM RV Park & Motel', type: "RV Park / Campground",
+    location: 'Central NM (Albuquerque corridor)', price: '$895,000', units: '42 FHU + 14 motel + 2 cabins',
+    score: 52, band: 'dead',
+    scores: [2, 4, 4, 3, 3, 1, 3, 3, 2],
+    note: 'DEAD — Region KO. Albuquerque corridor, not NM mountain. Locked decision.' },
+
+  { group: 'Dead / No-Go', name: 'NM Route 66 RV Park', type: "RV Park / Campground",
+    location: 'Tucumcari/Santa Rosa, NM', price: '$975,000', units: '50 FHU',
+    score: 0, band: 'dead',
+    scores: [2, 3, 2, 3, 4, 1, 3, 2, 2],
+    note: 'DEAD — Region KO. Desert/plains NM, not mountain corridor.' },
+
+  { group: 'Dead / No-Go', name: 'NM Tucumcari Glamping', type: "Glamping / Eco-resort",
+    location: 'Tucumcari, NM', price: '$400,000', units: '~20 sites',
+    score: 45, band: 'nogo',
+    scores: [0, 0, 4, 2, 3, 2, 2, 2, 2],
+    note: 'NO-GO — SBA KO. Not an active operating business. Would fail active-operation test.' },
+
+  { group: 'Dead / No-Go', name: 'Cochise Hotel', type: "B&B / Inn",
+    location: 'Cochise, Cochise County, AZ', price: '$850,000', units: '8 rooms + apartments + event hall',
+    score: 46, band: 'pass',
+    scores: [0, 2, 2, 2, 4, 1, 3, 3, 1],
+    note: '$25K revenue — too low to finance. Hobby operation. AZ excluded from regions.' },
+
+  { group: 'Dead / No-Go', name: 'The Lost Resort (Lake Ozette)', type: "RV Park / Campground",
+    location: 'Clallam Bay, Clallam County, WA', price: '$2,200,000', units: '30 sites + 3 cabins',
+    score: 45, band: 'pass',
+    scores: [1, 3, 1, 1, 3, 4, 3, 3, 2],
+    note: 'Price ~2× budget. Restaurant + store = very high operating intensity. Pass.' },
+
+  { group: 'Dead / No-Go', name: "Wyatt's Hotel & Theatre", type: "B&B / Inn",
+    location: 'Tombstone, Cochise County, AZ', price: '$775,000', units: '5 suites + theatre',
+    score: 43, band: 'pass',
+    scores: [0, 2, 0, 2, 4, 2, 3, 3, 1],
+    note: 'NO seller-carry (explicitly excluded in listing). AZ excluded. Pass.' },
+
+  { group: 'Dead / No-Go', name: 'Star Ranch Lodging', type: "B&B / Inn",
+    location: 'Wickenburg, Maricopa County, AZ', price: '$1,250,000', units: '2 casitas',
+    score: 40, band: 'pass',
+    scores: [0, 1, 2, 1, 4, 2, 2, 4, 1],
+    note: 'Essentially residential. >50% residential → weak SBA fit. AZ excluded. Pass.' },
+
+  { group: 'Dead / No-Go', name: 'Capulin Volcano Area', type: "Other",
+    location: 'Capulin, NM', price: '$375,000', units: 'Unknown',
+    score: 45, band: 'dead',
+    scores: [0, 2, 2, 2, 3, 2, 2, 2, 2],
+    note: 'DEAD — Income ceiling fail. <$50K net at this price.' },
+
+  // ── SCAN #4 — 2026-06-18 (all PASS) ───────────────────────────────────────
+  { group: 'Pass', name: 'Bradford Place Inn & Gardens', type: "B&B / Inn",
+    location: 'Sonora, Tuolumne County, CA', price: '$825,000', units: '5 rooms + 2BR detached unit',
+    score: 45, band: 'pass',
+    scores: [1, 3, 2, 2, 3, 3, 3, 3, 2],
+    // financial=1: unverified | financeability=3: active inn, R-2 zoning slight concern
+    // dealterms=2: SF unknown, price budget-friendly | operating=2: small B&B, owner-intensive
+    // condition=3: 1889 Victorian, 2016 renovation | location=3: Gold Rush/Yosemite approach
+    // regulatory=3: CA Gold Country, B&B-friendly | resale=3: Victorian in tourist town
+    // seasonality=2: CA wildfire risk, summer-heavy
+    note: 'Scan #4. CA Sierras target region. Income ceiling tight at 6 units for $100K net floor. SF unconfirmed — call Avery Bryant 209-753-8327.' },
+
+  { group: 'Pass', name: '1899 Inn B&B', type: "B&B / Inn",
+    location: 'La Veta, Huerfano County, CO', price: '$879,000', units: '5 rooms',
+    score: 49, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 3, 3, 2, 3],
+    // financial=1: unverified | financeability=4: established inn, SBA-eligible
+    // dealterms=2: SF unknown | operating=3: 40-yr established, good systems
+    // condition=3: National Register, maintained | location=3: Cuchara Valley, Spanish Peaks — small draw
+    // regulatory=3: historic property, likely fully permitted | resale=2: NR limits renovations
+    // seasonality=3: CO mountain, year-round but no active ski area nearby
+    note: 'Scan #4. 40-year established B&B, National Register. 5 rooms = income ceiling risk vs $100K net floor. La Veta is quieter than major CO mountain towns.' },
+
+  { group: 'Pass', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
+    location: 'Mariposa, Mariposa County, CA', price: '$899,000', units: 'Unknown (ranch inn)',
+    score: 49, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 4, 2, 3, 2],
+    // financial=1: unverified | financeability=4: ranch inn, SBA-eligible
+    // dealterms=2: SF unknown | operating=3: ranch format, moderate complexity
+    // condition=3: unknown, actively listed | location=4: near Yosemite NP — premium ADR potential
+    // regulatory=2: CA fire zone regulations, permit complexity | resale=3: near Yosemite = good buyer pool
+    // seasonality=2: 2022 Oak Fire severely burned Mariposa area — wildfire/insurance risk ACUTE
+    note: 'Scan #4. Best location of new batch — near Yosemite. ⚠️ Wildfire insurance check MANDATORY before contact (2022 Oak Fire). Room count unknown — if ≥8 rooms + insurable, revisit for Watch.' },
+
+  { group: 'Pass', name: 'Starry Nights B&B', type: "B&B / Inn",
+    location: 'Mancos, Montezuma County, CO', price: '$1,275,000', units: 'Unknown + event venue',
+    score: 50, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 3, 3, 3, 3],
+    // financial=1: unverified | financeability=4: 20-yr established B&B + event, SBA-eligible
+    // dealterms=2: $1.275M consumes capital, SF unknown | operating=3: event venue adds complexity
+    // condition=3: maintained 20+ yr | location=3: Mesa Verde NP, decent draw but remote
+    // regulatory=3: established, likely fully permitted | resale=3: rural CO, limited pool
+    // seasonality=3: Mesa Verde: strong summer, mild winter
+    note: 'Scan #4. ⚑ Over $1.2M flag. 20-year established business (lowest ramp risk of batch). Price is the killer — $1.275M leaves <$70K reserve after SBA down. Only advances if SF confirmed + revenue verified ≥$350K gross.' },
+
+  { group: 'Pass', name: 'St James Hotel', type: "B&B / Inn",
+    location: 'Georgetown, Clear Creek County, CO', price: '$1,200,000', units: 'Unknown (all suites)',
+    score: 51, band: 'pass',
+    scores: [1, 4, 2, 3, 3, 4, 3, 3, 2],
+    // financial=1: unverified | financeability=4: established hotel, SBA-eligible
+    // dealterms=2: $1.2M at edge of capital, SF unknown | operating=3: hotel, manageable
+    // condition=3: 1875 building, unknown recent capex | location=4: Georgetown — I-70, ski proximity, historic district
+    // regulatory=3: historic district may restrict changes | resale=3: CO mountain town, good pool
+    // seasonality=2: 1875 capex unknown; I-70 corridor year-round but older building risk
+    note: 'Scan #4. ⚑ At $1.2M flag threshold. Georgetown = strong destination (I-70, ski, National Historic District). 1875 building = capex uncertainty. Pass until SF confirmed + revenue verified.' },
+];
+
+function buildPipelineSelect() {
+  const sel = document.getElementById('pipelineSelect');
+  const groups = ['Watch', 'Pass', 'Dead / No-Go'];
+  groups.forEach(g => {
+    const props = PIPELINE.filter(p => p.group === g);
+    if (!props.length) return;
+    const og = document.createElement('optgroup');
+    og.label = g;
+    props.forEach((p, i) => {
+      const opt = document.createElement('option');
+      opt.value = PIPELINE.indexOf(p);
+      const scoreStr = p.score > 0 ? ` — ${p.score}/100` : '';
+      opt.textContent = `${p.name}${scoreStr}`;
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  });
+}
+
+function loadPipelineProperty(idx) {
+  if (idx === '') { document.getElementById('pipelineBadge').innerHTML = ''; return; }
+  const p = PIPELINE[parseInt(idx)];
+
+  // Fill property info
+  document.getElementById('propName').value = p.name;
+  document.getElementById('propType').value = p.type;
+  document.getElementById('propLocation').value = p.location;
+  document.getElementById('propPrice').value = p.price;
+  document.getElementById('propUnits').value = p.units;
+
+  // Auto-set all 9 sliders from stored scores
+  if (p.scores) {
+    CATEGORIES.forEach((cat, i) => {
+      const val = p.scores[i] ?? 0;
+      const slider = document.getElementById('slider_' + cat.id);
+      slider.value = val;
+      updateSlider(cat.id, val);
+    });
+  }
+
+  // Show badge + note
+  const bandLabels = { watch: 'WATCH', pass: 'PASS', dead: 'DEAD', nogo: 'NO-GO', advance: 'ADVANCE' };
+  document.getElementById('pipelineBadge').innerHTML =
+    `<span class="pipeline-badge badge-${p.band}">${p.score > 0 ? p.score + '/100 · ' : ''}${bandLabels[p.band] || p.band}</span>
+     <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</span>
+     <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${p.note}</div>`;
+
+  // Scroll to scoring section
+  setTimeout(() => document.getElementById('categories').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function setMode(mode) {
+  const isPipeline = mode === 'pipeline';
+  document.getElementById('btnPublic').classList.toggle('active', !isPipeline);
+  document.getElementById('btnPipeline').classList.toggle('active', isPipeline);
+  document.getElementById('pipelinePanel').style.display = isPipeline ? 'block' : 'none';
+  if (!isPipeline) {
+    document.getElementById('pipelineSelect').value = '';
+    document.getElementById('pipelineBadge').innerHTML = '';
+  }
+}
+
+// ── End pipeline ────────────────────────────────────────────────────────────
+
+let radarChart = null;
+
+function buildUI() {
+  // Categories
+  const container = document.getElementById('categories');
+  CATEGORIES.forEach((cat, i) => {
+    const div = document.createElement('div');
+    div.className = 'category';
+    div.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-name">${i+1}. ${cat.name}</div>
+        <div class="cat-weight">Weight: ${Math.round(cat.weight*100)}%</div>
+      </div>
+      <div class="cat-desc">${cat.desc}</div>
+      <div class="slider-row">
+        <input type="range" id="slider_${cat.id}" min="0" max="5" step="1" value="0"
+          oninput="updateSlider('${cat.id}', this.value)"
+          style="--pct:0%">
+        <div class="score-badge" id="badge_${cat.id}">0</div>
+      </div>
+      <div class="slider-labels">
+        <span>0 – Poor</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5 – Excellent</span>
+      </div>
+      <div class="level-hint" id="hint_${cat.id}">${cat.levels[0]}</div>
+    `;
+    container.appendChild(div);
+  });
+
+  // Knock-outs
+  const koList = document.getElementById('koList');
+  KNOCKOUTS.forEach(ko => {
+    const div = document.createElement('div');
+    div.className = 'ko-item';
+    div.id = 'koitem_' + ko.id;
+    div.innerHTML = `
+      <input type="checkbox" id="${ko.id}" onchange="updateKO('${ko.id}')">
+      <label for="${ko.id}">${ko.text}</label>
+    `;
+    koList.appendChild(div);
+  });
+}
+
+function updateSlider(id, val) {
+  const v = parseInt(val);
+  const pct = (v / 5 * 100) + '%';
+  const slider = document.getElementById('slider_' + id);
+  slider.style.setProperty('--pct', pct);
+  document.getElementById('badge_' + id).textContent = v;
+  const cat = CATEGORIES.find(c => c.id === id);
+  document.getElementById('hint_' + id).textContent = cat.levels[v];
+}
+
+function updateKO(id) {
+  const checked = document.getElementById(id).checked;
+  document.getElementById('koitem_' + id).classList.toggle('triggered', checked);
+}
+
+function syncPriceField() {
+  const raw = document.getElementById('propPrice').value.replace(/[$,\s]/g, '');
+  const num = parseFloat(raw);
+  if (!isNaN(num) && num > 0) {
+    document.getElementById('finPrice').value = num;
+    calcFinancials();
+  }
+}
+
+function calcDebtService() {
+  const P = parseFloat(document.getElementById('estLoan').value);
+  const annualRate = parseFloat(document.getElementById('estRate').value);
+  const termYrs = parseFloat(document.getElementById('estTerm').value);
+
+  const resDiv = document.getElementById('estResult');
+  if (isNaN(P) || isNaN(annualRate) || isNaN(termYrs) || P <= 0 || annualRate <= 0 || termYrs <= 0) {
+    resDiv.style.display = 'none';
+    return;
+  }
+
+  const r = (annualRate / 100) / 12;
+  const n = termYrs * 12;
+  const monthly = r === 0 ? P / n : P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  const annual = monthly * 12;
+
+  document.getElementById('estMonthly').textContent = 'Monthly: $' + Math.round(monthly).toLocaleString();
+  document.getElementById('estAnnual').textContent  = 'Annual: $'  + Math.round(annual).toLocaleString();
+
+  document.getElementById('finDebtSvc').value = Math.round(annual);
+  document.getElementById('estAutofillNote').textContent = 'Annual Debt Service auto-filled above';
+  resDiv.style.display = 'flex';
+
+  calcFinancials();
+}
+
+function calcFinancials() {
+  const grossRev = parseFloat(document.getElementById('finGrossRev').value);
+  const opEx     = parseFloat(document.getElementById('finOpEx').value);
+  const debtSvc  = parseFloat(document.getElementById('finDebtSvc').value);
+  const price    = parseFloat(document.getElementById('finPrice').value);
+  const cash     = parseFloat(document.getElementById('finCash').value);
+
+  const hasRev  = !isNaN(grossRev);
+  const hasOpEx = !isNaN(opEx);
+  const noi     = (hasRev || hasOpEx) ? (hasRev ? grossRev : 0) - (hasOpEx ? opEx : 0) : null;
+  const dscr    = noi !== null && !isNaN(debtSvc) && debtSvc > 0 ? noi / debtSvc : null;
+  const capRate = noi !== null && !isNaN(price) && price > 0 ? (noi / price) * 100 : null;
+  const cashFlow = noi !== null && !isNaN(debtSvc) ? noi - debtSvc : null;
+  const roi      = cashFlow !== null && !isNaN(cash) && cash > 0 ? (cashFlow / cash) * 100 : null;
+
+  function setMetric(boxId, valId, display, cls) {
+    document.getElementById(valId).textContent = display;
+    document.getElementById(boxId).className = 'metric-box' + (cls ? ' ' + cls : '');
+  }
+
+  if (noi !== null) {
+    const fmt = '$' + Math.abs(Math.round(noi)).toLocaleString() + (noi < 0 ? ' (loss)' : '');
+    setMetric('metNOI', 'metNOIVal', fmt, noi >= 50000 ? 'good' : noi >= 0 ? 'warn' : 'bad');
+  } else { setMetric('metNOI', 'metNOIVal', '—', ''); }
+
+  if (dscr !== null) {
+    setMetric('metDSCR', 'metDSCRVal', dscr.toFixed(2) + 'x', dscr >= 1.25 ? 'good' : dscr >= 1.0 ? 'warn' : 'bad');
+  } else { setMetric('metDSCR', 'metDSCRVal', '—', ''); }
+
+  if (capRate !== null) {
+    setMetric('metCapRate', 'metCapRateVal', capRate.toFixed(1) + '%', capRate >= 8 ? 'good' : capRate >= 6 ? 'warn' : 'bad');
+  } else { setMetric('metCapRate', 'metCapRateVal', '—', ''); }
+
+  if (roi !== null) {
+    setMetric('metROI', 'metROIVal', roi.toFixed(1) + '%', roi >= 10 ? 'good' : roi >= 5 ? 'warn' : 'bad');
+  } else { setMetric('metROI', 'metROIVal', '—', ''); }
+}
+
+function calculate() {
+  const scores = {};
+  let total = 0;
+  CATEGORIES.forEach(cat => {
+    const v = parseInt(document.getElementById('slider_' + cat.id).value);
+    scores[cat.id] = v;
+    total += (v / 5) * cat.weight * 100;
+  });
+  total = Math.round(total * 10) / 10;
+
+  const triggeredKOs = KNOCKOUTS.filter(ko => document.getElementById(ko.id).checked);
+  const hasKO = triggeredKOs.length > 0;
+
+  let band, bandClass, sub;
+  if (hasKO) {
+    band = 'NO-GO (Knock-Out)';
+    bandClass = 'knockout';
+    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
+  } else if (total >= 75) {
+    band = 'ADVANCE';
+    bandClass = 'advance';
+    sub = 'Score >= 75 — proceed to underwriting and revenue verification.';
+  } else if (total >= 60) {
+    band = 'WATCH';
+    bandClass = 'watch';
+    sub = 'Score 60-74 — monitor, negotiate, or request more information.';
+  } else {
+    band = 'PASS';
+    bandClass = 'pass';
+    sub = 'Score < 60 — does not meet threshold. Move on or revisit if terms change significantly.';
+  }
+
+  const propName = document.getElementById('propName').value || 'Unnamed Property';
+  document.getElementById('resPropertyName').textContent = propName;
+
+  const vbox = document.getElementById('verdictBox');
+  vbox.className = 'verdict-box ' + bandClass;
+  document.getElementById('totalScore').textContent = hasKO ? '—' : total.toFixed(1);
+  document.getElementById('verdictBand').textContent = band;
+  document.getElementById('verdictSub').textContent = sub;
+
+  const koBox = document.getElementById('koTriggered');
+  if (hasKO) {
+    koBox.style.display = 'block';
+    const list = document.getElementById('koTriggeredList');
+    list.innerHTML = '';
+    triggeredKOs.forEach(ko => {
+      const li = document.createElement('li');
+      li.textContent = ko.text;
+      list.appendChild(li);
+    });
+  } else {
+    koBox.style.display = 'none';
+  }
+
+  const labels = CATEGORIES.map(c => c.name.split('&')[0].split('/')[0].trim());
+  const data = CATEGORIES.map(c => scores[c.id]);
+
+  if (radarChart) radarChart.destroy();
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        label: propName,
+        data,
+        backgroundColor: 'rgba(15, 118, 110, 0.15)',
+        borderColor: 'rgba(15, 118, 110, 0.9)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(15, 118, 110, 1)',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: false,
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, font: { size: 9 } },
+          pointLabels: { font: { size: 9 } },
+          grid: { color: '#e2e8f0' }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  const barDiv = document.getElementById('barBreakdown');
+  barDiv.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const v = scores[cat.id];
+    const pts = (v / 5) * cat.weight * 100;
+    const maxPts = cat.weight * 100;
+    const pct = (v / 5) * 100;
+    barDiv.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-name">${cat.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="bar-pts">${pts.toFixed(1)}/${maxPts.toFixed(0)}</div>
+      </div>
+    `;
+  });
+
+  const ranked = [...CATEGORIES].map(cat => ({
+    cat,
+    pct: scores[cat.id] / 5,
+    pts: (scores[cat.id] / 5) * cat.weight * 100
+  })).sort((a, b) => b.pct - a.pct);
+
+  const strengthsList = document.getElementById('strengthsList');
+  strengthsList.innerHTML = '';
+  ranked.slice(0, 3).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
+    strengthsList.appendChild(li);
+  });
+
+  const risksList = document.getElementById('risksList');
+  risksList.innerHTML = '';
+  ranked.slice(-3).reverse().forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
+    risksList.appendChild(li);
+  });
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function resetAll() {
+  CATEGORIES.forEach(cat => {
+    const slider = document.getElementById('slider_' + cat.id);
+    slider.value = 0;
+    updateSlider(cat.id, 0);
+  });
+  KNOCKOUTS.forEach(ko => {
+    document.getElementById(ko.id).checked = false;
+    updateKO(ko.id);
+  });
+  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('propType').value = '';
+  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('estTerm').value = '';
+  document.getElementById('estResult').style.display = 'none';
+  calcFinancials();
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildUI();
+buildPipelineSelect();
+</script>
+</body>
+</html>
