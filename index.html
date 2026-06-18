@@ -777,4 +777,279 @@ function buildUI() {
       </div>
       <div class="cat-desc">${cat.desc}</div>
       <div class="slider-row">
-        <i
+        <input type="range" id="slider_${cat.id}" min="0" max="5" step="1" value="0"
+          oninput="updateSlider('${cat.id}', this.value)"
+          style="--pct:0%">
+        <div class="score-badge" id="badge_${cat.id}">0</div>
+      </div>
+      <div class="slider-labels">
+        <span>0 – Poor</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5 – Excellent</span>
+      </div>
+      <div class="level-hint" id="hint_${cat.id}">${cat.levels[0]}</div>
+    `;
+    container.appendChild(div);
+  });
+
+  // Knock-outs
+  const koList = document.getElementById('koList');
+  KNOCKOUTS.forEach(ko => {
+    const div = document.createElement('div');
+    div.className = 'ko-item';
+    div.id = 'koitem_' + ko.id;
+    div.innerHTML = `
+      <input type="checkbox" id="${ko.id}" onchange="updateKO('${ko.id}')">
+      <label for="${ko.id}">${ko.text}</label>
+    `;
+    koList.appendChild(div);
+  });
+}
+
+function updateSlider(id, val) {
+  const v = parseInt(val);
+  const pct = (v / 5 * 100) + '%';
+  const slider = document.getElementById('slider_' + id);
+  slider.style.setProperty('--pct', pct);
+  document.getElementById('badge_' + id).textContent = v;
+  const cat = CATEGORIES.find(c => c.id === id);
+  document.getElementById('hint_' + id).textContent = cat.levels[v];
+}
+
+function updateKO(id) {
+  const checked = document.getElementById(id).checked;
+  document.getElementById('koitem_' + id).classList.toggle('triggered', checked);
+}
+
+function syncPriceField() {
+  const raw = document.getElementById('propPrice').value.replace(/[$,\s]/g, '');
+  const num = parseFloat(raw);
+  if (!isNaN(num) && num > 0) {
+    document.getElementById('finPrice').value = num;
+    calcFinancials();
+  }
+}
+
+function calcDebtService() {
+  const P = parseFloat(document.getElementById('estLoan').value);
+  const annualRate = parseFloat(document.getElementById('estRate').value);
+  const termYrs = parseFloat(document.getElementById('estTerm').value);
+
+  const resDiv = document.getElementById('estResult');
+  if (isNaN(P) || isNaN(annualRate) || isNaN(termYrs) || P <= 0 || annualRate <= 0 || termYrs <= 0) {
+    resDiv.style.display = 'none';
+    return;
+  }
+
+  const r = (annualRate / 100) / 12;
+  const n = termYrs * 12;
+  const monthly = r === 0 ? P / n : P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  const annual = monthly * 12;
+
+  document.getElementById('estMonthly').textContent = 'Monthly: $' + Math.round(monthly).toLocaleString();
+  document.getElementById('estAnnual').textContent  = 'Annual: $'  + Math.round(annual).toLocaleString();
+
+  document.getElementById('finDebtSvc').value = Math.round(annual);
+  document.getElementById('estAutofillNote').textContent = 'Annual Debt Service auto-filled above';
+  resDiv.style.display = 'flex';
+
+  calcFinancials();
+}
+
+function calcFinancials() {
+  const grossRev = parseFloat(document.getElementById('finGrossRev').value);
+  const opEx     = parseFloat(document.getElementById('finOpEx').value);
+  const debtSvc  = parseFloat(document.getElementById('finDebtSvc').value);
+  const price    = parseFloat(document.getElementById('finPrice').value);
+  const cash     = parseFloat(document.getElementById('finCash').value);
+
+  const hasRev  = !isNaN(grossRev);
+  const hasOpEx = !isNaN(opEx);
+  const noi     = (hasRev || hasOpEx) ? (hasRev ? grossRev : 0) - (hasOpEx ? opEx : 0) : null;
+  const dscr    = noi !== null && !isNaN(debtSvc) && debtSvc > 0 ? noi / debtSvc : null;
+  const capRate = noi !== null && !isNaN(price) && price > 0 ? (noi / price) * 100 : null;
+  const cashFlow = noi !== null && !isNaN(debtSvc) ? noi - debtSvc : null;
+  const roi      = cashFlow !== null && !isNaN(cash) && cash > 0 ? (cashFlow / cash) * 100 : null;
+
+  function setMetric(boxId, valId, display, cls) {
+    document.getElementById(valId).textContent = display;
+    document.getElementById(boxId).className = 'metric-box' + (cls ? ' ' + cls : '');
+  }
+
+  if (noi !== null) {
+    const fmt = '$' + Math.abs(Math.round(noi)).toLocaleString() + (noi < 0 ? ' (loss)' : '');
+    setMetric('metNOI', 'metNOIVal', fmt, noi >= 50000 ? 'good' : noi >= 0 ? 'warn' : 'bad');
+  } else { setMetric('metNOI', 'metNOIVal', '—', ''); }
+
+  if (dscr !== null) {
+    setMetric('metDSCR', 'metDSCRVal', dscr.toFixed(2) + 'x', dscr >= 1.25 ? 'good' : dscr >= 1.0 ? 'warn' : 'bad');
+  } else { setMetric('metDSCR', 'metDSCRVal', '—', ''); }
+
+  if (capRate !== null) {
+    setMetric('metCapRate', 'metCapRateVal', capRate.toFixed(1) + '%', capRate >= 8 ? 'good' : capRate >= 6 ? 'warn' : 'bad');
+  } else { setMetric('metCapRate', 'metCapRateVal', '—', ''); }
+
+  if (roi !== null) {
+    setMetric('metROI', 'metROIVal', roi.toFixed(1) + '%', roi >= 10 ? 'good' : roi >= 5 ? 'warn' : 'bad');
+  } else { setMetric('metROI', 'metROIVal', '—', ''); }
+}
+
+function calculate() {
+  const scores = {};
+  let total = 0;
+  CATEGORIES.forEach(cat => {
+    const v = parseInt(document.getElementById('slider_' + cat.id).value);
+    scores[cat.id] = v;
+    total += (v / 5) * cat.weight * 100;
+  });
+  total = Math.round(total * 10) / 10;
+
+  const triggeredKOs = KNOCKOUTS.filter(ko => document.getElementById(ko.id).checked);
+  const hasKO = triggeredKOs.length > 0;
+
+  let band, bandClass, sub;
+  if (hasKO) {
+    band = 'NO-GO (Knock-Out)';
+    bandClass = 'knockout';
+    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
+  } else if (total >= 75) {
+    band = 'ADVANCE';
+    bandClass = 'advance';
+    sub = 'Score >= 75 — proceed to underwriting and revenue verification.';
+  } else if (total >= 60) {
+    band = 'WATCH';
+    bandClass = 'watch';
+    sub = 'Score 60-74 — monitor, negotiate, or request more information.';
+  } else {
+    band = 'PASS';
+    bandClass = 'pass';
+    sub = 'Score < 60 — does not meet threshold. Move on or revisit if terms change significantly.';
+  }
+
+  const propName = document.getElementById('propName').value || 'Unnamed Property';
+  document.getElementById('resPropertyName').textContent = propName;
+
+  const vbox = document.getElementById('verdictBox');
+  vbox.className = 'verdict-box ' + bandClass;
+  document.getElementById('totalScore').textContent = hasKO ? '—' : total.toFixed(1);
+  document.getElementById('verdictBand').textContent = band;
+  document.getElementById('verdictSub').textContent = sub;
+
+  const koBox = document.getElementById('koTriggered');
+  if (hasKO) {
+    koBox.style.display = 'block';
+    const list = document.getElementById('koTriggeredList');
+    list.innerHTML = '';
+    triggeredKOs.forEach(ko => {
+      const li = document.createElement('li');
+      li.textContent = ko.text;
+      list.appendChild(li);
+    });
+  } else {
+    koBox.style.display = 'none';
+  }
+
+  const labels = CATEGORIES.map(c => c.name.split('&')[0].split('/')[0].trim());
+  const data = CATEGORIES.map(c => scores[c.id]);
+
+  if (radarChart) radarChart.destroy();
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        label: propName,
+        data,
+        backgroundColor: 'rgba(15, 118, 110, 0.15)',
+        borderColor: 'rgba(15, 118, 110, 0.9)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(15, 118, 110, 1)',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: false,
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, font: { size: 9 } },
+          pointLabels: { font: { size: 9 } },
+          grid: { color: '#e2e8f0' }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  const barDiv = document.getElementById('barBreakdown');
+  barDiv.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const v = scores[cat.id];
+    const pts = (v / 5) * cat.weight * 100;
+    const maxPts = cat.weight * 100;
+    const pct = (v / 5) * 100;
+    barDiv.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-name">${cat.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="bar-pts">${pts.toFixed(1)}/${maxPts.toFixed(0)}</div>
+      </div>
+    `;
+  });
+
+  const ranked = [...CATEGORIES].map(cat => ({
+    cat,
+    pct: scores[cat.id] / 5,
+    pts: (scores[cat.id] / 5) * cat.weight * 100
+  })).sort((a, b) => b.pct - a.pct);
+
+  const strengthsList = document.getElementById('strengthsList');
+  strengthsList.innerHTML = '';
+  ranked.slice(0, 3).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
+    strengthsList.appendChild(li);
+  });
+
+  const risksList = document.getElementById('risksList');
+  risksList.innerHTML = '';
+  ranked.slice(-3).reverse().forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = `${r.cat.name} (${scores[r.cat.id]}/5)`;
+    risksList.appendChild(li);
+  });
+
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function resetAll() {
+  CATEGORIES.forEach(cat => {
+    const slider = document.getElementById('slider_' + cat.id);
+    slider.value = 0;
+    updateSlider(cat.id, 0);
+  });
+  KNOCKOUTS.forEach(ko => {
+    document.getElementById(ko.id).checked = false;
+    updateKO(ko.id);
+  });
+  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('propType').value = '';
+  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('estTerm').value = '';
+  document.getElementById('estResult').style.display = 'none';
+  calcFinancials();
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildUI();
+buildPipelineSelect();
+</script>
+</body>
+</html>
