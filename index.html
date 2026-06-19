@@ -361,8 +361,14 @@
         <input type="number" id="finPrice" placeholder="e.g. 899000" min="0" oninput="calcFinancials()">
       </div>
       <div>
-        <label for="finCash">Cash Invested / Down Payment ($)</label>
-        <input type="number" id="finCash" placeholder="e.g. 200000" min="0" oninput="calcFinancials()">
+        <label for="finCash">Cash Invested / Down Payment ($)
+          <span style="font-weight:400;font-size:0.8rem;margin-left:8px;">
+            Auto-fill:
+            <label style="font-weight:400;margin-left:4px;"><input type="radio" name="downPct" value="0.10" checked onchange="applyDownPct()"> 10%</label>
+            <label style="font-weight:400;margin-left:6px;"><input type="radio" name="downPct" value="0.20" onchange="applyDownPct()"> 20%</label>
+          </span>
+        </label>
+        <input type="number" id="finCash" placeholder="e.g. 89900" min="0" oninput="calcFinancials()">
       </div>
     </div>
 
@@ -883,12 +889,23 @@ function loadPipelineProperty(idx) {
   const priceNum = p.price ? parseInt(p.price.replace(/[^0-9]/g, '')) : NaN;
   if (!isNaN(priceNum)) {
     document.getElementById('finPrice').value = priceNum;
-    document.getElementById('finCash').value = 200000;
+    const pct = parseFloat(document.querySelector('input[name="downPct"]:checked').value);
+    document.getElementById('finCash').value = Math.round(priceNum * pct);
   }
   calcFinancials();
 
   // Scroll to scoring section
   setTimeout(() => document.getElementById('categories').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function applyDownPct() {
+  const priceEl = document.getElementById('finPrice');
+  const priceNum = parseFloat(priceEl.value);
+  if (!isNaN(priceNum) && priceNum > 0) {
+    const pct = parseFloat(document.querySelector('input[name="downPct"]:checked').value);
+    document.getElementById('finCash').value = Math.round(priceNum * pct);
+    calcFinancials();
+  }
 }
 
 function setMode(mode) {
