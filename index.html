@@ -576,7 +576,9 @@ const KNOCKOUTS = [
 // Pass/Dead: approximate reconstructions — useful for reference, less critical.
 const PIPELINE = [
   // ── WATCH ──────────────────────────────────────────────────────────────────
-  { group: 'Watch', name: 'Myers Inn', type: "B&B / Inn",
+  { id: 'P01', scanNum: 3, scanDate: '2026-06-17',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10229',
+    group: 'Watch', name: 'Myers Inn', type: "B&B / Inn",
     location: 'Myers Flat, Humboldt County, CA', price: '$899,000', units: '10 rooms',
     score: 68, band: 'watch',
     scores: [2, 4, 5, 3, 2, 5, 4, 3, 3],
@@ -586,7 +588,9 @@ const PIPELINE = [
     // resale=3: rural B&B | seasonality=3: redwood coast, wildfire risk
     note: 'Confirmed seller-finance. Turnaround — 15% occ today, major upside. Structural inspection + P&L needed before LOI.' },
 
-  { group: 'Watch', name: 'Inn of Escalante', type: "B&B / Inn",
+  { id: 'P02', scanNum: 3, scanDate: '2026-06-17',
+    sourceUrl: 'https://www.loopnet.com/Listing/40-N-300-W-Escalante-UT/17171418/',
+    group: 'Watch', name: 'Inn of Escalante', type: "B&B / Inn",
     location: 'Escalante, Garfield County, UT', price: '$1,290,000', units: '8 rooms',
     score: 63, band: 'watch',
     scores: [2, 4, 3, 3, 3, 5, 3, 3, 3],
@@ -596,7 +600,9 @@ const PIPELINE = [
     // resale=3: S. Utah corridor | seasonality=3: shoulder seasons
     note: 'Listing went dark on LoopNet — verify status first. SF unknown. Best geographic fit in S. Utah scan.' },
 
-  { group: 'Watch', name: 'River Rock Inn', type: "B&B / Inn",
+  { id: 'P03', scanNum: 3, scanDate: '2026-06-17',
+    sourceUrl: 'https://www.bedandbreakfastforsale.com/property/4482/green-river-utah-river-rock-inn',
+    group: 'Watch', name: 'River Rock Inn', type: "B&B / Inn",
     location: 'Green River, Emery County, UT', price: 'Withheld', units: '12 rooms + gift shop',
     score: 61, band: 'watch',
     scores: [2, 4, 3, 4, 4, 3, 3, 2, 3],
@@ -607,7 +613,9 @@ const PIPELINE = [
     note: 'Motivated seller, 2021 reno, low near-term capex. I-70 highway stop — demand ceiling risk.' },
 
   // ── PASS ───────────────────────────────────────────────────────────────────
-  { group: 'Pass', name: 'Southern Colorado RV Park & Cabins', type: "RV Park / Campground",
+  { id: 'P04', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.parksandplaces.com/colorado-rv-park-cabins-sale-36-unit-turnkey-business-for-sale/',
+    group: 'Pass', name: 'Southern Colorado RV Park & Cabins', type: "RV Park / Campground",
     location: 'Antonito, Conejos County, CO', price: '$875,000', units: '36 sites + cabins',
     score: 55, band: 'pass',
     scores: [1, 4, 3, 4, 4, 3, 3, 3, 2],
@@ -617,7 +625,9 @@ const PIPELINE = [
     // regulatory=3: operating RV park | resale=3: RV parks have decent pool | seasonality=2: high-altitude CO winter
     note: 'Year-round, turnkey. No revenue disclosed. SF unconfirmed. Re-scored 64→55 with locked weights.' },
 
-  { group: 'Pass', name: 'Inn at Harbour Village', type: "B&B / Inn",
+  { id: 'P05', scanNum: 2, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.bizbuysell.com/Business-Opportunity/inn-at-harbour-village/1982056/',
+    group: 'Pass', name: 'Inn at Harbour Village', type: "B&B / Inn",
     location: 'Ilwaco, Pacific County, WA', price: 'Unknown', units: '11 rooms + event venue',
     score: 57, band: 'pass',
     scores: [1, 3, 2, 3, 4, 4, 3, 4, 2],
@@ -627,7 +637,9 @@ const PIPELINE = [
     // resale=4: inn+event dual use | seasonality=2: WA coast heavy winter seasonality
     note: 'Price not verified (JS-blocked). Inn + event venue dual income. Revisit if price + SF confirmed.' },
 
-  { group: 'Pass', name: 'Nehalem River Inn', type: "B&B / Inn",
+  { id: 'P06', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10063',
+    group: 'Pass', name: 'Nehalem River Inn', type: "B&B / Inn",
     location: 'Nehalem, OR', price: '$1,950,000', units: '6 rooms + cabin',
     score: 59, band: 'pass',
     scores: [1, 3, 1, 2, 5, 5, 4, 4, 3],
@@ -637,7 +649,9 @@ const PIPELINE = [
     // regulatory=4: operating inn | resale=4: convertible to high-end residence | seasonality=3: coastal
     note: 'Over budget (~2× ceiling). No SF. 6 rooms can\'t fund a manager at this price. Monitor for big price cut.' },
 
-  { group: 'Pass', name: 'CA Eastern Sierra KOA', type: "RV Park / Campground",
+  { id: 'P07', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.parksandplaces.com/california-sierra-campground-motel-yosemite-expansion-3315908/',
+    group: 'Pass', name: 'CA Eastern Sierra KOA', type: "RV Park / Campground",
     location: 'Eastern Sierra Nevada, CA', price: '$1,990,000', units: '43 FHU + 19-room motel',
     score: 62, band: 'pass',
     scores: [1, 4, 2, 3, 4, 5, 3, 4, 2],
@@ -649,56 +663,74 @@ const PIPELINE = [
     note: 'Perfect region. Price KO (~2× budget). Monitor for drop to ~$1.2–1.4M.' },
 
   // ── DEAD / NO-GO ───────────────────────────────────────────────────────────
-  { group: 'Dead / No-Go', name: 'Central NM RV Park & Motel', type: "RV Park / Campground",
+  { id: 'P08', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.parksandplaces.com/central-nm-rv-park-motel-for-sale-3324414/',
+    group: 'Dead / No-Go', name: 'Central NM RV Park & Motel', type: "RV Park / Campground",
     location: 'Central NM (Albuquerque corridor)', price: '$895,000', units: '42 FHU + 14 motel + 2 cabins',
     score: 52, band: 'dead',
     scores: [2, 4, 4, 3, 3, 1, 3, 3, 2],
     note: 'DEAD — Region KO. Albuquerque corridor, not NM mountain. Locked decision.' },
 
-  { group: 'Dead / No-Go', name: 'NM Route 66 RV Park', type: "RV Park / Campground",
+  { id: 'P09', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.parksandplaces.com/new-mexico-route-66-rv-park-for-sale-3316401/',
+    group: 'Dead / No-Go', name: 'NM Route 66 RV Park', type: "RV Park / Campground",
     location: 'Tucumcari/Santa Rosa, NM', price: '$975,000', units: '50 FHU',
     score: 0, band: 'dead',
     scores: [2, 3, 2, 3, 4, 1, 3, 2, 2],
     note: 'DEAD — Region KO. Desert/plains NM, not mountain corridor.' },
 
-  { group: 'Dead / No-Go', name: 'NM Tucumcari Glamping', type: "Glamping / Eco-resort",
+  { id: 'P10', scanNum: 1, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.parksandplaces.com/new-mexico-hospitality-asset-glamping-development-for-sale/',
+    group: 'Dead / No-Go', name: 'NM Tucumcari Glamping', type: "Glamping / Eco-resort",
     location: 'Tucumcari, NM', price: '$400,000', units: '~20 sites',
     score: 45, band: 'nogo',
     scores: [0, 0, 4, 2, 3, 2, 2, 2, 2],
     note: 'NO-GO — SBA KO. Not an active operating business. Would fail active-operation test.' },
 
-  { group: 'Dead / No-Go', name: 'Cochise Hotel', type: "B&B / Inn",
+  { id: 'P11', scanNum: 2, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=4218',
+    group: 'Dead / No-Go', name: 'Cochise Hotel', type: "B&B / Inn",
     location: 'Cochise, Cochise County, AZ', price: '$850,000', units: '8 rooms + apartments + event hall',
-    score: 46, band: 'pass',
+    score: 46, band: 'dead',
     scores: [0, 2, 2, 2, 4, 1, 3, 3, 1],
     note: '$25K revenue — too low to finance. Hobby operation. AZ excluded from regions.' },
 
-  { group: 'Dead / No-Go', name: 'The Lost Resort (Lake Ozette)', type: "RV Park / Campground",
+  { id: 'P12', scanNum: 2, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.idealforks.com/real-estate/20860-hoko-ozette-road-clallam-bay-wa-98326/2411482/182764044',
+    group: 'Dead / No-Go', name: 'The Lost Resort (Lake Ozette)', type: "RV Park / Campground",
     location: 'Clallam Bay, Clallam County, WA', price: '$2,200,000', units: '30 sites + 3 cabins',
-    score: 45, band: 'pass',
+    score: 45, band: 'dead',
     scores: [1, 3, 1, 1, 3, 4, 3, 3, 2],
     note: 'Price ~2× budget. Restaurant + store = very high operating intensity. Pass.' },
 
-  { group: 'Dead / No-Go', name: "Wyatt's Hotel & Theatre", type: "B&B / Inn",
+  { id: 'P13', scanNum: 2, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.bedandbreakfastforsale.com/property/4485/tombstone-arizona-wyatts-hotel-and-theatre',
+    group: 'Dead / No-Go', name: "Wyatt's Hotel & Theatre", type: "B&B / Inn",
     location: 'Tombstone, Cochise County, AZ', price: '$775,000', units: '5 suites + theatre',
-    score: 43, band: 'pass',
+    score: 43, band: 'dead',
     scores: [0, 2, 0, 2, 4, 2, 3, 3, 1],
     note: 'NO seller-carry (explicitly excluded in listing). AZ excluded. Pass.' },
 
-  { group: 'Dead / No-Go', name: 'Star Ranch Lodging', type: "B&B / Inn",
+  { id: 'P14', scanNum: 2, scanDate: '2026-06-16',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=9830',
+    group: 'Dead / No-Go', name: 'Star Ranch Lodging', type: "B&B / Inn",
     location: 'Wickenburg, Maricopa County, AZ', price: '$1,250,000', units: '2 casitas',
-    score: 40, band: 'pass',
+    score: 40, band: 'dead',
     scores: [0, 1, 2, 1, 4, 2, 2, 4, 1],
     note: 'Essentially residential. >50% residential → weak SBA fit. AZ excluded. Pass.' },
 
-  { group: 'Dead / No-Go', name: 'Capulin Volcano Area', type: "Other",
+  { id: 'P15', scanNum: '3b', scanDate: '2026-06-17',
+    sourceUrl: null,
+    group: 'Dead / No-Go', name: 'Capulin Volcano Area', type: "Other",
     location: 'Capulin, NM', price: '$375,000', units: 'Unknown',
     score: 45, band: 'dead',
     scores: [0, 2, 2, 2, 3, 2, 2, 2, 2],
     note: 'DEAD — Income ceiling fail. <$50K net at this price.' },
 
   // ── SCAN #4 — 2026-06-18 (all PASS) ───────────────────────────────────────
-  { group: 'Pass', name: 'Bradford Place Inn & Gardens', type: "B&B / Inn",
+  { id: 'P16', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10210',
+    group: 'Pass', name: 'Bradford Place Inn & Gardens', type: "B&B / Inn",
     location: 'Sonora, Tuolumne County, CA', price: '$825,000', units: '5 rooms + 2BR detached unit',
     score: 45, band: 'pass',
     scores: [1, 3, 2, 2, 3, 3, 3, 3, 2],
@@ -707,9 +739,11 @@ const PIPELINE = [
     // condition=3: 1889 Victorian, 2016 renovation | location=3: Gold Rush/Yosemite approach
     // regulatory=3: CA Gold Country, B&B-friendly | resale=3: Victorian in tourist town
     // seasonality=2: CA wildfire risk, summer-heavy
-    note: 'Scan #4. CA Sierras target region. Income ceiling tight at 6 units for $100K net floor. SF unconfirmed — call Avery Bryant 209-753-8327.' },
+    note: 'CA Sierras target region. Income ceiling tight at 6 units for $100K net floor. SF unconfirmed — call Avery Bryant 209-753-8327.' },
 
-  { group: 'Pass', name: '1899 Inn B&B', type: "B&B / Inn",
+  { id: 'P17', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://www.innshopper.com/Colorado.aspx',
+    group: 'Pass', name: '1899 Inn B&B', type: "B&B / Inn",
     location: 'La Veta, Huerfano County, CO', price: '$879,000', units: '5 rooms',
     score: 49, band: 'pass',
     scores: [1, 4, 2, 3, 3, 3, 3, 2, 3],
@@ -718,9 +752,11 @@ const PIPELINE = [
     // condition=3: National Register, maintained | location=3: Cuchara Valley, Spanish Peaks — small draw
     // regulatory=3: historic property, likely fully permitted | resale=2: NR limits renovations
     // seasonality=3: CO mountain, year-round but no active ski area nearby
-    note: 'Scan #4. 40-year established B&B, National Register. 5 rooms = income ceiling risk vs $100K net floor. La Veta is quieter than major CO mountain towns.' },
+    note: '40-year established B&B, National Register. 5 rooms = income ceiling risk vs $100K net floor. La Veta is quieter than major CO mountain towns.' },
 
-  { group: 'Pass', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
+  { id: 'P18', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://www.innshopper.com/California.aspx',
+    group: 'Pass', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
     location: 'Mariposa, Mariposa County, CA', price: '$899,000', units: 'Unknown (ranch inn)',
     score: 49, band: 'pass',
     scores: [1, 4, 2, 3, 3, 4, 2, 3, 2],
@@ -729,9 +765,11 @@ const PIPELINE = [
     // condition=3: unknown, actively listed | location=4: near Yosemite NP — premium ADR potential
     // regulatory=2: CA fire zone regulations, permit complexity | resale=3: near Yosemite = good buyer pool
     // seasonality=2: 2022 Oak Fire severely burned Mariposa area — wildfire/insurance risk ACUTE
-    note: 'Scan #4. Best location of new batch — near Yosemite. ⚠️ Wildfire insurance check MANDATORY before contact (2022 Oak Fire). Room count unknown — if ≥8 rooms + insurable, revisit for Watch.' },
+    note: 'Best location of new batch — near Yosemite. ⚠️ Wildfire insurance check MANDATORY before contact (2022 Oak Fire). Room count unknown — if ≥8 rooms + insurable, revisit for Watch.' },
 
-  { group: 'Pass', name: 'Starry Nights B&B', type: "B&B / Inn",
+  { id: 'P19', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://www.innshopper.com/Colorado.aspx',
+    group: 'Pass', name: 'Starry Nights B&B', type: "B&B / Inn",
     location: 'Mancos, Montezuma County, CO', price: '$1,275,000', units: 'Unknown + event venue',
     score: 50, band: 'pass',
     scores: [1, 4, 2, 3, 3, 3, 3, 3, 3],
@@ -740,9 +778,11 @@ const PIPELINE = [
     // condition=3: maintained 20+ yr | location=3: Mesa Verde NP, decent draw but remote
     // regulatory=3: established, likely fully permitted | resale=3: rural CO, limited pool
     // seasonality=3: Mesa Verde: strong summer, mild winter
-    note: 'Scan #4. ⚑ Over $1.2M flag. 20-year established business (lowest ramp risk of batch). Price is the killer — $1.275M leaves <$70K reserve after SBA down. Only advances if SF confirmed + revenue verified ≥$350K gross.' },
+    note: '⚑ Over $1.2M flag. 20-year established business (lowest ramp risk of batch). Price is the killer — $1.275M leaves <$70K reserve after SBA down. Only advances if SF confirmed + revenue verified ≥$350K gross.' },
 
-  { group: 'Pass', name: 'St James Hotel', type: "B&B / Inn",
+  { id: 'P20', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://www.innshopper.com/Colorado.aspx',
+    group: 'Pass', name: 'St James Hotel', type: "B&B / Inn",
     location: 'Georgetown, Clear Creek County, CO', price: '$1,200,000', units: 'Unknown (all suites)',
     score: 51, band: 'pass',
     scores: [1, 4, 2, 3, 3, 4, 3, 3, 2],
@@ -751,7 +791,7 @@ const PIPELINE = [
     // condition=3: 1875 building, unknown recent capex | location=4: Georgetown — I-70, ski proximity, historic district
     // regulatory=3: historic district may restrict changes | resale=3: CO mountain town, good pool
     // seasonality=2: 1875 capex unknown; I-70 corridor year-round but older building risk
-    note: 'Scan #4. ⚑ At $1.2M flag threshold. Georgetown = strong destination (I-70, ski, National Historic District). 1875 building = capex uncertainty. Pass until SF confirmed + revenue verified.' },
+    note: '⚑ At $1.2M flag threshold. Georgetown = strong destination (I-70, ski, National Historic District). 1875 building = capex uncertainty. Pass until SF confirmed + revenue verified.' },
 ];
 
 function buildPipelineSelect() {
@@ -766,7 +806,8 @@ function buildPipelineSelect() {
       const opt = document.createElement('option');
       opt.value = PIPELINE.indexOf(p);
       const scoreStr = p.score > 0 ? ` — ${p.score}/100` : '';
-      opt.textContent = `${p.name}${scoreStr}`;
+      const idStr = p.id ? `${p.id} · ` : '';
+      opt.textContent = `${idStr}${p.name}${scoreStr}`;
       og.appendChild(opt);
     });
     sel.appendChild(og);
@@ -794,11 +835,19 @@ function loadPipelineProperty(idx) {
     });
   }
 
-  // Show badge + note
+  // Show badge + scan info + listing link + note
   const bandLabels = { watch: 'WATCH', pass: 'PASS', dead: 'DEAD', nogo: 'NO-GO', advance: 'ADVANCE' };
+  const scanBadge = p.scanNum ? `<span style="font-size:0.72rem;background:var(--surface2,#2a2a3a);color:var(--muted);padding:2px 7px;border-radius:4px;margin-left:8px;">Scan #${p.scanNum} · ${p.scanDate}</span>` : '';
+  const idBadge = p.id ? `<span style="font-size:0.72rem;background:var(--surface2,#2a2a3a);color:var(--muted);padding:2px 7px;border-radius:4px;margin-left:6px;">${p.id}</span>` : '';
+  const listingLink = p.sourceUrl
+    ? `<a href="${p.sourceUrl}" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--accent,#7b8cde);margin-left:10px;text-decoration:none;">View Listing →</a>`
+    : '';
   document.getElementById('pipelineBadge').innerHTML =
-    `<span class="pipeline-badge badge-${p.band}">${p.score > 0 ? p.score + '/100 · ' : ''}${bandLabels[p.band] || p.band}</span>
-     <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</span>
+    `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+       <span class="pipeline-badge badge-${p.band}">${p.score > 0 ? p.score + '/100 · ' : ''}${bandLabels[p.band] || p.band}</span>
+       ${idBadge}${scanBadge}${listingLink}
+     </div>
+     <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</div>
      <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${p.note}</div>`;
 
   // Scroll to scoring section
