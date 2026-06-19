@@ -9,6 +9,7 @@
   :root {
     --advance: #16a34a;
     --watch: #d97706;
+    --verify: #0369a1;
     --pass: #dc2626;
     --ko: #7c3aed;
     --bg: #f8fafc;
@@ -59,6 +60,7 @@
   .pipeline-panel select:focus { border-color: var(--watch); }
   .pipeline-badge { display: inline-block; margin-top: 8px; font-size: 0.75rem; padding: 2px 10px; border-radius: 20px; font-weight: 600; }
   .badge-watch   { background: #fffbeb; color: var(--watch);   border: 1px solid #fcd34d; }
+  .badge-verify  { background: #eff6ff; color: var(--verify);  border: 1px solid #bfdbfe; }
   .badge-pass    { background: #fef2f2; color: var(--pass);    border: 1px solid #fecaca; }
   .badge-dead    { background: #f1f5f9; color: var(--muted);   border: 1px solid var(--border); }
   .badge-nogo    { background: #faf5ff; color: var(--ko);      border: 1px solid #ddd6fe; }
@@ -171,6 +173,7 @@
 
   .advance .verdict-label, .advance .verdict-band, .advance .verdict-score { color: var(--advance); }
   .watch .verdict-label,   .watch .verdict-band,   .watch .verdict-score   { color: var(--watch); }
+  .verify .verdict-label,  .verify .verdict-band,  .verify .verdict-score  { color: var(--verify); }
   .pass .verdict-label,    .pass .verdict-band,    .pass .verdict-score    { color: var(--pass); }
   .knockout .verdict-label,.knockout .verdict-band,.knockout .verdict-score { color: var(--ko); }
 
@@ -615,27 +618,27 @@ const PIPELINE = [
   // ── PASS ───────────────────────────────────────────────────────────────────
   { id: 'P04', scanNum: 1, scanDate: '2026-06-16',
     sourceUrl: 'https://www.parksandplaces.com/colorado-rv-park-cabins-sale-36-unit-turnkey-business-for-sale/',
-    group: 'Pass', name: 'Southern Colorado RV Park & Cabins', type: "RV Park / Campground",
+    group: 'VERIFY', name: 'Southern Colorado RV Park & Cabins', type: "RV Park / Campground",
     location: 'Antonito, Conejos County, CO', price: '$875,000', units: '36 sites + cabins',
-    score: 55, band: 'pass',
+    score: 55, band: 'verify',
     scores: [1, 4, 3, 4, 4, 3, 3, 3, 2],
     // financial=1: no revenue published | financeability=4: RV active-op, SBA eligible
     // dealterms=3: SF unconfirmed | operating=4: turnkey, manager + owner residences
     // condition=4: turnkey described | location=3: mountain CO, rural/seasonal
     // regulatory=3: operating RV park | resale=3: RV parks have decent pool | seasonality=2: high-altitude CO winter
-    note: 'Year-round, turnkey. No revenue disclosed. SF unconfirmed. Re-scored 64→55 with locked weights.' },
+    note: 'VERIFY — strong non-financial profile (year-round, turnkey, 36 sites). No revenue disclosed. One call to Parks & Places for revenue ballpark (requires signed CA). If $250K+ gross → re-score, likely Watch.' },
 
   { id: 'P05', scanNum: 2, scanDate: '2026-06-16',
     sourceUrl: 'https://www.bizbuysell.com/Business-Opportunity/inn-at-harbour-village/1982056/',
-    group: 'Pass', name: 'Inn at Harbour Village', type: "B&B / Inn",
+    group: 'VERIFY', name: 'Inn at Harbour Village', type: "B&B / Inn",
     location: 'Ilwaco, Pacific County, WA', price: 'Unknown', units: '11 rooms + event venue',
-    score: 57, band: 'pass',
+    score: 57, band: 'verify',
     scores: [1, 3, 2, 3, 4, 4, 3, 4, 2],
     // financial=1: no revenue or price verified | financeability=3: inn+event = some SBA complexity
     // dealterms=2: unknown | operating=3: inn + event needs coordination | condition=4: new roof, furnished
     // location=4: Long Beach peninsula coastal corridor | regulatory=3: assumed permitted
     // resale=4: inn+event dual use | seasonality=2: WA coast heavy winter seasonality
-    note: 'Price not verified (JS-blocked). Inn + event venue dual income. Revisit if price + SF confirmed.' },
+    note: 'VERIFY — 11 rooms + event venue is a strong income format. Price unknown (JS-blocked). One call to get price + SF + revenue ballpark. If price ≤$1M + SF confirmed → likely Watch.' },
 
   { id: 'P06', scanNum: 1, scanDate: '2026-06-16',
     sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10063',
@@ -693,7 +696,6 @@ const PIPELINE = [
     location: 'Cochise, Cochise County, AZ', price: '$850,000', units: '8 rooms + apartments + event hall',
     score: 46, band: 'dead',
     scores: [0, 2, 2, 2, 4, 1, 3, 3, 1],
-    fin: { grossRev: 25000 },
     note: '$25K revenue — too low to finance. Hobby operation. AZ excluded from regions.' },
 
   { id: 'P12', scanNum: 2, scanDate: '2026-06-16',
@@ -757,16 +759,16 @@ const PIPELINE = [
 
   { id: 'P18', scanNum: 4, scanDate: '2026-06-18',
     sourceUrl: 'https://www.innshopper.com/California.aspx',
-    group: 'Pass', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
+    group: 'VERIFY', name: 'Meadow Creek Ranch Inn', type: "B&B / Inn",
     location: 'Mariposa, Mariposa County, CA', price: '$899,000', units: 'Unknown (ranch inn)',
-    score: 49, band: 'pass',
+    score: 49, band: 'verify',
     scores: [1, 4, 2, 3, 3, 4, 2, 3, 2],
     // financial=1: unverified | financeability=4: ranch inn, SBA-eligible
     // dealterms=2: SF unknown | operating=3: ranch format, moderate complexity
     // condition=3: unknown, actively listed | location=4: near Yosemite NP — premium ADR potential
     // regulatory=2: CA fire zone regulations, permit complexity | resale=3: near Yosemite = good buyer pool
     // seasonality=2: 2022 Oak Fire severely burned Mariposa area — wildfire/insurance risk ACUTE
-    note: 'Best location of new batch — near Yosemite. ⚠️ Wildfire insurance check MANDATORY before contact (2022 Oak Fire). Room count unknown — if ≥8 rooms + insurable, revisit for Watch.' },
+    note: 'VERIFY — near Yosemite = premium ADR potential. ⚠️ Wildfire insurance check MANDATORY (2022 Oak Fire). Revenue + room count unknown — one call to get both. If ≥8 rooms + insurable + revenue clears floor → re-score, likely Watch.' },
 
   { id: 'P19', scanNum: 4, scanDate: '2026-06-18',
     sourceUrl: 'https://www.innshopper.com/Colorado.aspx',
@@ -783,21 +785,47 @@ const PIPELINE = [
 
   { id: 'P20', scanNum: 4, scanDate: '2026-06-18',
     sourceUrl: 'https://www.innshopper.com/Colorado.aspx',
-    group: 'Pass', name: 'St James Hotel', type: "B&B / Inn",
+    group: 'VERIFY', name: 'St James Hotel', type: "B&B / Inn",
     location: 'Georgetown, Clear Creek County, CO', price: '$1,200,000', units: 'Unknown (all suites)',
-    score: 51, band: 'pass',
+    score: 51, band: 'verify',
     scores: [1, 4, 2, 3, 3, 4, 3, 3, 2],
     // financial=1: unverified | financeability=4: established hotel, SBA-eligible
     // dealterms=2: $1.2M at edge of capital, SF unknown | operating=3: hotel, manageable
     // condition=3: 1875 building, unknown recent capex | location=4: Georgetown — I-70, ski proximity, historic district
     // regulatory=3: historic district may restrict changes | resale=3: CO mountain town, good pool
     // seasonality=2: 1875 capex unknown; I-70 corridor year-round but older building risk
-    note: '⚑ At $1.2M flag threshold. Georgetown = strong destination (I-70, ski, National Historic District). 1875 building = capex uncertainty. Pass until SF confirmed + revenue verified.' },
+    note: 'VERIFY — Georgetown is I-70/ski corridor, historic district draw. ⚑ $1.2M at top of budget — SF + revenue call needed. If SF confirmed + revenue ≥$300K gross → re-score, Watch range.' },
+
+  { id: 'P21', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://parksandplaces.com/listing/imperial-river-company/',
+    group: 'VERIFY', name: 'Imperial River Company', type: "Campground / Glamping",
+    location: 'Maupin, Wasco County, OR', price: '$950,000', units: 'Glamping + rafting operation',
+    score: 46, band: 'verify',
+    scores: [1, 3, 3, 3, 3, 4, 3, 3, 3],
+    // financial=1: unverified/undisclosed | financeability=3: glamping+rafting, SBA active-op but multi-use complexity
+    // dealterms=3: price workable, SF unknown | operating=3: rafting adds complexity but also differentiates
+    // condition=3: unknown | location=4: Deschutes River, nationally recognized whitewater corridor
+    // regulatory=3: OR river operation permits assumed but need verification | resale=3: niche but waterfront
+    // seasonality=3: OR river = spring/summer heavy, some fall shoulder
+    note: 'VERIFY — Deschutes River is a premium whitewater destination. Rafting + glamping dual income is strong format. Revenue unknown — one call to get gross. If $250K+ → likely Watch. (Region unlocked Session 12: Deschutes OR now in scope.)' },
+
+  { id: 'P22', scanNum: 4, scanDate: '2026-06-18',
+    sourceUrl: 'https://parksandplaces.com/listing/brazos-lodge/',
+    group: 'VERIFY', name: 'Brazos Lodge', type: "Lodge / Cabin Rentals",
+    location: 'Chama, Rio Arriba County, NM', price: '$875,000', units: 'Lodge + cabins',
+    score: 45, band: 'verify',
+    scores: [1, 3, 3, 3, 3, 4, 3, 3, 2],
+    // financial=1: unverified/undisclosed | financeability=3: lodge+cabins, SBA active-op
+    // dealterms=3: price workable, SF unknown | operating=3: lodge manageable
+    // condition=3: unknown | location=4: Chama northern NM mountain — Cumbres & Toltec Railroad, high desert mountain
+    // regulatory=3: NM rural lodge, assumed permitted | resale=3: niche mountain lodge
+    // seasonality=2: NM mountain = summer-heavy, cold winters, shorter shoulder
+    note: 'VERIFY — Chama is northern NM mountain, home of Cumbres & Toltec Scenic Railroad (major tourist draw). Lodge + cabin format is right income structure. Revenue unknown — one call. (Region unlocked Session 12: northern NM mountain now in scope.)' },
 ];
 
 function buildPipelineSelect() {
   const sel = document.getElementById('pipelineSelect');
-  const groups = ['Watch', 'Pass', 'Dead / No-Go'];
+  const groups = ['Watch', 'VERIFY', 'Pass', 'Dead / No-Go'];
   groups.forEach(g => {
     const props = PIPELINE.filter(p => p.group === g);
     if (!props.length) return;
@@ -837,7 +865,7 @@ function loadPipelineProperty(idx) {
   }
 
   // Show badge + scan info + listing link + note
-  const bandLabels = { watch: 'WATCH', pass: 'PASS', dead: 'DEAD', nogo: 'NO-GO', advance: 'ADVANCE' };
+  const bandLabels = { watch: 'WATCH', verify: 'VERIFY', pass: 'PASS', dead: 'DEAD', nogo: 'NO-GO', advance: 'ADVANCE' };
   const scanBadge = p.scanNum ? `<span style="font-size:0.72rem;background:var(--surface2,#2a2a3a);color:var(--muted);padding:2px 7px;border-radius:4px;margin-left:8px;">Scan #${p.scanNum} · ${p.scanDate}</span>` : '';
   const idBadge = p.id ? `<span style="font-size:0.72rem;background:var(--surface2,#2a2a3a);color:var(--muted);padding:2px 7px;border-radius:4px;margin-left:6px;">${p.id}</span>` : '';
   const listingLink = p.sourceUrl
@@ -850,37 +878,6 @@ function loadPipelineProperty(idx) {
      </div>
      <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</div>
      <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${p.note}</div>`;
-
-  // ── Financial Underwriting auto-populate ─────────────────────────────────
-  // Clear stale values from previous property
-  ['finGrossRev','finOpEx','finDebtSvc','finCash','estLoan'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('estResult').style.display = 'none';
-  document.getElementById('estAutofillNote').textContent = '';
-
-  // Auto-fill Purchase Price from listing asking price
-  syncPriceField();
-
-  // Populate any financials known from the listing
-  const finNotes = [];
-  if (p.fin) {
-    if (p.fin.grossRev != null) {
-      document.getElementById('finGrossRev').value = p.fin.grossRev;
-      finNotes.push('gross revenue from listing');
-    }
-    if (p.fin.opEx != null) {
-      document.getElementById('finOpEx').value = p.fin.opEx;
-      finNotes.push('operating expenses from listing');
-    }
-    if (finNotes.length) calcFinancials();
-  }
-
-  // Show auto-fill source note in badge area
-  const autoFillNote = finNotes.length
-    ? `<div style="font-size:0.72rem;color:var(--accent,#7b8cde);margin-top:4px;">📋 Financial Underwriting pre-filled: price + ${finNotes.join(', ')}. Verify before advancing.</div>`
-    : `<div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">📋 Purchase price auto-filled below. Revenue not disclosed on listing — enter manually when available.</div>`;
-  document.getElementById('pipelineBadge').innerHTML += autoFillNote;
 
   // Scroll to scoring section
   setTimeout(() => document.getElementById('categories').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
@@ -994,194 +991,4 @@ function calcDebtService() {
 function calcFinancials() {
   const grossRev = parseFloat(document.getElementById('finGrossRev').value);
   const opEx     = parseFloat(document.getElementById('finOpEx').value);
-  const debtSvc  = parseFloat(document.getElementById('finDebtSvc').value);
-  const price    = parseFloat(document.getElementById('finPrice').value);
-  const cash     = parseFloat(document.getElementById('finCash').value);
-
-  const hasRev  = !isNaN(grossRev);
-  const hasOpEx = !isNaN(opEx);
-  const noi     = (hasRev || hasOpEx) ? (hasRev ? grossRev : 0) - (hasOpEx ? opEx : 0) : null;
-  const dscr    = noi !== null && !isNaN(debtSvc) && debtSvc > 0 ? noi / debtSvc : null;
-  const capRate = noi !== null && !isNaN(price) && price > 0 ? (noi / price) * 100 : null;
-  const cashFlow = noi !== null && !isNaN(debtSvc) ? noi - debtSvc : null;
-  const roi      = cashFlow !== null && !isNaN(cash) && cash > 0 ? (cashFlow / cash) * 100 : null;
-
-  function setMetric(boxId, valId, display, cls) {
-    document.getElementById(valId).textContent = display;
-    document.getElementById(boxId).className = 'metric-box' + (cls ? ' ' + cls : '');
-  }
-
-  if (noi !== null) {
-    const fmt = '$' + Math.abs(Math.round(noi)).toLocaleString() + (noi < 0 ? ' (loss)' : '');
-    setMetric('metNOI', 'metNOIVal', fmt, noi >= 50000 ? 'good' : noi >= 0 ? 'warn' : 'bad');
-  } else { setMetric('metNOI', 'metNOIVal', '—', ''); }
-
-  if (dscr !== null) {
-    setMetric('metDSCR', 'metDSCRVal', dscr.toFixed(2) + 'x', dscr >= 1.25 ? 'good' : dscr >= 1.0 ? 'warn' : 'bad');
-  } else { setMetric('metDSCR', 'metDSCRVal', '—', ''); }
-
-  if (capRate !== null) {
-    setMetric('metCapRate', 'metCapRateVal', capRate.toFixed(1) + '%', capRate >= 8 ? 'good' : capRate >= 6 ? 'warn' : 'bad');
-  } else { setMetric('metCapRate', 'metCapRateVal', '—', ''); }
-
-  if (roi !== null) {
-    setMetric('metROI', 'metROIVal', roi.toFixed(1) + '%', roi >= 10 ? 'good' : roi >= 5 ? 'warn' : 'bad');
-  } else { setMetric('metROI', 'metROIVal', '—', ''); }
-}
-
-function calculate() {
-  const scores = {};
-  let total = 0;
-  CATEGORIES.forEach(cat => {
-    const v = parseInt(document.getElementById('slider_' + cat.id).value);
-    scores[cat.id] = v;
-    total += (v / 5) * cat.weight * 100;
-  });
-  total = Math.round(total * 10) / 10;
-
-  const triggeredKOs = KNOCKOUTS.filter(ko => document.getElementById(ko.id).checked);
-  const hasKO = triggeredKOs.length > 0;
-
-  let band, bandClass, sub;
-  if (hasKO) {
-    band = 'NO-GO (Knock-Out)';
-    bandClass = 'knockout';
-    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
-  } else if (total >= 75) {
-    band = 'ADVANCE';
-    bandClass = 'advance';
-    sub = 'Score ≥ 75 — strong candidate. Proceed to broker contact and due diligence.';
-  } else if (total >= 60) {
-    band = 'WATCH';
-    bandClass = 'watch';
-    sub = 'Score 60–74 — viable with caveats. Monitor, gather more data before advancing.';
-  } else {
-    band = 'PASS';
-    bandClass = 'pass';
-    sub = 'Score < 60 — does not meet threshold. Pass unless conditions materially improve.';
-  }
-
-  const propName = document.getElementById('propName').value.trim() || 'Unnamed Property';
-  document.getElementById('resPropertyName').textContent = propName;
-  document.getElementById('totalScore').textContent = hasKO ? 'KO' : total;
-  document.getElementById('verdictBand').textContent = band;
-  document.getElementById('verdictBox').className = 'verdict-box ' + bandClass;
-  document.getElementById('verdictSub').textContent = sub;
-
-  // KO box
-  const koBox = document.getElementById('koTriggered');
-  if (hasKO) {
-    koBox.style.display = 'block';
-    const koUl = document.getElementById('koTriggeredList');
-    koUl.innerHTML = '';
-    triggeredKOs.forEach(ko => {
-      const li = document.createElement('li');
-      li.textContent = ko.text;
-      koUl.appendChild(li);
-    });
-  } else {
-    koBox.style.display = 'none';
-  }
-
-  // Bar breakdown
-  const barDiv = document.getElementById('barBreakdown');
-  barDiv.innerHTML = '';
-  const sorted = [...CATEGORIES].map(cat => ({
-    cat,
-    v: scores[cat.id],
-    contrib: Math.round((scores[cat.id] / 5) * cat.weight * 100 * 10) / 10
-  }));
-  sorted.forEach(({ cat, v, contrib }) => {
-    const pct = (v / 5) * 100;
-    const barColor = v >= 4 ? 'var(--advance)' : v >= 2 ? 'var(--watch)' : 'var(--pass)';
-    const row = document.createElement('div');
-    row.style.marginBottom = '10px';
-    row.innerHTML = `
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">${Math.round(cat.weight*100)}% wt · ${v}/5 · ${contrib} pts</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-    `;
-    barDiv.appendChild(row);
-  });
-
-  // Strengths & risks
-  const ranked = [...sorted].sort((a, b) => b.v - a.v);
-  const sl = document.getElementById('strengthsList');
-  const rl = document.getElementById('risksList');
-  sl.innerHTML = '';
-  rl.innerHTML = '';
-  ranked.slice(0, 3).forEach(({ cat, v }) => {
-    const li = document.createElement('li');
-    li.textContent = `${cat.name} (${v}/5)`;
-    sl.appendChild(li);
-  });
-  ranked.slice(-3).reverse().forEach(({ cat, v }) => {
-    const li = document.createElement('li');
-    li.textContent = `${cat.name} (${v}/5)`;
-    rl.appendChild(li);
-  });
-
-  // Radar chart
-  const labels = CATEGORIES.map(c => c.name.split(' ').slice(0,2).join(' '));
-  const dataVals = CATEGORIES.map(cat => scores[cat.id]);
-
-  if (radarChart) radarChart.destroy();
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: propName,
-        data: dataVals,
-        backgroundColor: 'rgba(217,119,6,0.15)',
-        borderColor: 'rgba(217,119,6,0.8)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(217,119,6,0.9)'
-      }]
-    },
-    options: {
-      scales: {
-        r: {
-          min: 0, max: 5,
-          ticks: { stepSize: 1, font: { size: 10 } },
-          pointLabels: { font: { size: 11 } }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function resetAll() {
-  CATEGORIES.forEach(cat => {
-    const slider = document.getElementById('slider_' + cat.id);
-    slider.value = 0;
-    updateSlider(cat.id, 0);
-  });
-  KNOCKOUTS.forEach(ko => {
-    document.getElementById(ko.id).checked = false;
-    updateKO(ko.id);
-  });
-  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('propType').value = '';
-  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('estTerm').value = '';
-  document.getElementById('estResult').style.display = 'none';
-  calcFinancials();
-  document.getElementById('results').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-buildUI();
-buildPipelineSelect();
-</script>
-</body>
-</html>
+  const debtSvc  = parseFloat(doc
