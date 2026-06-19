@@ -693,6 +693,7 @@ const PIPELINE = [
     location: 'Cochise, Cochise County, AZ', price: '$850,000', units: '8 rooms + apartments + event hall',
     score: 46, band: 'dead',
     scores: [0, 2, 2, 2, 4, 1, 3, 3, 1],
+    fin: { grossRev: 25000 },
     note: '$25K revenue — too low to finance. Hobby operation. AZ excluded from regions.' },
 
   { id: 'P12', scanNum: 2, scanDate: '2026-06-16',
@@ -849,6 +850,37 @@ function loadPipelineProperty(idx) {
      </div>
      <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</div>
      <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${p.note}</div>`;
+
+  // ── Financial Underwriting auto-populate ─────────────────────────────────
+  // Clear stale values from previous property
+  ['finGrossRev','finOpEx','finDebtSvc','finCash','estLoan'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('estResult').style.display = 'none';
+  document.getElementById('estAutofillNote').textContent = '';
+
+  // Auto-fill Purchase Price from listing asking price
+  syncPriceField();
+
+  // Populate any financials known from the listing
+  const finNotes = [];
+  if (p.fin) {
+    if (p.fin.grossRev != null) {
+      document.getElementById('finGrossRev').value = p.fin.grossRev;
+      finNotes.push('gross revenue from listing');
+    }
+    if (p.fin.opEx != null) {
+      document.getElementById('finOpEx').value = p.fin.opEx;
+      finNotes.push('operating expenses from listing');
+    }
+    if (finNotes.length) calcFinancials();
+  }
+
+  // Show auto-fill source note in badge area
+  const autoFillNote = finNotes.length
+    ? `<div style="font-size:0.72rem;color:var(--accent,#7b8cde);margin-top:4px;">📋 Financial Underwriting pre-filled: price + ${finNotes.join(', ')}. Verify before advancing.</div>`
+    : `<div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">📋 Purchase price auto-filled below. Revenue not disclosed on listing — enter manually when available.</div>`;
+  document.getElementById('pipelineBadge').innerHTML += autoFillNote;
 
   // Scroll to scoring section
   setTimeout(() => document.getElementById('categories').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
