@@ -879,6 +879,14 @@ function loadPipelineProperty(idx) {
      <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;font-style:italic;">Session scores auto-loaded — adjust sliders as new info arrives, then re-score.</div>
      <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">${p.note}</div>`;
 
+  // Auto-fill Financial Underwriting fields
+  const priceNum = p.price ? parseInt(p.price.replace(/[^0-9]/g, '')) : NaN;
+  if (!isNaN(priceNum)) {
+    document.getElementById('finPrice').value = priceNum;
+    document.getElementById('finCash').value = 200000;
+  }
+  calcFinancials();
+
   // Scroll to scoring section
   setTimeout(() => document.getElementById('categories').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
