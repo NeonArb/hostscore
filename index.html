@@ -1097,10 +1097,10 @@ function calculate() {
     const barColor = v >= 4 ? 'var(--advance)' : v >= 2 ? 'var(--watch)' : 'var(--pass)';
     const row = document.createElement('div');
     row.style.marginBottom = '10px';
-    row.innerHTML = \`
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">\${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">\${Math.round(cat.weight*100)}% wt · \${v}/5 · \${contrib} pts</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:\${pct}%;background:\${barColor}"></div></div>
-    \`;
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">${Math.round(cat.weight*100)}% wt · ${v}/5 · ${contrib} pts</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    `;
     barDiv.appendChild(row);
   });
 
@@ -1112,12 +1112,12 @@ function calculate() {
   rl.innerHTML = '';
   ranked.slice(0, 3).forEach(({ cat, v }) => {
     const li = document.createElement('li');
-    li.textContent = \`\${cat.name} (\${v}/5)\`;
+    li.textContent = `${cat.name} (${v}/5)`;
     sl.appendChild(li);
   });
   ranked.slice(-3).reverse().forEach(({ cat, v }) => {
     const li = document.createElement('li');
-    li.textContent = \`\${cat.name} (\${v}/5)\`;
+    li.textContent = `${cat.name} (${v}/5)`;
     rl.appendChild(li);
   });
 
