@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PassiveScore — Passive Income Business Scorecard</title>
+<style>
+/* ── Reset & base ──────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50:  #f8fafc;
+  --blue-600:  #2563eb;
+  --blue-500:  #3b82f6;
+  --blue-100:  #dbeafe;
+  --blue-50:   #eff6ff;
+  --emerald-600: #059669;
+  --emerald-100: #d1fae5;
+  --amber-600: #d97706;
+  --amber-100: #fef3c7;
+  --red-600:   #dc2626;
+  --red-100:   #fee2e2;
+  --purple-600: #7c3aed;
+  --purple-100: #ede9fe;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+}
+html { font-size: 15px; }
+body { font-family: var(--font); background: var(--slate-50); color: var(--slate-900); line-height: 1.6; min-height: 100vh; }
+
+/* ── Header ──────────────────────────────────── */
+.site-header {
+  background: var(--slate-900);
+  color: #fff;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--slate-800);
+}
+.site-header .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; color: #fff; text-decoration: none; }
+.site-header .logo span { color: var(--blue-500); }
+.header-nav { display: flex; gap: 4px; }
+.nav-btn {
+  font-size: 13px;
+  font-family: var(--font);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--slate-400);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--slate-800); color: #fff; }
+.nav-btn.active { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
+
+/* ── Layout ──────────────────────────────────── */
+.page { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── Section card ────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--slate-100);
+}
+.card-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.card-icon.blue   { background: var(--blue-100); }
+.card-icon.green  { background: var(--emerald-100); }
+.card-icon.amber  { background: var(--amber-100); }
+.card-icon.purple { background: var(--purple-100); }
+.card-icon.red    { background: var(--red-100); }
+.card-title { font-size: 15px; font-weight: 600; }
+.card-subtitle { font-size: 12px; color: var(--slate-500); margin-top: 1px; }
+
+/* ── Hero ────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: var(--blue-600);
+  opacity: 0.08;
+  border-radius: 50%;
+}
+.hero h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.hero p { font-size: 13px; color: var(--slate-400); max-width: 520px; line-height: 1.6; }
+.hero-badges { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+.hero-badge {
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--slate-300);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── Business type selector ──────────────────── */
+.type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.type-btn {
+  border: 1.5px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: var(--font);
+}
+.type-btn:hover { border-color: var(--blue-500); background: var(--blue-50); }
+.type-btn.selected { border-color: var(--blue-600); background: var(--blue-50); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.type-btn .type-icon { font-size: 22px; margin-bottom: 6px; }
+.type-btn .type-name { font-size: 13px; font-weight: 600; color: var(--slate-800); }
+.type-btn .type-desc { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+.type-btn.selected .type-name { color: var(--blue-600); }
+
+/* ── Deal pick cards ─────────────────────────── */
+.deal-pick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.deal-pick:hover { border-color: var(--blue-500); background: var(--blue-50); }
+.deal-pick .dp-id { font-size: 12px; font-weight: 700; color: var(--slate-500); min-width: 42px; }
+.deal-pick .dp-name { font-size: 13px; font-weight: 600; color: var(--slate-800); flex: 1; }
+.deal-pick .dp-loc { font-size: 11px; color: var(--slate-400); }
+.deal-pick .dp-score { font-size: 13px; font-weight: 700; }
+.deal-pick .dp-stage { font-size: 11px; }
+.deal-pick .dp-sde { font-size: 12px; color: var(--slate-500); }
+
+/* ── Quick scan ──────────────────────────────── */
+.scan-row { display: flex; gap: 8px; }
+.scan-input {
+  flex: 1;
+  height: 40px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: var(--font);
+  color: var(--slate-900);
+  background: var(--slate-50);
+  transition: border-color 0.15s;
+}
+.scan-input:focus { outline: none; border-color: var(--blue-500); background: #fff; }
+.scan-btn {
+  height: 40px;
+  padding: 0 16px;
+  background: var(--blue-600);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.scan-btn:hover { background: var(--blue-500); }
+
+/* ── Form fields ─────────────────────────────── */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
+.field-grid.solo { grid-template-columns: 1fr; }
+@media (max-width: 600px) { .field-grid, .field-grid.thirds { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.field input, .field select {
+  height: 40px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--slate-900);
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.field-hint { font-size: 11px; color: var(--slate-400); }
+
+/* ── Metric cards ────────────────────────────── */
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 1rem; }
+@media (max-width: 600px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+.metric-card {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  text-align: center;
+}
+.metric-card .m-label { font-size: 10px; font-weight: 600; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.metric-card .m-value { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--slate-800); }
+.metric-card .m-target { font-size: 10px; color: var(--slate-400); margin-top: 2px; }
+
+/* ── Tooltip system ─────────────────────────────────────────────── */
+[data-tip] { position: relative; cursor: help; border-bottom: 1px dashed var(--slate-400); display: inline-block; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: #1e293b; color: #f1f5f9; font-size: 12px; font-weight: 400;
+  line-height: 1.5; padding: 8px 12px; border-radius: 6px; width: 260px;
+  white-space: normal; text-align: left; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s; z-index: 999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+[data-tip]::before {
+  content: ''; position: absolute; bottom: calc(100% + 1px); left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: #1e293b;
+  opacity: 0; transition: opacity 0.15s; pointer-events: none; z-index: 999;
+}
+[data-tip]:hover::after, [data-tip]:hover::before { opacity: 1; }
+.metric-card.good  { background: var(--emerald-100); border-color: #6ee7b7; }
+.metric-card.good  .m-value { color: var(--emerald-600); }
+.metric-card.warn  { background: var(--amber-100); border-color: #fcd34d; }
+.metric-card.warn  .m-value { color: var(--amber-600); }
+.metric-card.bad   { background: var(--red-100); border-color: #fca5a5; }
+.metric-card.bad   .m-value { color: var(--red-600); }
+
+/* ── Stress test table ───────────────────────── */
+.stress-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 1rem; }
+.stress-table th { font-size: 11px; font-weight: 600; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 12px; text-align: left; background: var(--slate-50); border-bottom: 1px solid var(--slate-200); }
+.stress-table td { padding: 10px 12px; border-bottom: 1px solid var(--slate-100); color: var(--slate-700); }
+.stress-table tr:last-child td { border-bottom: none; }
+.stress-table .pass { color: var(--emerald-600); font-weight: 600; }
+.stress-table .warn { color: var(--amber-600); font-weight: 600; }
+.stress-table .fail { color: var(--red-600); font-weight: 600; }
+.stress-badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+.stress-badge.primary { background: var(--blue-100); color: var(--blue-600); }
+
+/* ── Debt service estimator ──────────────────── */
+.estimator-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.est-result {
+  background: var(--slate-900);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.est-result .est-label { font-size: 12px; color: var(--slate-400); }
+.est-result .est-value { font-size: 20px; font-weight: 700; color: #fff; }
+.est-result .est-sub   { font-size: 11px; color: var(--slate-500); margin-top: 1px; }
+
+/* ── Scoring sliders ─────────────────────────── */
+.criteria-list { display: flex; flex-direction: column; gap: 0; }
+.criterion {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--slate-100);
+}
+.criterion:last-child { border-bottom: none; }
+.criterion-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 12px; }
+.criterion-name { font-size: 14px; font-weight: 600; color: var(--slate-800); }
+.criterion-guide { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+.criterion-weight {
+  font-size: 11px; font-weight: 700;
+  color: var(--blue-600);
+  background: var(--blue-50);
+  border: 1px solid var(--blue-100);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.slider-wrap { flex: 1; position: relative; }
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  background: var(--slate-200);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  background: var(--blue-600);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+.slider-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+.slider-labels span { font-size: 10px; color: var(--slate-400); }
+.slider-score {
+  font-size: 18px; font-weight: 700;
+  color: var(--slate-800);
+  min-width: 28px;
+  text-align: center;
+}
+.slider-desc { font-size: 11px; color: var(--slate-500); margin-top: 5px; font-style: italic; }
+
+/* ── Score gauge ─────────────────────────────── */
+.gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 0 0.5rem;
+}
+.gauge-svg { flex-shrink: 0; }
+.gauge-info { flex: 1; }
+.gauge-score { font-size: 52px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.gauge-label { font-size: 16px; font-weight: 600; margin-top: 4px; }
+.gauge-sublabel { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+
+/* ── KO conditions ───────────────────────────── */
+.ko-list { display: flex; flex-direction: column; gap: 8px; }
+.ko-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fff;
+}
+.ko-item:hover { border-color: var(--red-600); background: var(--red-100); }
+.ko-item.checked { border-color: var(--red-600); background: var(--red-100); }
+.ko-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--red-600); flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+.ko-label { font-size: 13px; color: var(--slate-700); line-height: 1.5; }
+.ko-item.checked .ko-label { color: var(--red-600); font-weight: 500; }
+
+/* ── Action buttons ──────────────────────────── */
+.action-row { display: flex; gap: 10px; margin-top: 1.5rem; }
+.btn-primary {
+  flex: 1;
+  height: 48px;
+  background: var(--blue-600);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: -0.01em;
+}
+.btn-primary:hover { background: var(--blue-500); }
+.btn-primary:active { transform: scale(0.99); }
+.btn-secondary {
+  height: 48px;
+  padding: 0 20px;
+  background: transparent;
+  color: var(--slate-600);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: var(--slate-100); border-color: var(--slate-300); }
+
+/* ── Results panel ───────────────────────────── */
+#results { display: none; }
+#results.visible { display: block; }
+.verdict-banner {
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.verdict-banner.advance { background: var(--emerald-100); border: 1px solid #6ee7b7; }
+.verdict-banner.watch   { background: var(--amber-100);   border: 1px solid #fcd34d; }
+.verdict-banner.pass    { background: var(--red-100);     border: 1px solid #fca5a5; }
+.verdict-banner.ko      { background: var(--red-100);     border: 2px solid var(--red-600); }
+.verdict-score { font-size: 48px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.verdict-banner.advance .verdict-score { color: var(--emerald-600); }
+.verdict-banner.watch   .verdict-score { color: var(--amber-600); }
+.verdict-banner.pass    .verdict-score, .verdict-banner.ko .verdict-score { color: var(--red-600); }
+.verdict-label { font-size: 18px; font-weight: 700; }
+.verdict-sub   { font-size: 13px; color: var(--slate-600); margin-top: 4px; }
+.breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--slate-50); border-radius: 8px; }
+.breakdown-name { font-size: 13px; color: var(--slate-700); }
+.breakdown-pts  { font-size: 13px; font-weight: 600; color: var(--slate-800); }
+.strengths-risks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sr-box { border-radius: var(--radius); padding: 1rem; }
+.sr-box.green { background: var(--emerald-100); }
+.sr-box.red   { background: var(--red-100); }
+.sr-box h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.sr-box.green h4 { color: var(--emerald-600); }
+.sr-box.red   h4 { color: var(--red-600); }
+.sr-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.sr-box li { font-size: 12px; color: var(--slate-700); }
+
+/* ── Add-to-pipeline ─────────────────────────── */
+.add-pipeline-btn {
+  width: 100%;
+  height: 44px;
+  background: var(--slate-900);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.15s;
+}
+.add-pipeline-btn:hover { background: var(--slate-800); }
+
+/* ── Pipeline view ───────────────────────────── */
+.pipeline-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+.stat-card { background: #fff; border: 1px solid var(--slate-200); border-radius: var(--radius); padding: 14px; text-align: center; }
+.stat-num { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.stat-num.green { color: var(--emerald-600); }
+.stat-num.amber { color: var(--amber-600); }
+.stat-num.red   { color: var(--red-600); }
+.stat-label { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+.pipeline-table { width: 100%; border-collapse: collapse; }
+.pipeline-table th {
+  font-size: 11px; font-weight: 600; color: var(--slate-500);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 10px 14px;
+  text-align: left;
+  background: var(--slate-50);
+  border-bottom: 1px solid var(--slate-200);
+  border-top: 1px solid var(--slate-200);
+}
+.pipeline-table th:first-child { border-radius: var(--radius) 0 0 0; border-left: 1px solid var(--slate-200); }
+.pipeline-table th:last-child { border-radius: 0 var(--radius) 0 0; border-right: 1px solid var(--slate-200); }
+.pipeline-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--slate-100);
+  font-size: 13px;
+  color: var(--slate-700);
+  vertical-align: middle;
+}
+.pipeline-table tbody tr { cursor: pointer; transition: background 0.1s; }
+.pipeline-table tbody tr:hover { background: var(--blue-50); }
+.pipeline-table tbody tr:last-child td { border-bottom: none; }
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+}
+.score-pill.high { background: var(--emerald-100); color: var(--emerald-600); }
+.score-pill.mid  { background: var(--amber-100);   color: var(--amber-600); }
+.score-pill.low  { background: var(--red-100);      color: var(--red-600); }
+.stage-badge {
+  font-size: 11px; font-weight: 500;
+  padding: 3px 8px; border-radius: 20px;
+  display: inline-block;
+}
+.stage-badge.advance { background: var(--emerald-100); color: var(--emerald-600); }
+.stage-badge.blocked { background: var(--red-100); color: var(--red-600); }
+.stage-badge.stagger { background: var(--amber-100); color: var(--amber-600); }
+.stage-badge.fallback { background: var(--slate-100); color: var(--slate-600); }
+.type-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.type-dot.lm { background: var(--blue-600); }
+.type-dot.ss { background: var(--emerald-600); }
+.type-dot.ve { background: var(--amber-600); }
+.dscr-bar-wrap { display: flex; align-items: center; gap: 6px; }
+.dscr-bar-bg { width: 60px; height: 4px; background: var(--slate-200); border-radius: 2px; overflow: hidden; }
+.dscr-bar-fill { height: 100%; border-radius: 2px; }
+.load-deal-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--slate-200);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--blue-600);
+  cursor: pointer;
+  font-family: var(--font);
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.load-deal-btn:hover { background: var(--blue-50); border-color: var(--blue-300); }
+
+/* ── Alert / warning ─────────────────────────── */
+.alert {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--slate-700);
+  line-height: 1.5;
+}
+.alert.warn { background: var(--amber-100); border: 1px solid #fcd34d; }
+.alert.info { background: var(--blue-50); border: 1px solid var(--blue-100); }
+.alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── KO banner ───────────────────────────────── */
+#ko-banner {
+  display: none;
+  background: var(--red-100);
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--red-600);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+#ko-banner.visible { display: flex; gap: 8px; align-items: center; }
+
+/* ── Scan modal ──────────────────────────────── */
+.scan-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+.scan-result-box {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--slate-600);
+  margin-top: 10px;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--slate-400);
+  padding: 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--slate-200);
+}
+
+/* ── Pipeline filter buttons ─────────────────── */
+.pipeline-filter-btn {
+  font-size: 12px; font-weight: 500; font-family: var(--font);
+  padding: 5px 12px; border-radius: 20px;
+  border: 1px solid var(--slate-200);
+  background: #fff; color: var(--slate-600);
+  cursor: pointer; transition: all 0.15s;
+}
+.pipeline-filter-btn:hover { border-color: var(--slate-400); color: var(--slate-800); }
+.pipeline-filter-btn.active { background: var(--slate-900); color: #fff; border-color: var(--slate-900); }
+
+/* ── Print ───────────────────────────────────── */
+@media print {
+  .site-header, .nav-btn, .action-row, .scan-row, .add-pipeline-btn { display: none !important; }
+  body { background: #fff; }
+  .card { box-shadow: none; border-color: #ddd; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <a class="logo" href="https://gethostscore.com"><span>Host</span>Score</a>
+  <nav class="header-nav">
+    <button class="nav-btn" onclick="window.location='https://gethostscore.com'">🏨 HostScore</button>
+    <button class="nav-btn active" onclick="showView('score')">📊 PassiveScore</button>
+    <button class="nav-btn" onclick="showView('pipeline')">📋 Pipeline</button>
+  </nav>
+</header>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!--  SCORECARD VIEW                               -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="view active" id="view-score">
+
+    <!-- Hero -->
+    <div class="hero" style="margin-bottom:1rem;">
+      <h1>PassiveScore</h1>
+      <p>Score, underwrite, and track passive income business acquisitions — laundromats, self-storage, and vending routes. Built on the same conservative underwriting bar as HostScore.</p>
+      <div class="hero-badges">
+        <span class="hero-badge">DSCR ≥ 1.25x required</span>
+        <span class="hero-badge">70% stress + 1.5% rate shock</span>
+        <span class="hero-badge">Seller carry near-mandatory</span>
+        <span class="hero-badge">Revenue gate before diligence</span>
+      </div>
+    </div>
+
+    <!-- Business type -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon blue">🏢</div>
+        <div>
+          <div class="card-title">Business Type</div>
+          <div class="card-subtitle">Select the type of passive income business you're evaluating</div>
+        </div>
+      </div>
+      <div class="type-selector">
+        <button class="type-btn" onclick="selectType('laundromat', this)">
+          <div class="type-icon">🫧</div>
+          <div class="type-name">Laundromat</div>
+          <div class="type-desc">Coin / card op · absentee</div>
+        </button>
+        <button class="type-btn" onclick="selectType('storage', this)">
+          <div class="type-icon">🏭</div>
+          <div class="type-name">Self-Storage</div>
+          <div class="type-desc">Climate / non-climate · kiosk</div>
+        </button>
+        <button class="type-btn" onclick="selectType('vending', this)">
+          <div class="type-icon">🎰</div>
+          <div class="type-name">Vending Route</div>
+          <div class="type-desc">All-cash · Scenario C stagger</div>
+        </button>
+      </div>
+
+      <!-- Pipeline candidates for selected type -->
+      <div id="type-deals" style="display:none; margin-top:1rem;">
+        <div style="font-size:12px;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Pipeline candidates — click to load</div>
+        <div id="type-deal-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div style="margin-top:10px;">
+          <button onclick="clearTypeAndStartFresh()" style="font-size:12px;color:var(--blue-600);background:none;border:none;cursor:pointer;font-family:var(--font);padding:0;">+ Score a new business instead →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Scan -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon purple">🔍</div>
+        <div>
+          <div class="card-title">Quick Scan</div>
+          <div class="card-subtitle">Paste key listing details below — auto-fills the scorecard and adds to pipeline</div>
+        </div>
+      </div>
+      <div class="scan-fields">
+        <div class="field">
+          <label>Business Name / ID</label>
+          <input id="scan-name" type="text" placeholder="e.g. LM-10 Upper East Side Laundromat">
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input id="scan-loc" type="text" placeholder="e.g. NYC, NY">
+        </div>
+        <div class="field">
+          <label>Asking Price ($)</label>
+          <input id="scan-price" type="number" placeholder="e.g. 900000">
+        </div>
+        <div class="field">
+          <label><span data-tip="Seller's Discretionary Earnings — the business's pre-tax profit plus owner salary, depreciation, amortization, interest, and one-time expenses. Represents total cash benefit to an owner-operator. Must be verified with tax returns + bank statements — seller's stated figure is not evidence.">Stated SDE / Cash Flow ($)</span></label>
+          <input id="scan-sde" type="number" placeholder="e.g. 202512">
+        </div>
+        <div class="field">
+          <label><span data-tip="The amount of cash you put in at closing — typically 10–30% of the asking price for SBA deals. Your Cash-on-Cash return is calculated on this number, so a lower down payment improves CoC but increases debt service.">Down Payment ($)</span></label>
+          <input id="scan-down" type="number" placeholder="e.g. 350000">
+        </div>
+        <div class="field">
+          <label><span data-tip="Seller Carry (aka Seller Financing) — the seller loans you part of the purchase price instead of requiring full payment at close. Reduces the bank loan needed, lowers debt service, and signals the seller's confidence in the business's continued performance. Confirmed carry is a strong positive signal.">Seller Carry?</span></label>
+          <select id="scan-carry">
+            <option value="">Select…</option>
+            <option value="confirmed">✅ Confirmed</option>
+            <option value="unconfirmed">⚠️ Unconfirmed</option>
+            <option value="no">❌ No carry</option>
+          </select>
+        </div>
+      </div>
+      <div id="scan-preview" class="scan-result-box" style="display:none;"></div>
+      <div class="action-row" style="margin-top:12px;">
+        <button class="btn-primary" onclick="runScan()" style="font-size:14px;height:42px;">⚡ Scan & Auto-Fill Scorecard</button>
+        <button class="btn-secondary" style="height:42px;font-size:13px;" onclick="clearScan()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Business Info -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon blue">📝</div>
+        <div>
+          <div class="card-title">Business Info</div>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>Business Name</label>
+          <input id="biz-name" type="text" placeholder="e.g. Upper East Side Laundromat">
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input id="biz-loc" type="text" placeholder="e.g. NYC, NY">
+        </div>
+        <div class="field">
+          <label>Asking Price ($)</label>
+          <input id="biz-price" type="number" placeholder="e.g. 900000" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label>Source / Listing ID &nbsp;<a id="biz-source-link" href="#" target="_blank" rel="noopener" style="display:none;font-size:11px;color:var(--blue-600);text-decoration:none;font-weight:500;border-bottom:1px solid var(--blue-200);">↗ Open listing</a></label>
+          <input id="biz-source" type="text" placeholder="e.g. BizBuySell ID-70034">
+        </div>
+        <div class="field">
+          <label>Scored By</label>
+          <input id="biz-scorer" type="text" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input id="biz-date" type="date">
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial Underwriting -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon green">💰</div>
+        <div>
+          <div class="card-title">Financial Underwriting</div>
+          <div class="card-subtitle">Enter verified financials. Values update live. Leave blank if unavailable.</div>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label><span data-tip="Total top-line revenue the business collects annually before any expenses. Used to calculate SDE Margin. For laundromats this is typically card + coin wash + dryer revenue. Verify against bank deposits — not the seller's estimate.">Gross Revenue — annual ($)</span></label>
+          <input id="f-revenue" type="number" placeholder="e.g. 676000" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label><span data-tip="Seller's Discretionary Earnings — net profit plus owner salary, depreciation, amortization, interest, and one-time add-backs. This is the key income figure. Must be verified with 2 years of tax returns + bank/processor statements. Seller's stated SDE is not evidence.">Stated SDE / Cash Flow ($)</span></label>
+          <input id="f-sde" type="number" placeholder="e.g. 202512" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label><span data-tip="Total annual loan payments — principal + interest on all acquisition debt (bank loan + any seller note payments). Used to calculate DSCR. Use the Debt Service Estimator below to calculate this figure.">Annual Debt Service ($)</span></label>
+          <input id="f-ds" type="number" placeholder="e.g. 59436" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label><span data-tip="The agreed purchase price for the business. Used to calculate the SDE multiple (Price ÷ SDE). Most passive small businesses trade at 2–4× SDE. Paying above 3.5× for an unverified seller SDE is a red flag.">Purchase Price ($)</span></label>
+          <input id="f-price" type="number" placeholder="e.g. 900000" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label>Cash Invested / Down Payment ($)
+            <span style="font-weight:400; color:var(--slate-400); margin-left:4px;">
+              Auto-fill:
+              <a href="#" onclick="setDownPct(0.10);return false;" style="color:var(--blue-600);text-decoration:none;">10%</a> ·
+              <a href="#" onclick="setDownPct(0.20);return false;" style="color:var(--blue-600);text-decoration:none;">20%</a>
+            </span>
+          </label>
+          <input id="f-down" type="number" placeholder="e.g. 350000" oninput="updateMetrics()">
+        </div>
+        <div class="field">
+          <label>Seller carry status</label>
+          <select id="f-carry" oninput="updateMetrics()">
+            <option value="">Select…</option>
+            <option value="confirmed">✅ Confirmed</option>
+            <option value="unconfirmed">⚠️ Unconfirmed — must resolve</option>
+            <option value="no">❌ No carry (all-cash or SBA only)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live metric cards -->
+      <div class="metric-grid" id="metrics">
+        <div class="metric-card" id="m-sde"><div class="m-label"><span data-tip="Seller's Discretionary Earnings — the business's net profit plus the owner's salary, depreciation, amortization, interest, and one-time add-backs. Represents the total cash benefit to a full owner-operator. Most small businesses are valued as a multiple of SDE (e.g. 3× SDE).">SDE</span></div><div class="m-value" id="mv-sde">—</div><div class="m-target">Target ≥ $80K/yr</div></div>
+        <div class="metric-card" id="m-dscr"><div class="m-label"><span data-tip="Debt Service Coverage Ratio — annual SDE divided by annual loan payments (principal + interest). A DSCR of 1.25x means the business earns $1.25 for every $1.00 of debt it must service. We require ≥ 1.25x at 70% of SDE + a 1.5% rate shock.">DSCR</span></div><div class="m-value" id="mv-dscr">—</div><div class="m-target">Required ≥ 1.25x</div></div>
+        <div class="metric-card" id="m-coc"><div class="m-label"><span data-tip="Cash-on-Cash Return — annual SDE divided by the total cash you invest (down payment + closing costs). Measures how efficiently your actual out-of-pocket dollars generate income. Target ≥ 15% annually. Used as the primary metric for all-cash or vending deals with no debt.">Cash-on-Cash</span></div><div class="m-value" id="mv-coc">—</div><div class="m-target">Target ≥ 15%</div></div>
+        <div class="metric-card" id="m-margin"><div class="m-label"><span data-tip="SDE Margin — SDE as a percentage of gross revenue. Measures how much of each revenue dollar flows through to the owner after all operating expenses. Thin margins leave little buffer if revenue dips. Target ≥ 25%; below 15% is a red flag.">SDE Margin</span></div><div class="m-value" id="mv-margin">—</div><div class="m-target">Target ≥ 25%</div></div>
+      </div>
+
+      <!-- Stress test table -->
+      <table class="stress-table" id="stress-table" style="display:none;">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th><span data-tip="SDE haircut applied to simulate a revenue downturn. 100% = stated SDE. 80% = mild stress (seasonal dip or soft quarter). 70% = conservative floor — the SDE level we require the deal to still pass at.">Stressed SDE</span></th>
+            <th><span data-tip="DSCR at 7.5% interest rate — roughly today's SBA 7(a) rate floor. Shows coverage at base-case financing cost.">DSCR @ 7.5%</span></th>
+            <th><span data-tip="DSCR at 9.0% interest — our rate shock scenario (+1.5% above base). Required to be ≥ 1.25x at 70% SDE simultaneously. This is the hardest test a deal must pass.">DSCR @ 9.0% <span class="stress-badge primary">+1.5% shock</span></span></th>
+            <th><span data-tip="Pass = DSCR ≥ 1.25x at this stress level. All three scenarios must show Pass at or before the 70% row for the deal to clear underwriting.">Pass?</span></th>
+          </tr>
+        </thead>
+        <tbody id="stress-tbody"></tbody>
+      </table>
+
+      <div class="alert warn" style="margin-top:1rem;">
+        <span class="alert-icon">⚠️</span>
+        <span>Unverified seller SDE is not evidence. Require 2 years of tax returns + bank statements or processor data before advancing to diligence. DSCR must hold at 70% stressed SDE + 1.5% rate shock simultaneously.</span>
+      </div>
+    </div>
+
+    <!-- Debt Service Estimator -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon amber">🧮</div>
+        <div>
+          <div class="card-title">Debt Service Estimator</div>
+          <div class="card-subtitle">Calculate annual debt service — pushes result into underwriting above</div>
+        </div>
+      </div>
+      <div class="estimator-row">
+        <div class="field">
+          <label>Loan Amount ($)</label>
+          <input id="e-loan" type="number" placeholder="e.g. 550000" oninput="calcDebtService()">
+        </div>
+        <div class="field">
+          <label>Interest Rate (% annual)</label>
+          <input id="e-rate" type="number" step="0.1" placeholder="e.g. 7.5" oninput="calcDebtService()">
+        </div>
+        <div class="field">
+          <label>Amortization Term</label>
+          <select id="e-term" oninput="calcDebtService()">
+            <option value="">Select…</option>
+            <option value="10">10 years</option>
+            <option value="15">15 years</option>
+            <option value="20">20 years (SBA 504 typical)</option>
+            <option value="25">25 years (SBA 7a max)</option>
+          </select>
+        </div>
+      </div>
+      <div class="est-result" id="est-result" style="display:none;">
+        <div>
+          <div class="est-label">Monthly payment</div>
+          <div class="est-value" id="est-monthly">—</div>
+          <div class="est-sub" id="est-annual">—/yr debt service</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="est-label">At +1.5% shock</div>
+          <div class="est-value" id="est-shocked">—</div>
+          <div class="est-sub" id="est-shocked-annual">—/yr stressed</div>
+        </div>
+        <button onclick="useDebtService()" style="height:36px;padding:0 16px;background:var(--blue-600);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer;white-space:nowrap;">Use this →</button>
+      </div>
+      <div class="field-grid" style="margin-top:12px;">
+        <div class="field">
+          <label>Financing structure</label>
+          <select id="e-struct">
+            <option value="">Select…</option>
+            <option value="sba7a">SBA 7(a) — active operating business</option>
+            <option value="sba504">SBA 504 — real estate + equipment</option>
+            <option value="carry">Seller carry only</option>
+            <option value="sba-carry">SBA + seller carry (verify standby rule)</option>
+            <option value="equipment">Equipment financing</option>
+            <option value="cash">All-cash (vending / ground lease)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Equity injection / down</label>
+          <input id="e-equity" type="number" placeholder="e.g. 350000">
+          <div class="field-hint">SBA 7(a) typically requires ≥10% equity injection</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scoring Criteria -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon purple">📊</div>
+        <div>
+          <div class="card-title">Scoring Criteria</div>
+          <div class="card-subtitle">Drag each slider from 0 (poor/unknown) to 5 (excellent)</div>
+        </div>
+      </div>
+      <div class="criteria-list" id="criteria-list">
+        <!-- Rendered by JS -->
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--slate-100);margin-top:0.5rem;">
+        <span style="font-size:13px;color:var(--slate-500);">PassiveScore (weighted 0–100)</span>
+        <span style="font-size:28px;font-weight:800;color:var(--slate-800);letter-spacing:-0.02em;" id="live-score">0</span>
+      </div>
+    </div>
+
+    <!-- KO Conditions -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon red">⛔</div>
+        <div>
+          <div class="card-title">Knock-Out Conditions</div>
+          <div class="card-subtitle">Check any that apply. One knock-out forces NO-GO regardless of score.</div>
+        </div>
+      </div>
+      <div id="ko-banner">⛔ &nbsp;Knock-out triggered — this deal is NO-GO regardless of score.</div>
+      <div class="ko-list" id="ko-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-row">
+      <button class="btn-primary" onclick="scoreIt()">Score This Business</button>
+      <button class="btn-secondary" onclick="resetAll()">Reset</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results">
+      <div class="card" style="margin-top:1rem;">
+        <div id="verdict-banner" class="verdict-banner">
+          <div>
+            <div class="verdict-score" id="r-score">—</div>
+          </div>
+          <div>
+            <div class="verdict-label" id="r-label">—</div>
+            <div class="verdict-sub"  id="r-sub">—</div>
+          </div>
+        </div>
+        <div id="ko-result" style="display:none; margin-bottom:1rem;">
+          <div style="font-size:13px;font-weight:600;color:var(--red-600);margin-bottom:6px;">Knock-outs triggered:</div>
+          <ul id="ko-result-list" style="list-style:none;display:flex;flex-direction:column;gap:4px;"></ul>
+        </div>
+        <div class="card-header" style="margin-bottom:0.75rem;">
+          <div class="card-title">Score breakdown</div>
+        </div>
+        <div class="breakdown-grid" id="breakdown-grid"></div>
+        <div class="strengths-risks" style="margin-top:1rem;" id="sr-boxes"></div>
+        <div class="action-row" style="margin-top:1.25rem;">
+          <button class="btn-secondary" onclick="window.print()">Print / Save PDF</button>
+          <button class="btn-secondary" onclick="document.getElementById('results').style.display='none'">Edit Scores</button>
+          <button class="add-pipeline-btn" onclick="addToPipeline()">+ Add to Pipeline</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /view-score -->
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!--  PIPELINE VIEW                                -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="view" id="view-pipeline">
+
+    <div class="hero" style="margin-bottom:1rem;">
+      <h1>PI Deal Pipeline</h1>
+      <p>All scored candidates — Session 6 · 2026-06-19. Click any row to load into the scorecard. All SDE figures UNVERIFIED — revenue gate not cleared.</p>
+    </div>
+
+    <div class="pipeline-stats">
+      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total tracked</div></div>
+      <div class="stat-card"><div class="stat-num green" id="stat-advance">—</div><div class="stat-label">Advance</div></div>
+      <div class="stat-card"><div class="stat-num amber" id="stat-watch">—</div><div class="stat-label">Watch list</div></div>
+      <div class="stat-card"><div class="stat-num red">6</div><div class="stat-label">Open flags</div></div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <button class="pipeline-filter-btn active" data-filter="all" onclick="filterPipeline('all',this)">All</button>
+      <button class="pipeline-filter-btn" data-filter="advance" onclick="filterPipeline('advance',this)">✅ Advance</button>
+      <button class="pipeline-filter-btn" data-filter="watch" onclick="filterPipeline('watch',this)">👀 Watch</button>
+      <button class="pipeline-filter-btn" data-filter="unknown" onclick="filterPipeline('unknown',this)">❓ Unknown</button>
+      <button class="pipeline-filter-btn" data-filter="blocked" onclick="filterPipeline('blocked',this)">⚠️ Blocked</button>
+      <button class="pipeline-filter-btn" data-filter="lm" onclick="filterPipeline('lm',this)">🫧 Laundromat</button>
+      <button class="pipeline-filter-btn" data-filter="ss" onclick="filterPipeline('ss',this)">🏭 Self-Storage</button>
+      <button class="pipeline-filter-btn" data-filter="ve" onclick="filterPipeline('ve',this)">🎰 Vending</button>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="pipeline-table" id="pipeline-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Business</th>
+            <th>Type</th>
+            <th>Asking</th>
+            <th>SDE</th>
+            <th>DSCR (70% / shock)</th>
+            <th>Score</th>
+            <th>Stage</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="pipeline-tbody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert info" style="margin-top:1rem;">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Next critical path:</strong> Get Darrel/Lisa approval to contact brokers for LM-10 + LM-14. Draft outreach. Resolve F6 on SS-15. VE-12 go/no-go decision. Do NOT contact any owner or broker without explicit approval.</span>
+    </div>
+
+    <!-- Flag tracker -->
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-header">
+        <div class="card-icon red">🚩</div>
+        <div><div class="card-title">Open Red-Team Flags</div></div>
+      </div>
+      <table class="stress-table">
+        <thead><tr><th>Flag</th><th>Scope</th><th>Status</th><th>Issue</th></tr></thead>
+        <tbody>
+          <tr><td><strong>F1</strong></td><td>Project</td><td><span class="stage-badge blocked">OPEN</span></td><td>Capital funds only one deal — parallel sourcing risks splitting focus</td></tr>
+          <tr><td><strong>F2</strong></td><td>All candidates</td><td><span class="stage-badge blocked">OPEN</span></td><td>All SDE figures unverified — revenue gate not cleared for any candidate</td></tr>
+          <tr><td><strong>F3</strong></td><td>Project</td><td><span class="stage-badge blocked">OPEN</span></td><td>2025 SBA rule: seller notes on full standby required to count as equity injection</td></tr>
+          <tr><td><strong>F5</strong></td><td>Project</td><td><span class="stage-badge blocked">OPEN</span></td><td>Pipeline attrition severe — 10/13 original candidates delisted. Sweep every session.</td></tr>
+          <tr><td><strong>F6</strong></td><td>SS-15</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-15 "won't qualify for bank loans" — cause unknown. Hard blocker.</td></tr>
+          <tr><td><strong>F7</strong></td><td>LM-14</td><td><span class="stage-badge blocked">OPEN</span></td><td>LM-14 seasonal revenue unquantified — annual 70% stress may miss winter floor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /view-pipeline -->
+
+</div><!-- /page -->
+
+<footer class="site-footer">
+  PassiveScore · Passive Income Business Scorecard · Not financial advice · Verify all data before LOI · Darrel + Lisa 2026
+</footer>
+
+<script>
+// ── Data ────────────────────────────────────────
+const CRITERIA = [
+  { id:'c1', name:'Verified Cash Flow / SDE Quality', weight:0.20, guide:'Clean tax-return-backed SDE, minimal soft add-backs, trend is flat or rising.', anchors:['0 — Unverified / seller P&L only','1 — Some disclosure, major gaps','2 — Partial tax data','3 — 1yr tax returns + basic P&L','4 — 2yr tax returns + bank data','5 — 2yr tax + processor + trending'] },
+  { id:'c2', name:'DSCR Headroom (above 1.25x stressed)', weight:0.15, guide:'Comfortable cushion above 1.25x at 70% stressed SDE + 1.5% rate shock.', anchors:['0 — Below 1.25x even at stated SDE','1 — Barely clears 1.25x','2 — 1.25–1.49x at 70% stress','3 — 1.50–1.99x at 70% stress','4 — 2.00–2.49x at 70% stress','5 — 2.50x+ at 70% stress'] },
+  { id:'c3', name:'Cash-on-Cash Return', weight:0.15, guide:'≥15% on actual cash in at stressed SDE. All-cash deals use CoC as primary metric.', anchors:['0 — <5% CoC','1 — 5–9% CoC','2 — 10–14% CoC','3 — 15–19% CoC','4 — 20–29% CoC','5 — 30%+ CoC'] },
+  { id:'c4', name:'Passivity (owner hours after setup)', weight:0.12, guide:'<5–10 hrs/wk after manager or route driver in place. True absentee preferred.', anchors:['0 — Daily owner presence required','1 — 30+ hrs/wk without owner','2 — 20–30 hrs/wk','3 — 10–20 hrs/wk','4 — 5–10 hrs/wk','5 — <5 hrs/wk, true absentee'] },
+  { id:'c5', name:'Seller-Finance Terms', weight:0.10, guide:'Meaningful carry, sane rate (≤7%), long amortization (≥10yr), no near balloon.', anchors:['0 — No carry available','1 — Minimal carry, short term','2 — Carry confirmed, terms TBD','3 — Reasonable carry, some flexibility','4 — Good carry, long balloon','5 — Strong carry, low rate, 10yr+ balloon'] },
+  { id:'c6', name:'Moat / Demand Durability', weight:0.10, guide:'Population density, recurring necessity demand, switching cost, contract lock-in.', anchors:['0 — Declining/low-density area','1 — Marginal demand, no lock-in','2 — Adequate demand, no moat','3 — Good density + some lock-in','4 — Strong density + contracts','5 — Dense market, high switching cost, contracts'] },
+  { id:'c7', name:'Capex / Equipment Condition', weight:0.08, guide:'New-ish equipment (<10yr), low deferred maintenance, no immediate capex bomb.', anchors:['0 — Immediate capex >$100K','1 — $50–100K capex needed','2 — Some deferred maintenance','3 — Good condition, minor items','4 — Recent refresh, low risk','5 — New equipment, warranty in place'] },
+  { id:'c8', name:'Real-Estate Control', weight:0.05, guide:'Own the real estate, or long (≥10yr) favorable lease with renewal options.', anchors:['0 — Month-to-month lease','1 — Short lease (<3yr)','2 — 3–5yr lease','3 — 5–10yr lease, options','4 — 10yr+ lease, favorable terms','5 — Own the real estate'] },
+  { id:'c9', name:'Exit Liquidity', weight:0.05, guide:'Deep operator buyer pool — easy to sell in 90–180 days at reasonable price.', anchors:['0 — Illiquid, niche buyer','1 — Thin buyer pool','2 — Some buyer interest','3 — Active market','4 — Deep buyer pool, 60–90 day DOM','5 — Highly liquid, large buyer pool, fast exit'] },
+];
+
+const KO_CONDITIONS = [
+  'Revenue is not verifiable — seller refuses 2 years of tax returns, bank statements, or processor data before advancing.',
+  'DSCR < 1.25x at 70% stressed SDE + 1.5% rate shock, and cannot be cured by price reduction or carry terms.',
+  'Requires owner relocation or specialized daily owner labor (not passive or semi-passive).',
+  'Capital stack only works on pro-forma growth projections — no capex reserve modeled.',
+  'Balloon or refinance risk with no credible refinance path within the term.',
+  'All-in cash to close exceeds ~$200K available capital including required 6-month operating + capex reserve.',
+];
+
+const PIPELINE = [
+  // ── SHORTLIST ──────────────────────────────────────────────────────
+  { id:'LM-10', name:'Upper East Side Laundromat', type:'lm', location:'NYC, NY', asking:595000, sde:202512, down:350000, dscr70:2.69, dscrShocked:2.39, score:74, stage:'advance', carry:'Confirmed', flags:['F2'], stageLabel:'✅ Advance',
+    sliders:[2, 4, 4, 3, 3, 4, 2, 2, 3], sourceLabel:'BizBuySell #2032099 — listing expired (NYLaundromats.com broker)', sourceUrl:'' },
+  { id:'LM-14', name:'Absentee Laundromat Volusia County FL', type:'lm', location:'Volusia County, FL', asking:825000, sde:182529, down:200000, dscr70:2.13, dscrShocked:1.89, score:72, stage:'advance', carry:'Unconfirmed', flags:['F2','F7'], stageLabel:'✅ Advance',
+    sliders:[2, 3, 3, 3, 1, 3, 2, 2, 2], sourceLabel:'BizBuySell #2480220', sourceUrl:'https://www.bizbuysell.com/business-opportunity/profitable-absentee-laundromat-for-sale-in-volusia-county-fl/2480220/' },
+  { id:'VE-12', name:'Indianapolis 4-Location Vending Route', type:'ve', location:'Indianapolis, IN', asking:95000, sde:40000, down:95000, dscr70:null, dscrShocked:null, coc:29.5, score:70, stage:'stagger', carry:'Unknown', flags:['F2'], stageLabel:'Stagger only',
+    sliders:[2, 3, 4, 5, 0, 2, 3, 0, 2], sourceLabel:'BizQuest — URL needed', sourceUrl:'' },
+  { id:'SS-15', name:'Cold Storage Tampa FL', type:'ss', location:'Tampa, FL', asking:500000, sde:163280, down:350000, dscr70:6.57, dscrShocked:5.83, score:68, stage:'blocked', carry:'Confirmed', flags:['F2','F6'], stageLabel:'⚠️ Blocked — F6',
+    sliders:[2, 5, 3, 4, 3, 3, 2, 1, 2], sourceLabel:'BizBuySell — URL needed', sourceUrl:'' },
+  { id:'LM-15', name:'Houston Absentee Laundromat', type:'lm', location:'Houston, TX', asking:225000, sde:46000, down:200000, dscr70:11.1, dscrShocked:9.85, score:66, stage:'fallback', carry:'Unknown', flags:['F2'], stageLabel:'Fallback',
+    sliders:[1, 3, 2, 3, 0, 2, 2, 1, 2], sourceLabel:'BizQuest — URL needed', sourceUrl:'' },
+
+  // ── WATCH LIST — verified listings only ────────────────────────────
+  { id:'SS-12', name:'Herman Mini Storage', type:'ss', location:'Herman, MN', asking:289000, sde:null, down:200000, dscr70:null, dscrShocked:null, score:54, stage:'watch', carry:'Signaled', flags:['F2'], stageLabel:'👀 Watch',
+    sliders:[1, 2, 2, 4, 2, 2, 3, 3, 1], sourceLabel:'Argus Self Storage Advisors', sourceUrl:'https://argus-selfstorage.com/properties/minnesota/herman-mini-storage/' },
+  { id:'SS-11', name:'MidMaine Storage (60 Mill St, Corinna ME)', type:'ss', location:'Corinna, ME', asking:699000, sde:null, down:200000, dscr70:null, dscrShocked:null, score:50, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch',
+    sliders:[1, 2, 2, 4, 0, 2, 2, 2, 1], sourceLabel:'LoopNet #35721548', sourceUrl:'https://www.loopnet.com/Listing/60-Mill-St-Corinna-ME/35721548/' },
+  { id:'SS-10', name:'I-15 Storage (Littlefield AZ)', type:'ss', location:'Littlefield, AZ', asking:1350000, sde:null, down:300000, dscr70:null, dscrShocked:null, score:52, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch',
+    sliders:[1, 2, 1, 4, 0, 2, 3, 3, 2], sourceLabel:'Argus Self Storage Advisors', sourceUrl:'https://argus-selfstorage.com/properties/arizona/i15-storage/' },
+  { id:'VE-2', name:'Rochester NY Vending Route (Absentee)', type:'ve', location:'Rochester / Canandaigua, NY', asking:400000, sde:null, down:400000, dscr70:null, dscrShocked:null, coc:null, score:58, stage:'watch', carry:'None', flags:['F2'], stageLabel:'👀 Watch — no carry',
+    sliders:[2, 3, 2, 4, 0, 2, 4, 0, 3], sourceLabel:'VendingExchange', sourceUrl:'https://vendingexchange.com/vendingoperators/vendingmachineroutesforsale/160' },
+  // VE-10 (CO Springs), VE-14 (Dallas), SS-5 (Hardeeville SC), SS-6 (Lincoln NE) — removed: listings unverifiable, data cannot be confirmed.
+];
+
+// ── State ────────────────────────────────────────
+let selectedType = '';
+let scores = Object.fromEntries(CRITERIA.map(c => [c.id, 0]));
+let koChecked = new Array(KO_CONDITIONS.length).fill(false);
+
+// ── Init ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('biz-date').value = new Date().toISOString().split('T')[0];
+  renderCriteria();
+  renderKO();
+  renderPipeline();
+  updateLiveScore();
+});
+
+// ── View switching ───────────────────────────────
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Business type ────────────────────────────────
+function selectType(type, btn) {
+  selectedType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  const typeMap = { laundromat: 'lm', storage: 'ss', vending: 've' };
+  const key = typeMap[type];
+  const matches = PIPELINE.filter(p => p.type === key);
+
+  const wrap = document.getElementById('type-deals');
+  const list = document.getElementById('type-deal-list');
+
+  if (matches.length === 0) {
+    wrap.style.display = 'block';
+    list.innerHTML = `<div style="font-size:12px;color:var(--slate-400);padding:8px 0;">No existing pipeline candidates for this type. Use Quick Scan or fill in the form below.</div>`;
+  } else {
+    wrap.style.display = 'block';
+    list.innerHTML = matches.map(p => {
+      const scoreColor = p.score >= 70 ? 'var(--emerald-600)' : p.score >= 60 ? 'var(--amber-600)' : 'var(--red-600)';
+      const stageCls   = p.stage === 'advance' ? 'advance' : p.stage === 'blocked' ? 'blocked' : p.stage === 'stagger' ? 'stagger' : 'fallback';
+      const dscrText   = p.dscr70 !== null ? `DSCR ${p.dscrShocked.toFixed(2)}x (shocked)` : `CoC ${p.coc}%`;
+      const srcLink = p.sourceUrl ? `<a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:11px;color:var(--blue-600);text-decoration:none;border-bottom:1px solid var(--blue-200);">${p.sourceLabel || p.sourceUrl}</a>` : '';
+      return `<button class="deal-pick" onclick="loadDeal('${p.id}')">
+        <div class="dp-id">${p.id}</div>
+        <div style="flex:1;">
+          <div class="dp-name">${p.name}</div>
+          <div class="dp-loc">${p.location} · $${(p.asking/1000).toFixed(0)}K asking · SDE $${(p.sde/1000).toFixed(0)}K · ${dscrText}</div>
+          ${srcLink ? `<div style="margin-top:3px;">${srcLink}</div>` : ''}
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+          <span class="dp-score" style="color:${scoreColor}">${p.score}/100</span>
+          <span class="stage-badge ${stageCls}">${p.stageLabel}</span>
+        </div>
+      </button>`;
+    }).join('');
+  }
+}
+
+function clearTypeAndStartFresh() {
+  document.getElementById('type-deals').style.display = 'none';
+  document.getElementById('biz-name').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Quick scan ───────────────────────────────────
+function runScan() {
+  const name  = document.getElementById('scan-name').value.trim();
+  const loc   = document.getElementById('scan-loc').value.trim();
+  const price = parseFloat(document.getElementById('scan-price').value) || 0;
+  const sde   = parseFloat(document.getElementById('scan-sde').value) || 0;
+  const down  = parseFloat(document.getElementById('scan-down').value) || 0;
+  const carry = document.getElementById('scan-carry').value;
+
+  if (!sde && !price) { alert('Enter at least Asking Price and Stated SDE to run a scan.'); return; }
+
+  // Auto-fill business info
+  if (name) document.getElementById('biz-name').value = name;
+  if (loc)  document.getElementById('biz-loc').value = loc;
+  if (price) { document.getElementById('biz-price').value = price; document.getElementById('f-price').value = price; }
+  if (sde)  document.getElementById('f-sde').value = sde;
+  if (down) { document.getElementById('f-down').value = down; document.getElementById('e-equity').value = down; document.getElementById('e-loan').value = price - down; }
+  if (carry) document.getElementById('f-carry').value = carry;
+
+  // Suggest slider scores based on quick data
+  const financed = price - down;
+  const pmt20yr  = financed > 0 ? monthlyPayment(financed, 7.5, 20) : 0;
+  const annualDS = pmt20yr * 12;
+  const dscr70   = annualDS > 0 ? (sde * 0.70) / annualDS : null;
+  const coc      = down > 0 ? sde / down : null;
+
+  let suggestions = '';
+  if (dscr70 !== null) {
+    const dscrScore = dscr70 >= 2.5 ? 5 : dscr70 >= 2.0 ? 4 : dscr70 >= 1.5 ? 3 : dscr70 >= 1.25 ? 2 : 1;
+    scores['c2'] = dscrScore;
+    document.getElementById('s-c2').value = dscrScore;
+    suggestions += `DSCR @70% stress: ${dscr70.toFixed(2)}x → slider set to ${dscrScore}/5. `;
+  }
+  if (coc !== null) {
+    const cocScore = coc >= 0.30 ? 5 : coc >= 0.20 ? 4 : coc >= 0.15 ? 3 : coc >= 0.10 ? 2 : 1;
+    scores['c3'] = cocScore;
+    document.getElementById('s-c3').value = cocScore;
+    suggestions += `CoC: ${(coc*100).toFixed(0)}% → slider set to ${cocScore}/5. `;
+  }
+  if (carry === 'confirmed') { scores['c5'] = 3; document.getElementById('s-c5').value = 3; suggestions += 'Seller carry confirmed → set to 3/5.'; }
+  if (carry === 'no') { scores['c5'] = 0; document.getElementById('s-c5').value = 0; suggestions += 'No carry → set to 0/5.'; }
+
+  // Update DS field
+  if (annualDS > 0) document.getElementById('f-ds').value = Math.round(annualDS);
+
+  const preview = document.getElementById('scan-preview');
+  preview.style.display = 'block';
+  preview.innerHTML = `<strong>Scan complete.</strong> ${suggestions || 'Fields auto-filled.'} Review all sliders before scoring.`;
+
+  updateMetrics();
+  updateLiveScore();
+  updateSliderDisplays();
+}
+
+function clearScan() {
+  ['scan-name','scan-loc','scan-carry'].forEach(id => document.getElementById(id).value = '');
+  ['scan-price','scan-sde','scan-down'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('scan-preview').style.display = 'none';
+}
+
+// ── Criteria rendering ───────────────────────────
+function renderCriteria() {
+  const container = document.getElementById('criteria-list');
+  container.innerHTML = CRITERIA.map((c, i) => `
+    <div class="criterion">
+      <div class="criterion-header">
+        <div>
+          <div class="criterion-name">${i+1}. ${c.name}</div>
+          <div class="criterion-guide">${c.guide}</div>
+        </div>
+        <div class="criterion-weight">${Math.round(c.weight*100)}%</div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-wrap">
+          <input type="range" id="s-${c.id}" min="0" max="5" step="1" value="0" oninput="updateScore('${c.id}', this.value)">
+          <div class="slider-labels"><span>0 — Poor</span><span>5 — Excellent</span></div>
+          <div class="slider-desc" id="desc-${c.id}">${c.anchors[0]}</div>
+        </div>
+        <div class="slider-score" id="sv-${c.id}">0</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateScore(id, val) {
+  val = parseInt(val);
+  scores[id] = val;
+  document.getElementById('sv-'+id).textContent = val;
+  const c = CRITERIA.find(x => x.id === id);
+  document.getElementById('desc-'+id).textContent = c.anchors[val];
+  updateLiveScore();
+}
+
+function updateSliderDisplays() {
+  CRITERIA.forEach(c => {
+    const val = scores[c.id];
+    document.getElementById('sv-'+c.id).textContent = val;
+    document.getElementById('desc-'+c.id).textContent = c.anchors[val];
+  });
+}
+
+function updateLiveScore() {
+  const total = CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0);
+  document.getElementById('live-score').textContent = Math.round(total);
+}
+
+// ── KO rendering ─────────────────────────────────
+function renderKO() {
+  const container = document.getElementById('ko-list');
+  container.innerHTML = KO_CONDITIONS.map((ko, i) => `
+    <label class="ko-item" id="ko-item-${i}" onclick="toggleKO(${i})">
+      <input type="checkbox" id="ko-${i}" onclick="event.stopPropagation();toggleKO(${i})">
+      <span class="ko-label">${ko}</span>
+    </label>
+  `).join('');
+}
+
+function toggleKO(i) {
+  koChecked[i] = !koChecked[i];
+  document.getElementById('ko-'+i).checked = koChecked[i];
+  document.getElementById('ko-item-'+i).classList.toggle('checked', koChecked[i]);
+  const anyKO = koChecked.some(Boolean);
+  const banner = document.getElementById('ko-banner');
+  banner.classList.toggle('visible', anyKO);
+}
+
+// ── Financial calculations ───────────────────────
+function monthlyPayment(principal, annualRate, years) {
+  const r = (annualRate / 100) / 12;
+  const n = years * 12;
+  if (r === 0) return principal / n;
+  return principal * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+}
+
+function setDownPct(pct) {
+  const price = parseFloat(document.getElementById('f-price').value) || parseFloat(document.getElementById('biz-price').value) || 0;
+  if (price) { document.getElementById('f-down').value = Math.round(price * pct); updateMetrics(); }
+}
+
+function updateMetrics() {
+  const rev   = parseFloat(document.getElementById('f-revenue').value) || 0;
+  const sde   = parseFloat(document.getElementById('f-sde').value) || 0;
+  const ds    = parseFloat(document.getElementById('f-ds').value) || 0;
+  const price = parseFloat(document.getElementById('f-price').value) || parseFloat(document.getElementById('biz-price').value) || 0;
+  const down  = parseFloat(document.getElementById('f-down').value) || 0;
+
+  const fmt = n => n >= 1000 ? '$' + (n/1000).toFixed(0)+'K' : '$'+n.toFixed(0);
+  const pct = n => n.toFixed(1)+'%';
+  const x   = n => n.toFixed(2)+'x';
+
+  // SDE
+  const mSDE = document.getElementById('m-sde');
+  const mvSDE = document.getElementById('mv-sde');
+  mvSDE.textContent = sde > 0 ? fmt(sde) : '—';
+  mSDE.className = 'metric-card' + (sde >= 80000 ? ' good' : sde > 0 ? ' warn' : '');
+
+  // DSCR
+  const mDSCR = document.getElementById('m-dscr');
+  const mvDSCR = document.getElementById('mv-dscr');
+  if (sde > 0 && ds > 0) {
+    const dscr = sde / ds;
+    mvDSCR.textContent = x(dscr);
+    mDSCR.className = 'metric-card' + (dscr >= 1.25 ? ' good' : dscr >= 1.0 ? ' warn' : ' bad');
+  } else { mvDSCR.textContent = '—'; mDSCR.className = 'metric-card'; }
+
+  // CoC
+  const mCoC = document.getElementById('m-coc');
+  const mvCoC = document.getElementById('mv-coc');
+  if (sde > 0 && down > 0) {
+    const coc = (sde / down) * 100;
+    mvCoC.textContent = pct(coc);
+    mCoC.className = 'metric-card' + (coc >= 15 ? ' good' : coc >= 10 ? ' warn' : ' bad');
+  } else { mvCoC.textContent = '—'; mCoC.className = 'metric-card'; }
+
+  // SDE Margin
+  const mMargin = document.getElementById('m-margin');
+  const mvMargin = document.getElementById('mv-margin');
+  if (sde > 0 && rev > 0) {
+    const margin = (sde / rev) * 100;
+    mvMargin.textContent = pct(margin);
+    mMargin.className = 'metric-card' + (margin >= 25 ? ' good' : margin >= 15 ? ' warn' : ' bad');
+  } else { mvMargin.textContent = '—'; mMargin.className = 'metric-card'; }
+
+  // Stress test
+  if (sde > 0 && ds > 0) {
+    const stressTable = document.getElementById('stress-table');
+    const tbody = document.getElementById('stress-tbody');
+    stressTable.style.display = 'table';
+
+    const dsBase = ds;
+    // Derive shocked DS from estimator if available
+    const loan = parseFloat(document.getElementById('e-loan').value) || 0;
+    const term = parseInt(document.getElementById('e-term').value) || 0;
+    const rateBase = parseFloat(document.getElementById('e-rate').value) || 7.5;
+    const rateShocked = rateBase + 1.5;
+    let dsShocked = ds;
+    if (loan > 0 && term > 0) {
+      dsShocked = monthlyPayment(loan, rateShocked, term) * 12;
+    }
+
+    const rows = [
+      { label:'100% (stated)', pct:1.00, primary:false },
+      { label:'80% stress',    pct:0.80, primary:false },
+      { label:'70% stress + 1.5% shock', pct:0.70, primary:true },
+    ];
+    tbody.innerHTML = rows.map(r => {
+      const stressedSDE = sde * r.pct;
+      const dscrBase    = stressedSDE / dsBase;
+      const dscrShocked = stressedSDE / dsShocked;
+      const passes = dscrShocked >= 1.25;
+      const cls    = dscrShocked >= 1.25 ? 'pass' : dscrShocked >= 1.0 ? 'warn' : 'fail';
+      const rowStyle = r.primary ? 'background:var(--slate-50);' : '';
+      return `<tr style="${rowStyle}">
+        <td>${r.label}${r.primary ? ' <span class="stress-badge primary">Primary bar</span>' : ''}</td>
+        <td>$${Math.round(stressedSDE).toLocaleString()}</td>
+        <td class="${dscrBase >= 1.25 ? 'pass' : 'fail'}">${dscrBase.toFixed(2)}x</td>
+        <td class="${cls}">${dscrShocked.toFixed(2)}x</td>
+        <td>${passes ? '✅' : '❌'}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+// ── Debt service estimator ───────────────────────
+function calcDebtService() {
+  const loan = parseFloat(document.getElementById('e-loan').value) || 0;
+  const rate = parseFloat(document.getElementById('e-rate').value) || 0;
+  const term = parseInt(document.getElementById('e-term').value) || 0;
+  if (!loan || !rate || !term) { document.getElementById('est-result').style.display = 'none'; return; }
+
+  const monthly  = monthlyPayment(loan, rate, term);
+  const annual   = monthly * 12;
+  const monthlyS = monthlyPayment(loan, rate + 1.5, term);
+  const annualS  = monthlyS * 12;
+
+  const fmt = n => '$' + Math.round(n).toLocaleString();
+  document.getElementById('est-monthly').textContent = fmt(monthly) + '/mo';
+  document.getElementById('est-annual').textContent  = fmt(annual) + '/yr debt service';
+  document.getElementById('est-shocked').textContent = fmt(monthlyS) + '/mo';
+  document.getElementById('est-shocked-annual').textContent = fmt(annualS) + '/yr stressed';
+  document.getElementById('est-result').style.display = 'flex';
+  updateMetrics();
+}
+
+function useDebtService() {
+  const loan = parseFloat(document.getElementById('e-loan').value) || 0;
+  const rate = parseFloat(document.getElementById('e-rate').value) || 0;
+  const term = parseInt(document.getElementById('e-term').value) || 0;
+  if (!loan || !rate || !term) return;
+  const annual = monthlyPayment(loan, rate, term) * 12;
+  document.getElementById('f-ds').value = Math.round(annual);
+  updateMetrics();
+}
+
+// ── Score & results ──────────────────────────────
+function scoreIt() {
+  const total = Math.round(CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0));
+  const anyKO = koChecked.some(Boolean);
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Verdict
+  const banner = document.getElementById('verdict-banner');
+  const rScore = document.getElementById('r-score');
+  const rLabel = document.getElementById('r-label');
+  const rSub   = document.getElementById('r-sub');
+  rScore.textContent = anyKO ? '⛔' : total;
+
+  if (anyKO) {
+    banner.className = 'verdict-banner ko';
+    rLabel.textContent = 'NO-GO — Knock-out triggered';
+    rSub.textContent   = 'One or more knock-out conditions are checked. Score is irrelevant — do not advance.';
+    document.getElementById('ko-result').style.display = 'block';
+    const list = document.getElementById('ko-result-list');
+    list.innerHTML = KO_CONDITIONS.map((ko, i) => koChecked[i] ? `<li style="font-size:12px;color:var(--red-600);padding:4px 0;border-bottom:1px solid var(--red-100);">⛔ ${ko}</li>` : '').join('');
+  } else if (total >= 75) {
+    banner.className = 'verdict-banner advance';
+    rLabel.textContent = 'ADVANCE — Underwrite hard';
+    rSub.textContent   = `Score ${total}/100 — strong candidate. Request verified financials, advance to diligence.`;
+    document.getElementById('ko-result').style.display = 'none';
+  } else if (total >= 60) {
+    banner.className = 'verdict-banner watch';
+    rLabel.textContent = 'WATCH — Underwrite with caution';
+    rSub.textContent   = `Score ${total}/100 — proceed only if weak criteria are fixable. Monitor closely.`;
+    document.getElementById('ko-result').style.display = 'none';
+  } else {
+    banner.className = 'verdict-banner pass';
+    rLabel.textContent = 'PASS — Do not advance';
+    rSub.textContent   = `Score ${total}/100 — too many weak criteria. Park or reject.`;
+    document.getElementById('ko-result').style.display = 'none';
+  }
+
+  // Breakdown
+  const grid = document.getElementById('breakdown-grid');
+  grid.innerHTML = CRITERIA.map(c => {
+    const pts = Math.round(scores[c.id] * c.weight * 20);
+    const max = Math.round(5 * c.weight * 20);
+    return `<div class="breakdown-item"><span class="breakdown-name">${c.name}</span><span class="breakdown-pts">${pts} / ${max}</span></div>`;
+  }).join('');
+
+  // Strengths & risks
+  const sorted = [...CRITERIA].sort((a, b) => scores[b.id] - scores[a.id]);
+  const strengths = sorted.filter(c => scores[c.id] >= 4).slice(0, 3);
+  const risks     = sorted.filter(c => scores[c.id] <= 1).slice(0, 3);
+  document.getElementById('sr-boxes').innerHTML = `
+    <div class="sr-box green">
+      <h4>Top Strengths</h4>
+      <ul>${strengths.length ? strengths.map(c => `<li>✓ ${c.name} (${scores[c.id]}/5)</li>`).join('') : '<li>No criteria scored ≥4 yet</li>'}</ul>
+    </div>
+    <div class="sr-box red">
+      <h4>Key Risks</h4>
+      <ul>${risks.length ? risks.map(c => `<li>⚠ ${c.name} (${scores[c.id]}/5)</li>`).join('') : '<li>No critical weak criteria</li>'}</ul>
+    </div>`;
+}
+
+function resetAll() {
+  scores = Object.fromEntries(CRITERIA.map(c => [c.id, 0]));
+  koChecked = new Array(KO_CONDITIONS.length).fill(false);
+  CRITERIA.forEach(c => {
+    document.getElementById('s-'+c.id).value = 0;
+    document.getElementById('sv-'+c.id).textContent = '0';
+    document.getElementById('desc-'+c.id).textContent = c.anchors[0];
+  });
+  KO_CONDITIONS.forEach((_, i) => {
+    document.getElementById('ko-'+i).checked = false;
+    document.getElementById('ko-item-'+i).classList.remove('checked');
+  });
+  document.getElementById('ko-banner').classList.remove('visible');
+  ['biz-name','biz-loc','biz-price','biz-source','f-revenue','f-sde','f-ds','f-price','f-down','e-loan','e-rate'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-carry').value = '';
+  document.getElementById('e-term').value = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('stress-table').style.display = 'none';
+  document.getElementById('est-result').style.display = 'none';
+  document.getElementById('scan-preview').style.display = 'none';
+  ['m-sde','m-dscr','m-coc','m-margin'].forEach(id => document.getElementById(id).className = 'metric-card');
+  ['mv-sde','mv-dscr','mv-coc','mv-margin'].forEach(id => document.getElementById(id).textContent = '—');
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  selectedType = '';
+  updateLiveScore();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Pipeline ─────────────────────────────────────
+let pipelineFilter = 'all';
+
+function renderPipeline(filter) {
+  filter = filter || pipelineFilter;
+  const filtered = PIPELINE.filter(p => {
+    if (filter === 'all') return true;
+    if (filter === 'lm' || filter === 'ss' || filter === 've') return p.type === filter;
+    return p.stage === filter;
+  });
+
+  // Stats
+  document.getElementById('stat-total').textContent = PIPELINE.length;
+  document.getElementById('stat-advance').textContent = PIPELINE.filter(p => p.stage === 'advance').length;
+  document.getElementById('stat-watch').textContent = PIPELINE.filter(p => p.stage === 'watch').length;
+
+  const tbody = document.getElementById('pipeline-tbody');
+  tbody.innerHTML = filtered.map((p, i) => {
+    const dscrText = p.dscrShocked != null ? `${p.dscr70.toFixed(2)}x / ${p.dscrShocked.toFixed(2)}x`
+                   : p.coc != null ? `CoC ${p.coc}%`
+                   : '— unconfirmed';
+    const barWidth = p.dscrShocked ? Math.min(p.dscrShocked / 4 * 100, 100) : p.coc ? Math.min(p.coc / 50 * 100, 100) : 0;
+    const barColor = (p.dscrShocked >= 2.0 || p.coc >= 25) ? 'var(--emerald-600)' : 'var(--amber-600)';
+    const sPill = p.score >= 70 ? 'high' : p.score >= 60 ? 'mid' : 'low';
+    const askingStr = p.asking ? `$${(p.asking/1000).toFixed(0)}K` : '—';
+    const sdeStr = p.sde ? `$${(p.sde/1000).toFixed(0)}K` : '—';
+    const stageCls = ['advance','blocked','stagger','fallback','watch'].includes(p.stage) ? p.stage : 'fallback';
+    return `<tr onclick="loadDeal('${p.id}')">
+      <td style="font-size:11px;color:var(--slate-400);">${i+1}</td>
+      <td>
+        <div style="font-weight:600;font-size:13px;">${p.id}</div>
+        <div style="font-size:12px;color:var(--slate-500);">${p.name}</div>
+        <div style="font-size:11px;color:var(--slate-400);">${p.location}${p.sourceUrl ? ` · <a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--blue-600);text-decoration:none;">${p.sourceLabel}</a>` : ''}</div>
+      </td>
+      <td><span class="type-dot ${p.type}"></span><span style="font-size:12px;">${p.type === 'lm' ? 'Laundromat' : p.type === 'ss' ? 'Self-storage' : 'Vending'}</span></td>
+      <td style="font-size:13px;">${askingStr}</td>
+      <td style="font-size:13px;">${sdeStr}</td>
+      <td>
+        <div class="dscr-bar-wrap">
+          <div class="dscr-bar-bg"><div class="dscr-bar-fill" style="width:${barWidth}%;background:${barColor};"></div></div>
+          <span style="font-size:12px;color:var(--slate-600);min-width:80px;">${dscrText}</span>
+        </div>
+      </td>
+      <td><span class="score-pill ${sPill}">${p.score}</span></td>
+      <td><span class="stage-badge ${stageCls}">${p.stageLabel}</span></td>
+      <td><button class="load-deal-btn" onclick="event.stopPropagation();loadDeal('${p.id}')">Load →</button></td>
+    </tr>`;
+  }).join('');
+
+  if (!filtered.length) tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--slate-400);font-size:13px;">No candidates match this filter.</td></tr>`;
+}
+
+function filterPipeline(filter, btn) {
+  pipelineFilter = filter;
+  document.querySelectorAll('.pipeline-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPipeline(filter);
+}
+
+function loadDeal(id) {
+  const p = PIPELINE.find(x => x.id === id);
+  if (!p) return;
+
+  // Switch to scorecard view
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-score').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
+
+  // Fill fields
+  document.getElementById('biz-name').value   = `${p.id} — ${p.name}`;
+  document.getElementById('biz-loc').value    = p.location;
+  document.getElementById('biz-price').value  = p.asking;
+  document.getElementById('f-price').value    = p.asking;
+  document.getElementById('f-sde').value      = p.sde;
+  document.getElementById('f-down').value     = p.down;
+  document.getElementById('f-carry').value    = p.carry === 'Confirmed' ? 'confirmed' : p.carry === 'Unconfirmed' ? 'unconfirmed' : '';
+  document.getElementById('e-loan').value     = p.asking - p.down;
+  document.getElementById('e-rate').value     = 7.5;
+  document.getElementById('e-equity').value   = p.down;
+  // Source
+  document.getElementById('biz-source').value = p.sourceLabel || '';
+  const srcLinkEl = document.getElementById('biz-source-link');
+  if (p.sourceUrl) {
+    srcLinkEl.href = p.sourceUrl;
+    srcLinkEl.textContent = '↗ Open listing';
+    srcLinkEl.style.display = 'inline';
+  } else {
+    srcLinkEl.style.display = 'none';
+  }
+
+  // Set type
+  const typeMap = { lm: 'laundromat', ss: 'storage', ve: 'vending' };
+  const typeBtns = document.querySelectorAll('.type-btn');
+  typeBtns.forEach(b => b.classList.remove('selected'));
+  if (typeMap[p.type]) {
+    selectType(typeMap[p.type], typeBtns[p.type === 'lm' ? 0 : p.type === 'ss' ? 1 : 2]);
+  }
+
+  // Load per-criterion slider values from pipeline data
+  if (p.sliders && p.sliders.length === CRITERIA.length) {
+    CRITERIA.forEach((c, i) => {
+      const v = p.sliders[i];
+      scores[c.id] = v;
+      document.getElementById('s-'+c.id).value = v;
+      document.getElementById('sv-'+c.id).textContent = v;
+      document.getElementById('desc-'+c.id).textContent = c.anchors[v];
+    });
+  }
+
+  updateMetrics();
+  calcDebtService();
+  updateLiveScore();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addToPipeline() {
+  const name  = document.getElementById('biz-name').value || 'Unnamed';
+  const score = Math.round(CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0));
+  alert(`✅ "${name}" (score: ${score}/100) would be added to the pipeline.\n\nIn the full app, this writes to Supabase → appears in the Pipeline tab immediately.`);
+}
+</script>
+</body>
+</html>
