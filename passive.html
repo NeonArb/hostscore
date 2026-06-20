@@ -597,6 +597,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .type-dot.lm { background: var(--border-strong); }
 .type-dot.ss { background: var(--border-strong); }
 .type-dot.ve { background: var(--border-strong); }
+.type-dot.cw { background: var(--border-strong); }
 .dscr-bar-wrap { display: flex; align-items: center; gap: 8px; }
 .dscr-bar-bg { width: 56px; height: 2px; background: var(--border-default); border-radius: 1px; overflow: hidden; }
 .dscr-bar-fill { height: 100%; border-radius: 1px; }
@@ -743,6 +744,11 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
           <div class="type-icon">🎰</div>
           <div class="type-name">Vending Route</div>
           <div class="type-desc">All-cash · Scenario C stagger</div>
+        </button>
+        <button class="type-btn" onclick="selectType('carwash', this)">
+          <div class="type-icon">🚿</div>
+          <div class="type-name">Coin-op Car Wash</div>
+          <div class="type-desc">Self-serve bays · no staff</div>
         </button>
       </div>
 
@@ -1072,6 +1078,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
       <button class="pipeline-filter-btn" data-filter="lm" onclick="filterPipeline('lm',this)">🫧 Laundromat</button>
       <button class="pipeline-filter-btn" data-filter="ss" onclick="filterPipeline('ss',this)">🏭 Self-Storage</button>
       <button class="pipeline-filter-btn" data-filter="ve" onclick="filterPipeline('ve',this)">🎰 Vending</button>
+      <button class="pipeline-filter-btn" data-filter="cw" onclick="filterPipeline('cw',this)">🚿 Car Wash</button>
     </div>
 
     <div class="card" style="padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch;">
@@ -1173,6 +1180,14 @@ const PIPELINE = [
   { id:'VE-2', name:'Rochester NY Vending Route (Absentee)', type:'ve', location:'Rochester / Canandaigua, NY', asking:400000, sde:null, down:400000, dscr70:null, dscrShocked:null, coc:null, score:58, stage:'watch', carry:'None', flags:['F2'], stageLabel:'👀 Watch — no carry',
     sliders:[2, 3, 2, 4, 0, 2, 4, 0, 3], sourceLabel:'VendingExchange', sourceUrl:'https://vendingexchange.com/vendingoperators/vendingmachineroutesforsale/160' },
   // VE-10 (CO Springs), VE-14 (Dallas), SS-5 (Hardeeville SC), SS-6 (Lincoln NE) — removed: listings unverifiable, data cannot be confirmed.
+
+  // ── COIN-OP CAR WASH — new type added 2026-06-20 ──────────────────
+  { id:'CW-4', name:'Crystal Clean Car Wash (6-Bay Self-Serve)', type:'cw', location:'Fort Worth, TX', asking:460000, sde:null, down:200000, dscr70:null, dscrShocked:null, score:58, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — verify SDE',
+    sliders:[1, 2, 2, 4, 2, 3, 3, 3, 2], sourceLabel:'BizQuest BW2453331', sourceUrl:'https://www.bizquest.com/business-for-sale/crystal-clean-car-wash-self-serve-dfw/BW2453331/' },
+  { id:'CW-8', name:'NE Texas Self-Serve Car Wash (3-Bay + Vacuums)', type:'cw', location:'Northeast Texas', asking:325000, sde:84000, down:200000, dscr70:null, dscrShocked:null, score:62, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — best SDE',
+    sliders:[2, 3, 2, 3, 1, 3, 2, 2, 2], sourceLabel:'BizBuySell TX Car Washes', sourceUrl:'https://www.bizbuysell.com/texas/car-washes-for-sale/' },
+  { id:'CW-2', name:'SGV Coin-Op Car Wash (5-Bay, 24/7)', type:'cw', location:'San Gabriel Valley, CA', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, score:50, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — price unknown',
+    sliders:[1, 2, 2, 4, 1, 2, 3, 2, 2], sourceLabel:'BizBuySell #2272026', sourceUrl:'https://www.bizbuysell.com/Business-Opportunity/unique-opportunity-to-own-a-coin-operated-car-wash/2272026/' },
 ];
 
 // ── State ────────────────────────────────────────
@@ -1203,7 +1218,7 @@ function selectType(type, btn) {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
 
-  const typeMap = { laundromat: 'lm', storage: 'ss', vending: 've' };
+  const typeMap = { laundromat: 'lm', storage: 'ss', vending: 've', carwash: 'cw' };
   const key = typeMap[type];
   const matches = PIPELINE.filter(p => p.type === key);
 
@@ -1592,7 +1607,7 @@ function renderPipeline(filter) {
   filter = filter || pipelineFilter;
   const filtered = PIPELINE.filter(p => {
     if (filter === 'all') return true;
-    if (filter === 'lm' || filter === 'ss' || filter === 've') return p.type === filter;
+    if (filter === 'lm' || filter === 'ss' || filter === 've' || filter === 'cw') return p.type === filter;
     return p.stage === filter;
   });
 
@@ -1619,7 +1634,7 @@ function renderPipeline(filter) {
         <div style="font-size:12px;color:var(--text-secondary);">${p.name}</div>
         <div style="font-size:11px;color:var(--text-muted);">${p.location}${p.sourceUrl ? ` · <a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--blue-400);text-decoration:none;">${p.sourceLabel}</a>` : ''}</div>
       </td>
-      <td><span class="type-dot ${p.type}"></span><span style="font-size:12px;color:var(--text-secondary);">${p.type === 'lm' ? 'Laundromat' : p.type === 'ss' ? 'Self-storage' : 'Vending'}</span></td>
+      <td><span class="type-dot ${p.type}"></span><span style="font-size:12px;color:var(--text-secondary);">${p.type === 'lm' ? 'Laundromat' : p.type === 'ss' ? 'Self-storage' : p.type === 've' ? 'Vending' : 'Car Wash'}</span></td>
       <td style="font-size:13px;color:var(--text-primary);">${askingStr}</td>
       <td style="font-size:13px;color:var(--text-primary);">${sdeStr}</td>
       <td>
@@ -1677,11 +1692,12 @@ function loadDeal(id) {
   }
 
   // Set type
-  const typeMap = { lm: 'laundromat', ss: 'storage', ve: 'vending' };
+  const typeMap = { lm: 'laundromat', ss: 'storage', ve: 'vending', cw: 'carwash' };
   const typeBtns = document.querySelectorAll('.type-btn');
   typeBtns.forEach(b => b.classList.remove('selected'));
   if (typeMap[p.type]) {
-    selectType(typeMap[p.type], typeBtns[p.type === 'lm' ? 0 : p.type === 'ss' ? 1 : 2]);
+    const typeIdx = { lm: 0, ss: 1, ve: 2, cw: 3 };
+    selectType(typeMap[p.type], typeBtns[typeIdx[p.type] ?? 0]);
   }
 
   // Load per-criterion slider values from pipeline data
