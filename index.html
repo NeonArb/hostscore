@@ -273,8 +273,7 @@
 
 <header>
   <h1>HostScore</h1>
-  <span>Hospitality Property Scorecard</span>
-  <a href="https://gethostscore.com/passive.html" style="margin-left:auto; background:rgba(255,255,255,0.15); color:white; padding:6px 14px; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600; white-space:nowrap;">💰 PassiveScore</a>
+  <span>Hospitality Property Investment Scorecard</span>
 </header>
 
 <div class="container">
@@ -828,6 +827,74 @@ const PIPELINE = [
     // regulatory=3: NM rural lodge, assumed permitted | resale=3: niche mountain lodge
     // seasonality=2: NM mountain = summer-heavy, cold winters, shorter shoulder
     note: 'VERIFY — Chama is northern NM mountain, home of Cumbres & Toltec Scenic Railroad (major tourist draw). Lodge + cabin format is right income structure. Revenue unknown — one call. (Region unlocked Session 12: northern NM mountain now in scope.)' },
+
+  // ── SCAN #5 — 2026-06-22 ──────────────────────────────────────────────────
+  { id: 'P28', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=9992',
+    group: 'VERIFY', name: 'Hearts Desire B&B', type: "B&B / Inn",
+    location: 'Raton, Colfax County, NM', price: '$449,500', units: '7 rooms',
+    score: 53, band: 'verify',
+    scores: [1, 4, 3, 4, 3, 2, 4, 2, 3],
+    // financial=1: unverified (30+ yr history strong signal) | financeability=4: B&B, <$500K, excellent SBA fit
+    // dealterms=3: no SF but $449K = $44.9K SBA down, $155K reserves | operating=4: 30+ yr established
+    // condition=3: unknown deferred maintenance | location=2: Raton = I-25 highway border town, not premium
+    // regulatory=4: 30+ yr B&B permits in order | resale=2: small market | seasonality=3: NM mountain, hunting/summer
+    note: '⚡ REGION BORDERLINE — Raton not on locked NM mountain list. Principal decision needed before contact. VERIFY — 7 rooms + 30 yr established + $449K = exceptional capital position. If region approved + revenue ≥$120K gross → likely Watch.' },
+
+  { id: 'P24', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=9928',
+    group: 'VERIFY', name: 'Lady Geneva B&B', type: "B&B / Inn",
+    location: 'Medford, Jackson County, OR', price: '$735,000', units: '4 rooms',
+    score: 51, band: 'verify',
+    scores: [1, 4, 2, 4, 3, 3, 3, 3, 3],
+    // financial=1: unverified | financeability=4: B&B, under budget, $126.5K reserves
+    // dealterms=2: no SF but low price | operating=4: B&B manageable | condition=3: 1914, "turnkey"
+    // location=3: Medford/Rogue Valley, OSF + wine 15 min | regulatory=3 | resale=3 | seasonality=3: wildfire risk
+    note: 'VERIFY — ⚠ 4-room income ceiling: $250K+ gross needs premium ADR (≥$175) + 80%+ occ. One call to get gross revenue. If <$175K → confirmed Pass. If $200K+ → re-score, Watch-borderline.' },
+
+  { id: 'P23', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10225',
+    group: 'Pass', name: 'Jefferson Mosier House B&B', type: "B&B / Inn",
+    location: 'Mosier, Wasco County, OR', price: '$1,295,000', units: '6 rooms',
+    score: 46, band: 'pass',
+    scores: [1, 3, 1, 3, 3, 4, 3, 3, 3],
+    // financial=1: unverified | financeability=3: $1.295M thin reserves ($70K)
+    // dealterms=1: no SF, at top of range | operating=3 | condition=3: 1904 Victorian, National Register
+    // location=4: Columbia River Gorge | regulatory=3: NatReg restricts capex | resale=3 | seasonality=3
+    note: 'PASS — no SF + National Register restrictions + thin reserves. VERIFY test score = 56, below 60. Pass unless price drops ~25% or SF confirmed.' },
+
+  { id: 'P25', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=9891',
+    group: 'Pass', name: "Abigail's B&B", type: "B&B / Inn",
+    location: 'Ashland, Jackson County, OR', price: '$1,195,000', units: '5 rooms + innkeeper apt',
+    score: 48, band: 'pass',
+    scores: [1, 3, 1, 4, 3, 4, 3, 4, 3],
+    // financial=1: unverified | financeability=3: $1.195M thin reserves ($80K)
+    // dealterms=1: no SF | operating=4: innkeeper apt | condition=3: 1904 historic
+    // location=4: Ashland OSF/wine | regulatory=3 | resale=4: Ashland good buyer depth | seasonality=3
+    note: 'PASS — best location of new batch but price + no SF = thin capital. VERIFY test 58.4, just below Watch. Would advance with SF confirmed or price <$900K.' },
+
+  { id: 'P26', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=12573',
+    group: 'Pass', name: 'Maitland Manor Boutique Hotel', type: "Boutique Hotel",
+    location: 'Port Angeles, Clallam County, WA', price: '$1,200,000', units: '4 rooms',
+    score: 47, band: 'pass',
+    scores: [1, 3, 1, 4, 3, 4, 3, 3, 3],
+    // financial=1 | financeability=3: $1.2M thin reserves ($80K) | dealterms=1: no SF
+    // operating=4 | condition=3 | location=4: Olympic NP gateway, Victoria BC ferry
+    // regulatory=3 | resale=3 | seasonality=3: rainy but year-round
+    note: 'PASS — 4 rooms at $1.2M = income ceiling risk. VERIFY test 57.4. Olympic NP is right location. Monitor for price reduction.' },
+
+  { id: 'P27', scanNum: 5, scanDate: '2026-06-22',
+    sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10172',
+    group: 'Pass', name: 'Slater Heritage House', type: "B&B / Inn",
+    location: 'Ferndale, Whatcom County, WA', price: '$999,978', units: '4 rooms',
+    score: 49, band: 'pass',
+    scores: [1, 4, 2, 4, 3, 2, 3, 3, 3],
+    // financial=1 | financeability=4: under $1M, $100K reserves | dealterms=2: no SF
+    // operating=4 | condition=3 | location=2: Ferndale = dairy/agricultural, NOT tourism destination
+    // regulatory=3 | resale=3 | seasonality=3
+    note: 'PASS — location is the fatal flaw. Ferndale is not a hospitality destination. 4-room ceiling. VERIFY test 59.4, just misses.' },
 ];
 
 function buildPipelineSelect() {
@@ -1066,149 +1133,3 @@ function calculate() {
   const hasKO = triggeredKOs.length > 0;
 
   let band, bandClass, sub;
-  if (hasKO) {
-    band = 'NO-GO (Knock-Out)';
-    bandClass = 'knockout';
-    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
-  } else if (total >= 75) {
-    band = 'ADVANCE';
-    bandClass = 'advance';
-    sub = 'Score ≥ 75 — strong candidate. Proceed to broker contact and due diligence.';
-  } else if (total >= 60) {
-    band = 'WATCH';
-    bandClass = 'watch';
-    sub = 'Score 60–74 — viable with caveats. Monitor, gather more data before advancing.';
-  } else if (total >= 45) {
-    band = 'VERIFY';
-    bandClass = 'verify';
-    sub = 'Score 45–59 with unverified revenue — one call to get revenue. If $250K+ gross → re-score.';
-  } else {
-    band = 'PASS';
-    bandClass = 'pass';
-    sub = 'Score < 45 or structural income ceiling — does not meet threshold.';
-  }
-
-  const propName = document.getElementById('propName').value.trim() || 'Unnamed Property';
-  document.getElementById('resPropertyName').textContent = propName;
-  document.getElementById('totalScore').textContent = hasKO ? 'KO' : total;
-  document.getElementById('verdictBand').textContent = band;
-  document.getElementById('verdictBox').className = 'verdict-box ' + bandClass;
-  document.getElementById('verdictSub').textContent = sub;
-
-  // KO box
-  const koBox = document.getElementById('koTriggered');
-  if (hasKO) {
-    koBox.style.display = 'block';
-    const koUl = document.getElementById('koTriggeredList');
-    koUl.innerHTML = '';
-    triggeredKOs.forEach(ko => {
-      const li = document.createElement('li');
-      li.textContent = ko.text;
-      koUl.appendChild(li);
-    });
-  } else {
-    koBox.style.display = 'none';
-  }
-
-  // Bar breakdown
-  const barDiv = document.getElementById('barBreakdown');
-  barDiv.innerHTML = '';
-  const sorted = [...CATEGORIES].map(cat => ({
-    cat,
-    v: scores[cat.id],
-    contrib: Math.round((scores[cat.id] / 5) * cat.weight * 100 * 10) / 10
-  }));
-  sorted.forEach(({ cat, v, contrib }) => {
-    const pct = (v / 5) * 100;
-    const barColor = v >= 4 ? 'var(--advance)' : v >= 2 ? 'var(--watch)' : 'var(--pass)';
-    const row = document.createElement('div');
-    row.style.marginBottom = '10px';
-    row.innerHTML = `
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">${Math.round(cat.weight*100)}% wt · ${v}/5 · ${contrib} pts</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-    `;
-    barDiv.appendChild(row);
-  });
-
-  // Strengths & risks
-  const ranked = [...sorted].sort((a, b) => b.v - a.v);
-  const sl = document.getElementById('strengthsList');
-  const rl = document.getElementById('risksList');
-  sl.innerHTML = '';
-  rl.innerHTML = '';
-  ranked.slice(0, 3).forEach(({ cat, v }) => {
-    const li = document.createElement('li');
-    li.textContent = `${cat.name} (${v}/5)`;
-    sl.appendChild(li);
-  });
-  ranked.slice(-3).reverse().forEach(({ cat, v }) => {
-    const li = document.createElement('li');
-    li.textContent = `${cat.name} (${v}/5)`;
-    rl.appendChild(li);
-  });
-
-  // Radar chart
-  const labels = CATEGORIES.map(c => c.name.split(' ').slice(0,2).join(' '));
-  const dataVals = CATEGORIES.map(cat => scores[cat.id]);
-
-  if (radarChart) radarChart.destroy();
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: propName,
-        data: dataVals,
-        backgroundColor: 'rgba(217,119,6,0.15)',
-        borderColor: 'rgba(217,119,6,0.8)',
-        borderWidth: 2,
-        pointBackgroundColor: 'rgba(217,119,6,0.9)'
-      }]
-    },
-    options: {
-      scales: {
-        r: {
-          min: 0, max: 5,
-          ticks: { stepSize: 1, font: { size: 10 } },
-          pointLabels: { font: { size: 11 } }
-        }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function resetAll() {
-  CATEGORIES.forEach(cat => {
-    const slider = document.getElementById('slider_' + cat.id);
-    slider.value = 0;
-    updateSlider(cat.id, 0);
-  });
-  KNOCKOUTS.forEach(ko => {
-    document.getElementById(ko.id).checked = false;
-    updateKO(ko.id);
-  });
-  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('propType').value = '';
-  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('estTerm').value = '';
-  document.getElementById('estResult').style.display = 'none';
-  calcFinancials();
-  document.getElementById('results').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-buildUI();
-buildPipelineSelect();
-</script>
-</body>
-</html>
