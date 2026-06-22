@@ -1133,3 +1133,149 @@ function calculate() {
   const hasKO = triggeredKOs.length > 0;
 
   let band, bandClass, sub;
+  if (hasKO) {
+    band = 'NO-GO (Knock-Out)';
+    bandClass = 'knockout';
+    sub = 'One or more knock-out conditions triggered. Do not advance regardless of score.';
+  } else if (total >= 75) {
+    band = 'ADVANCE';
+    bandClass = 'advance';
+    sub = 'Score ≥ 75 — strong candidate. Proceed to broker contact and due diligence.';
+  } else if (total >= 60) {
+    band = 'WATCH';
+    bandClass = 'watch';
+    sub = 'Score 60–74 — viable with caveats. Monitor, gather more data before advancing.';
+  } else if (total >= 45) {
+    band = 'VERIFY';
+    bandClass = 'verify';
+    sub = 'Score 45–59 with unverified revenue — one call to get revenue. If $250K+ gross → re-score.';
+  } else {
+    band = 'PASS';
+    bandClass = 'pass';
+    sub = 'Score < 45 or structural income ceiling — does not meet threshold.';
+  }
+
+  const propName = document.getElementById('propName').value.trim() || 'Unnamed Property';
+  document.getElementById('resPropertyName').textContent = propName;
+  document.getElementById('totalScore').textContent = hasKO ? 'KO' : total;
+  document.getElementById('verdictBand').textContent = band;
+  document.getElementById('verdictBox').className = 'verdict-box ' + bandClass;
+  document.getElementById('verdictSub').textContent = sub;
+
+  // KO box
+  const koBox = document.getElementById('koTriggered');
+  if (hasKO) {
+    koBox.style.display = 'block';
+    const koUl = document.getElementById('koTriggeredList');
+    koUl.innerHTML = '';
+    triggeredKOs.forEach(ko => {
+      const li = document.createElement('li');
+      li.textContent = ko.text;
+      koUl.appendChild(li);
+    });
+  } else {
+    koBox.style.display = 'none';
+  }
+
+  // Bar breakdown
+  const barDiv = document.getElementById('barBreakdown');
+  barDiv.innerHTML = '';
+  const sorted = [...CATEGORIES].map(cat => ({
+    cat,
+    v: scores[cat.id],
+    contrib: Math.round((scores[cat.id] / 5) * cat.weight * 100 * 10) / 10
+  }));
+  sorted.forEach(({ cat, v, contrib }) => {
+    const pct = (v / 5) * 100;
+    const barColor = v >= 4 ? 'var(--advance)' : v >= 2 ? 'var(--watch)' : 'var(--pass)';
+    const row = document.createElement('div');
+    row.style.marginBottom = '10px';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:0.82rem;font-weight:500">${cat.name}</span><span style="color:var(--muted);font-size:0.78rem">${Math.round(cat.weight*100)}% wt · ${v}/5 · ${contrib} pts</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    `;
+    barDiv.appendChild(row);
+  });
+
+  // Strengths & risks
+  const ranked = [...sorted].sort((a, b) => b.v - a.v);
+  const sl = document.getElementById('strengthsList');
+  const rl = document.getElementById('risksList');
+  sl.innerHTML = '';
+  rl.innerHTML = '';
+  ranked.slice(0, 3).forEach(({ cat, v }) => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.name} (${v}/5)`;
+    sl.appendChild(li);
+  });
+  ranked.slice(-3).reverse().forEach(({ cat, v }) => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.name} (${v}/5)`;
+    rl.appendChild(li);
+  });
+
+  // Radar chart
+  const labels = CATEGORIES.map(c => c.name.split(' ').slice(0,2).join(' '));
+  const dataVals = CATEGORIES.map(cat => scores[cat.id]);
+
+  if (radarChart) radarChart.destroy();
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: propName,
+        data: dataVals,
+        backgroundColor: 'rgba(217,119,6,0.15)',
+        borderColor: 'rgba(217,119,6,0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(217,119,6,0.9)'
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, font: { size: 10 } },
+          pointLabels: { font: { size: 11 } }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetAll() {
+  CATEGORIES.forEach(cat => {
+    const slider = document.getElementById('slider_' + cat.id);
+    slider.value = 0;
+    updateSlider(cat.id, 0);
+  });
+  KNOCKOUTS.forEach(ko => {
+    document.getElementById(ko.id).checked = false;
+    updateKO(ko.id);
+  });
+  ['propName','propLocation','propPrice','propUnits','scoredBy'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('propType').value = '';
+  ['finGrossRev','finOpEx','finDebtSvc','finPrice','finCash'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  ['estLoan','estRate'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('estTerm').value = '';
+  document.getElementById('estResult').style.display = 'none';
+  calcFinancials();
+  document.getElementById('results').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildUI();
+buildPipelineSelect();
+</script>
+</body>
+</html>
