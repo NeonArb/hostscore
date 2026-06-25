@@ -936,7 +936,7 @@ function buildPipelineSelect() {
   const sel = document.getElementById('pipelineSelect');
   const groups = ['Watch', 'VERIFY', 'Pass', 'Dead / No-Go'];
   groups.forEach(g => {
-    const props = PIPELINE.filter(p => p.group === g);
+    const props = PIPELINE.filter(p => (p.group||'').toUpperCase() === g.toUpperCase());
     if (!props.length) return;
     const og = document.createElement('optgroup');
     og.label = g;
