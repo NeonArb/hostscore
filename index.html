@@ -852,6 +852,30 @@ const PIPELINE = [
     // location=4: Arkansas River rafting/Gold Medal fishing/Monarch ski/US-50 | regulatory=3 | resale=3 | seasonality=3
     note: 'PASS (price KO at $1.35M) — strongest operating-business FORMAT of batch (true dual income, river+ski corridor, priced below appraisal) but over ~$1.2M hard ceiling: 10% down = $135K leaves only $65K reserves. Revisit if Watch list thins, price drops below $1.2M, or heavy seller carry. Flagged for principal awareness.' },
 
+  { id: 'P30', scanNum: 7, scanDate: '2026-06-25',
+    sourceUrl: 'https://crystalip.com/listings/MDGO25-Motel-Del-Rogue/',
+    group: 'VERIFY', name: 'Motel Del Rogue', type: "Riverfront Motel + Cabins",
+    location: 'Grants Pass, Josephine County, OR (Rogue River)', price: 'Not published', units: '14 keys + owner quarters',
+    score: 51, band: 'verify',
+    scores: [1, 3, 2, 3, 3, 4, 4, 3, 3],
+    note: 'VERIFY (51) - best in-region active asset of Scan #7 and the right format (14 keys clears the 4-6 room ceiling trap). Two unknowns gate it: price NOT published + revenue undisclosed. One Crystal IP email gets both; if price <=$1.2M AND gross >=$250K it likely reaches Watch; if price >$1.3M it is a Pass (price KO). Rogue River corridor.' },
+
+  { id: 'P31', scanNum: 7, scanDate: '2026-06-25',
+    sourceUrl: 'https://www.unitedcountry.com/properties/wa/top-rated-gorge-rv-park-campground-for-sale/1145806/',
+    group: 'PASS', name: 'Timberlake Campground & RV Park', type: "Campground / RV Park",
+    location: 'Stevenson, Skamania County, WA (Columbia Gorge)', price: '$1,895,000', units: '65 sites (43 RV + 22 tent)',
+    score: 46, band: 'pass',
+    scores: [1, 3, 1, 3, 3, 4, 3, 3, 3],
+    note: 'PASS (price KO at $1.895M, ~1.6x over ceiling). 65-site Gorge campground, only one away from highway/rail noise. Region also borderline (WA-side Columbia Gorge not explicitly locked). Comp intel; revisit only on major price cut below $1.2M + region confirm.' },
+
+  { id: 'P32', scanNum: 7, scanDate: '2026-06-25',
+    sourceUrl: 'https://m4ranchgroup.com/ranches-for-sale/colorado/somerset/mountainside-rv-park/',
+    group: 'PASS', name: 'Mountainside RV Park', type: "RV Park + Residences",
+    location: 'Somerset, Gunnison County, CO (North Fork Gunnison)', price: '$1,650,000', units: '18 RV sites + 3 cabins + 3 residences',
+    score: 43, band: 'pass',
+    scores: [1, 3, 1, 3, 3, 3, 3, 3, 2],
+    note: 'PASS (price KO at $1.65M + real-estate-heavy / low income ceiling). 18 seasonal sites + residences on 37 acres, 1/4-mile river frontage. Most of the price is land/residences, not a $250K-gross business. Not worth a call at ask.' },
+
   { id: 'P24', scanNum: 5, scanDate: '2026-06-22',
     sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=9928',
     group: 'VERIFY', name: 'Lady Geneva B&B', type: "B&B / Inn",
@@ -1289,4 +1313,4 @@ buildUI();
 buildPipelineSelect();
 </script>
 </body>
-</html>         
+</html>
