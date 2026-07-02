@@ -1654,4 +1654,114 @@ function renderPipeline(filter) {
   // Stats
   document.getElementById('stat-total').textContent = PIPELINE.length;
   document.getElementById('stat-advance').textContent = PIPELINE.filter(p => p.stage === 'advance').length;
-  document.getElem
+  document.getElementById('stat-watch').textContent = PIPELINE.filter(p => p.stage === 'watch').length;
+
+  const tbody = document.getElementById('pipeline-tbody');
+  tbody.innerHTML = filtered.map((p, i) => {
+    const dscrText = p.dscrShocked != null ? `${p.dscr70.toFixed(2)}x / ${p.dscrShocked.toFixed(2)}x`
+                   : p.coc != null ? `CoC ${p.coc}%`
+                   : '— unconfirmed';
+    const barWidth = p.dscrShocked ? Math.min(p.dscrShocked / 4 * 100, 100) : p.coc ? Math.min(p.coc / 50 * 100, 100) : 0;
+    const barColor = (p.dscrShocked >= 2.0 || p.coc >= 25) ? 'var(--emerald-400)' : 'var(--amber-400)';
+    const sPill = p.score >= 70 ? 'high' : p.score >= 60 ? 'mid' : 'low';
+    const askingStr = p.asking ? `$${(p.asking/1000).toFixed(0)}K` : '—';
+    const sdeStr = p.sde ? `$${(p.sde/1000).toFixed(0)}K` : '—';
+    const stageCls = ['advance','blocked','stagger','fallback','watch'].includes(p.stage) ? p.stage : 'fallback';
+    return `<tr onclick="loadDeal('${p.id}')">
+      <td style="font-size:11px;color:var(--text-muted);">${i+1}</td>
+      <td>
+        <div style="font-weight:600;font-size:13px;color:var(--text-primary);">${p.id}</div>
+        <div style="font-size:12px;color:var(--text-secondary);">${p.name}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${p.location}${p.sourceUrl ? ` · <a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--blue-400);text-decoration:none;">${p.sourceLabel}</a>` : ''}</div>
+      </td>
+      <td><span class="type-dot ${p.type}"></span><span style="font-size:12px;color:var(--text-secondary);">${p.type === 'lm' ? 'Laundromat' : p.type === 'ss' ? 'Self-storage' : p.type === 've' ? 'Vending' : 'Car Wash'}</span></td>
+      <td style="font-size:13px;color:var(--text-primary);">${askingStr}</td>
+      <td style="font-size:13px;color:var(--text-primary);">${sdeStr}</td>
+      <td>
+        <div class="dscr-bar-wrap">
+          <div class="dscr-bar-bg"><div class="dscr-bar-fill" style="width:${barWidth}%;background:${barColor};"></div></div>
+          <span style="font-size:12px;color:var(--text-secondary);min-width:80px;">${dscrText}</span>
+        </div>
+      </td>
+      <td><span class="score-pill ${sPill}">${p.score}</span></td>
+      <td><span class="stage-badge ${stageCls}">${p.stageLabel}</span></td>
+      <td><button class="load-deal-btn" onclick="event.stopPropagation();loadDeal('${p.id}')">Load →</button></td>
+    </tr>`;
+  }).join('');
+
+  if (!filtered.length) tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;">No candidates match this filter.</td></tr>`;
+}
+
+function filterPipeline(filter, btn) {
+  pipelineFilter = filter;
+  document.querySelectorAll('.pipeline-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPipeline(filter);
+}
+
+function loadDeal(id) {
+  const p = PIPELINE.find(x => x.id === id);
+  if (!p) return;
+
+  // Switch to scorecard view
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-score').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
+
+  // Fill fields
+  document.getElementById('biz-name').value   = `${p.id} — ${p.name}`;
+  document.getElementById('biz-loc').value    = p.location;
+  document.getElementById('biz-price').value  = p.asking;
+  document.getElementById('f-price').value    = p.asking;
+  document.getElementById('f-sde').value      = p.sde;
+  document.getElementById('f-down').value     = p.down;
+  document.getElementById('f-carry').value    = p.carry === 'Confirmed' ? 'confirmed' : p.carry === 'Unconfirmed' ? 'unconfirmed' : '';
+  document.getElementById('e-loan').value     = p.asking - p.down;
+  document.getElementById('e-rate').value     = 7.5;
+  document.getElementById('e-equity').value   = p.down;
+  // Source
+  document.getElementById('biz-source').value = p.sourceLabel || '';
+  const srcLinkEl = document.getElementById('biz-source-link');
+  if (p.sourceUrl) {
+    srcLinkEl.href = p.sourceUrl;
+    srcLinkEl.textContent = '↗ Open listing';
+    srcLinkEl.style.display = 'inline';
+  } else {
+    srcLinkEl.style.display = 'none';
+  }
+
+  // Set type
+  const typeMap = { lm: 'laundromat', ss: 'storage', ve: 'vending', cw: 'carwash' };
+  const typeBtns = document.querySelectorAll('.type-btn');
+  typeBtns.forEach(b => b.classList.remove('selected'));
+  if (typeMap[p.type]) {
+    const typeIdx = { lm: 0, ss: 1, ve: 2, cw: 3 };
+    selectType(typeMap[p.type], typeBtns[typeIdx[p.type] ?? 0]);
+  }
+
+  // Load per-criterion slider values from pipeline data
+  if (p.sliders && p.sliders.length === CRITERIA.length) {
+    CRITERIA.forEach((c, i) => {
+      const v = p.sliders[i];
+      scores[c.id] = v;
+      document.getElementById('s-'+c.id).value = v;
+      document.getElementById('sv-'+c.id).textContent = v;
+      document.getElementById('desc-'+c.id).textContent = c.anchors[v];
+    });
+  }
+
+  updateMetrics();
+  calcDebtService();
+  updateLiveScore();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addToPipeline() {
+  const name  = document.getElementById('biz-name').value || 'Unnamed';
+  const score = Math.round(CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0));
+  alert(`✅ "${name}" (score: ${score}/100) would be added to the pipeline.\n\nIn the full app, this writes to Supabase → appears in the Pipeline tab immediately.`);
+}
+</script>
+</body>
+</html>
