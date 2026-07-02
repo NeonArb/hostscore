@@ -1104,7 +1104,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
     <div class="alert info" style="margin-top:1rem;">
       <span class="alert-icon">ℹ️</span>
-      <span><strong>Next critical path:</strong> Send approved outreach emails (Darrel/Lisa action): A — LM-10 (NYLaundromats.com), B — LM-14 (BizBuySell FL), C — SS-15 (F6 enquiry). VE-12 go/no-go decision. Manually verify LM-18 + LM-19 in browser. Find VE-16 listing ID (BizBuySell Fort Myers vending). Do NOT contact any owner or broker without explicit approval.</span>
+      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — send approved outreach emails: A — LM-10 (NYLaundromats.com), B — LM-14 (BizBuySell FL), C — SS-15 (F6 enquiry). (2) Manual browser: verify LM-21 not pending (F12, score 63 — Shortlist candidate if active), find VE-16 listing ID (F9 Fort Myers vending), verify LM-18 BizBuySell #2263736 still live, check LM-22 vs LM-14 (F13). (3) VE-12 go/no-go decision. Pipeline: 49 candidates · 5 Shortlist · 15 open red-team flags. Last scan: 2026-07-01 (Session 12). Do NOT contact any owner or broker without explicit approval.</span>
     </div>
 
     <!-- Flag tracker -->
@@ -1126,6 +1126,10 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
           <tr><td><strong>F9</strong></td><td>VE-16</td><td><span class="stage-badge blocked">OPEN</span></td><td>VE-16 Fort Myers vending — no specific listing ID confirmed; no financial data. Cannot score or advance without a live listing URL.</td></tr>
           <tr><td><strong>F10</strong></td><td>LM-18</td><td><span class="stage-badge blocked">OPEN</span></td><td>LM-18 Clearwater — SDE $80K is 11% below $90K playbook sourcing floor. Passes DSCR stress test at 1.82x but flag for recalibration. Kill if SDE below $75K.</td></tr>
           <tr><td><strong>F11</strong></td><td>SS-16</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-16 self-storage+apartments — "won't qualify for bank loans" pattern (same as F6) + $350K down exceeds ~$200K capital pool. Likely double KO — verify location and down payment before spending time.</td></tr>
+          <tr><td><strong>F12</strong></td><td>LM-21</td><td><span class="stage-badge blocked">OPEN</span></td><td>LM-21 St. Pete FL — listing marked "pending" in WebSearch results. If under LOI, dead to us. Verify status via manual browser before investing any research time.</td></tr>
+          <tr><td><strong>F13</strong></td><td>LM-22</td><td><span class="stage-badge blocked">OPEN</span></td><td>LM-22 Pensacola Beach — potential dedup with LM-14 (FL Barrier Island, $825K). Different price/island strongly suggests separate listing, but confirm before advancing.</td></tr>
+          <tr><td><strong>F14</strong></td><td>SS-17</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-17 Berlin NH — recreational storage demand is seasonal (ATV/snowmobile/boat). NH winters limit boat/ATV usage. Verify NOI holds year-round before underwriting.</td></tr>
+          <tr><td><strong>F15</strong></td><td>SS-19</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-19 Broken Bow OK — WebSearch snippet mentioned "$350K down" (unverified). If confirmed, equals capital ceiling. Kill before investing time if down > $200K confirmed.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1207,6 +1211,23 @@ const PIPELINE = [
     sliders:[0, 0, 0, 0, 0, 0, 0, 0, 0], sourceLabel:'BizBuySell — no listing ID confirmed; manual browse to find', sourceUrl:'' },
   { id:'SS-16', name:'Self-Storage + Apartments Combo', type:'ss', location:'Unknown — verify', asking:null, sde:null, down:350000, dscr70:null, dscrShocked:null, coc:null, score:0, stage:'watch', carry:'Confirmed', flags:['F2','F11'], stageLabel:'⚠️ Raw — F11 likely double KO',
     sliders:[0, 0, 0, 0, 0, 0, 0, 0, 0], sourceLabel:'BizBuySell #2292145 — Cloudflare blocked; manual browser verify', sourceUrl:'' },
+  // ── Session 12 additions — 2026-07-01 ──────────────────────────────────────
+  { id:'LM-21', name:'St. Petersburg FL Stand-Alone Laundromat', type:'lm', location:'St. Petersburg, FL', asking:350000, sde:105000, down:150000, dscr70:1.99, dscrShocked:1.90, coc:70, score:63, stage:'watch', carry:'Implied', flags:['F2','F12'], stageLabel:'👀 Watch — F12 verify pending status',
+    sliders:[1, 3, 5, 4, 2, 4, 2, 2, 4], sourceLabel:'WebSearch-indexed — no listing ID confirmed; may be under offer (F12)', sourceUrl:'' },
+  { id:'SS-17', name:'Berlin NH Recreational Storage (104 Units, 2024)', type:'ss', location:'Berlin, NH', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:48, stage:'watch', carry:'Unknown', flags:['F2','F14'], stageLabel:'🔍 Raw — F14 seasonal demand',
+    sliders:[0, 0, 0, 5, 1, 3, 5, 5, 2], sourceLabel:'BizBuySell #2500517 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-opportunity/the-facility-consists-of-104-units/2500517/' },
+  { id:'SS-18', name:'New Richland MN 2-Facility Storage (96% Occ)', type:'ss', location:'New Richland, MN', asking:675000, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:53, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — 96% occ, get NOI',
+    sliders:[2, 2, 2, 5, 1, 3, 3, 5, 2], sourceLabel:'Argus Self Storage Advisors — argus-selfstorage.com/properties/minnesota/new-richland-storage/', sourceUrl:'https://argus-selfstorage.com/properties/minnesota/new-richland-storage/' },
+  { id:'SS-19', name:'Broken Bow (Hochatown) OK Tourism Storage', type:'ss', location:'Broken Bow, OK', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:48, stage:'watch', carry:'Signaled', flags:['F2','F15'], stageLabel:'🔍 Raw — F15 verify down payment',
+    sliders:[0, 0, 0, 4, 2, 4, 3, 4, 1], sourceLabel:'BizBuySell #2467860 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-opportunity/21-pinyon-rd-self-storage-broken-bow-ok/2467860/' },
+  { id:'LM-22', name:'Pensacola Beach FL Barrier Island Laundromat (RE Owned)', type:'lm', location:'Pensacola Beach, FL', asking:360000, sde:null, down:360000, dscr70:null, dscrShocked:null, coc:null, score:53, stage:'watch', carry:'Unknown', flags:['F2','F13'], stageLabel:'👀 Watch — F13 dedup vs LM-14',
+    sliders:[0, 0, 0, 4, 1, 4, 3, 5, 4], sourceLabel:'WebSearch-indexed — no listing ID confirmed; manual browse BizBuySell Escambia/Pensacola Beach', sourceUrl:'' },
+  { id:'LM-23', name:'Polk County FL Laundromat (Speed Queen 2022)', type:'lm', location:'Polk County, FL', asking:530000, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:46, stage:'watch', carry:'None', flags:['F2'], stageLabel:'👀 Watch — park until SDE confirmed',
+    sliders:[0, 0, 0, 4, 0, 3, 5, 2, 4], sourceLabel:'WebSearch-indexed — no listing ID confirmed; Speed Queen mfr financing only (not seller carry)', sourceUrl:'' },
+  { id:'CW-10', name:'St. Petersburg FL 4-Bay Unmanned Car Wash', type:'cw', location:'St. Petersburg, FL', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:52, stage:'watch', carry:'~40%', flags:['F2'], stageLabel:'👀 Watch — unmanned + FL + carry',
+    sliders:[0, 0, 0, 5, 3, 3, 5, 2, 3], sourceLabel:'BizBuySell #2398728 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-asset/new-4-bay-car-wash-unmanned-no-employees-favorable-lease/2398728/' },
+  { id:'CW-11', name:'Bellevue NE 2-Location Self-Serve Car Wash', type:'cw', location:'Bellevue (Omaha metro), NE', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:45, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — park until data confirmed',
+    sliders:[0, 0, 0, 4, 1, 3, 3, 3, 3], sourceLabel:'BizBuySell #2388069 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-opportunity/two-profitable-car-wash-businesses-in-bellevue-omaha-metro-area/2388069/' },
 ];
 
 // ── State ────────────────────────────────────────
@@ -1633,114 +1654,4 @@ function renderPipeline(filter) {
   // Stats
   document.getElementById('stat-total').textContent = PIPELINE.length;
   document.getElementById('stat-advance').textContent = PIPELINE.filter(p => p.stage === 'advance').length;
-  document.getElementById('stat-watch').textContent = PIPELINE.filter(p => p.stage === 'watch').length;
-
-  const tbody = document.getElementById('pipeline-tbody');
-  tbody.innerHTML = filtered.map((p, i) => {
-    const dscrText = p.dscrShocked != null ? `${p.dscr70.toFixed(2)}x / ${p.dscrShocked.toFixed(2)}x`
-                   : p.coc != null ? `CoC ${p.coc}%`
-                   : '— unconfirmed';
-    const barWidth = p.dscrShocked ? Math.min(p.dscrShocked / 4 * 100, 100) : p.coc ? Math.min(p.coc / 50 * 100, 100) : 0;
-    const barColor = (p.dscrShocked >= 2.0 || p.coc >= 25) ? 'var(--emerald-400)' : 'var(--amber-400)';
-    const sPill = p.score >= 70 ? 'high' : p.score >= 60 ? 'mid' : 'low';
-    const askingStr = p.asking ? `$${(p.asking/1000).toFixed(0)}K` : '—';
-    const sdeStr = p.sde ? `$${(p.sde/1000).toFixed(0)}K` : '—';
-    const stageCls = ['advance','blocked','stagger','fallback','watch'].includes(p.stage) ? p.stage : 'fallback';
-    return `<tr onclick="loadDeal('${p.id}')">
-      <td style="font-size:11px;color:var(--text-muted);">${i+1}</td>
-      <td>
-        <div style="font-weight:600;font-size:13px;color:var(--text-primary);">${p.id}</div>
-        <div style="font-size:12px;color:var(--text-secondary);">${p.name}</div>
-        <div style="font-size:11px;color:var(--text-muted);">${p.location}${p.sourceUrl ? ` · <a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--blue-400);text-decoration:none;">${p.sourceLabel}</a>` : ''}</div>
-      </td>
-      <td><span class="type-dot ${p.type}"></span><span style="font-size:12px;color:var(--text-secondary);">${p.type === 'lm' ? 'Laundromat' : p.type === 'ss' ? 'Self-storage' : p.type === 've' ? 'Vending' : 'Car Wash'}</span></td>
-      <td style="font-size:13px;color:var(--text-primary);">${askingStr}</td>
-      <td style="font-size:13px;color:var(--text-primary);">${sdeStr}</td>
-      <td>
-        <div class="dscr-bar-wrap">
-          <div class="dscr-bar-bg"><div class="dscr-bar-fill" style="width:${barWidth}%;background:${barColor};"></div></div>
-          <span style="font-size:12px;color:var(--text-secondary);min-width:80px;">${dscrText}</span>
-        </div>
-      </td>
-      <td><span class="score-pill ${sPill}">${p.score}</span></td>
-      <td><span class="stage-badge ${stageCls}">${p.stageLabel}</span></td>
-      <td><button class="load-deal-btn" onclick="event.stopPropagation();loadDeal('${p.id}')">Load →</button></td>
-    </tr>`;
-  }).join('');
-
-  if (!filtered.length) tbody.innerHTML = `<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;">No candidates match this filter.</td></tr>`;
-}
-
-function filterPipeline(filter, btn) {
-  pipelineFilter = filter;
-  document.querySelectorAll('.pipeline-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderPipeline(filter);
-}
-
-function loadDeal(id) {
-  const p = PIPELINE.find(x => x.id === id);
-  if (!p) return;
-
-  // Switch to scorecard view
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-score').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn')[1].classList.add('active');
-
-  // Fill fields
-  document.getElementById('biz-name').value   = `${p.id} — ${p.name}`;
-  document.getElementById('biz-loc').value    = p.location;
-  document.getElementById('biz-price').value  = p.asking;
-  document.getElementById('f-price').value    = p.asking;
-  document.getElementById('f-sde').value      = p.sde;
-  document.getElementById('f-down').value     = p.down;
-  document.getElementById('f-carry').value    = p.carry === 'Confirmed' ? 'confirmed' : p.carry === 'Unconfirmed' ? 'unconfirmed' : '';
-  document.getElementById('e-loan').value     = p.asking - p.down;
-  document.getElementById('e-rate').value     = 7.5;
-  document.getElementById('e-equity').value   = p.down;
-  // Source
-  document.getElementById('biz-source').value = p.sourceLabel || '';
-  const srcLinkEl = document.getElementById('biz-source-link');
-  if (p.sourceUrl) {
-    srcLinkEl.href = p.sourceUrl;
-    srcLinkEl.textContent = '↗ Open listing';
-    srcLinkEl.style.display = 'inline';
-  } else {
-    srcLinkEl.style.display = 'none';
-  }
-
-  // Set type
-  const typeMap = { lm: 'laundromat', ss: 'storage', ve: 'vending', cw: 'carwash' };
-  const typeBtns = document.querySelectorAll('.type-btn');
-  typeBtns.forEach(b => b.classList.remove('selected'));
-  if (typeMap[p.type]) {
-    const typeIdx = { lm: 0, ss: 1, ve: 2, cw: 3 };
-    selectType(typeMap[p.type], typeBtns[typeIdx[p.type] ?? 0]);
-  }
-
-  // Load per-criterion slider values from pipeline data
-  if (p.sliders && p.sliders.length === CRITERIA.length) {
-    CRITERIA.forEach((c, i) => {
-      const v = p.sliders[i];
-      scores[c.id] = v;
-      document.getElementById('s-'+c.id).value = v;
-      document.getElementById('sv-'+c.id).textContent = v;
-      document.getElementById('desc-'+c.id).textContent = c.anchors[v];
-    });
-  }
-
-  updateMetrics();
-  calcDebtService();
-  updateLiveScore();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function addToPipeline() {
-  const name  = document.getElementById('biz-name').value || 'Unnamed';
-  const score = Math.round(CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0));
-  alert(`✅ "${name}" (score: ${score}/100) would be added to the pipeline.\n\nIn the full app, this writes to Supabase → appears in the Pipeline tab immediately.`);
-}
-</script>
-</body>
-</html>
+  document.getElementById('stat-w
