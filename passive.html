@@ -696,8 +696,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
   <a class="logo" href="https://gethostscore.com"><span>Host</span>Score</a>
   <nav class="header-nav">
     <button class="nav-btn" onclick="window.location='https://gethostscore.com'">HostScore</button>
-    <button class="nav-btn active" onclick="showView('score')">PassiveScore</button>
-    <button class="nav-btn" onclick="showView('pipeline')">Pipeline</button>
+    <button class="nav-btn active" onclick="showView('score',this)">PassiveScore</button>
+    <button class="nav-btn" onclick="showView('pipeline',this)">Pipeline</button>
   </nav>
 </header>
 
@@ -1245,11 +1245,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── View switching ───────────────────────────────
-function showView(v) {
+function showView(v, btn) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 // ── Business type ────────────────────────────────
@@ -1654,4 +1654,4 @@ function renderPipeline(filter) {
   // Stats
   document.getElementById('stat-total').textContent = PIPELINE.length;
   document.getElementById('stat-advance').textContent = PIPELINE.filter(p => p.stage === 'advance').length;
-  document.getElementById('stat-w
+  document.getElem
