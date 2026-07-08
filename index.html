@@ -267,13 +267,31 @@
     .btn-row { display: none; }
     #results { display: block !important; }
   }
+
+  /* Site nav */
+  header { justify-content: space-between; }
+  .site-nav { display: flex; align-items: center; gap: 8px; }
+  .site-nav a {
+    font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75);
+    text-decoration: none; padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .site-nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .site-nav a.active { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.4); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>HostScore</h1>
-  <span>Hospitality Property Investment Scorecard</span>
+  <div style="display:flex;align-items:baseline;gap:12px;">
+    <h1>HostScore</h1>
+    <span>Hospitality Property Investment Scorecard</span>
+  </div>
+  <nav class="site-nav">
+    <a href="/index.html" class="active">HostScore</a>
+    <a href="/passive.html">PassiveScore</a>
+  </nav>
 </header>
 
 <div class="container">
