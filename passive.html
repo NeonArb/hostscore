@@ -593,6 +593,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 .stage-badge.blocked { color: var(--text-muted); border: 1px solid var(--border-subtle); background: transparent; }
 .stage-badge.stagger { color: var(--text-secondary); border: 1px solid var(--border-default); background: transparent; }
 .stage-badge.fallback { color: var(--text-muted); border: 1px solid var(--border-subtle); background: transparent; }
+.stage-badge.dead    { color: var(--text-muted); border: 1px solid var(--border-subtle); background: transparent; opacity: 0.55; }
+.stage-badge.hold    { color: var(--amber-400);  border: 1px solid var(--amber-400);    background: transparent; }
 .type-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; }
 .type-dot.lm { background: var(--border-strong); }
 .type-dot.ss { background: var(--border-strong); }
@@ -1075,6 +1077,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
       <button class="pipeline-filter-btn" data-filter="watch" onclick="filterPipeline('watch',this)">👀 Watch</button>
       <button class="pipeline-filter-btn" data-filter="unknown" onclick="filterPipeline('unknown',this)">❓ Unknown</button>
       <button class="pipeline-filter-btn" data-filter="blocked" onclick="filterPipeline('blocked',this)">⚠️ Blocked</button>
+      <button class="pipeline-filter-btn" data-filter="dead" onclick="filterPipeline('dead',this)">💀 Dead</button>
+      <button class="pipeline-filter-btn" data-filter="hold" onclick="filterPipeline('hold',this)">⏸ On Hold</button>
       <button class="pipeline-filter-btn" data-filter="lm" onclick="filterPipeline('lm',this)">🫧 Laundromat</button>
       <button class="pipeline-filter-btn" data-filter="ss" onclick="filterPipeline('ss',this)">🏭 Self-Storage</button>
       <button class="pipeline-filter-btn" data-filter="ve" onclick="filterPipeline('ve',this)">🎰 Vending</button>
@@ -1172,14 +1176,14 @@ const PIPELINE = [
   // ── SHORTLIST ──────────────────────────────────────────────────────
   { id:'LM-10', name:'Upper East Side Laundromat', type:'lm', location:'NYC, NY', asking:595000, sde:202512, down:350000, dscr70:2.69, dscrShocked:2.39, score:74, stage:'advance', carry:'Confirmed', flags:['F2'], stageLabel:'✅ Advance',
     sliders:[2, 4, 4, 3, 3, 4, 2, 2, 3], sourceLabel:'BizBuySell #2032099 — listing expired (NYLaundromats.com broker)', sourceUrl:'' },
-  { id:'LM-14', name:'Absentee Laundromat Volusia County FL', type:'lm', location:'Volusia County, FL', asking:825000, sde:182529, down:200000, dscr70:2.13, dscrShocked:1.89, score:72, stage:'advance', carry:'Unconfirmed', flags:['F2','F7'], stageLabel:'✅ Advance',
-    sliders:[2, 3, 3, 3, 1, 3, 2, 2, 2], sourceLabel:'BizBuySell #2480220', sourceUrl:'https://www.bizbuysell.com/business-opportunity/profitable-absentee-laundromat-for-sale-in-volusia-county-fl/2480220/' },
-  { id:'VE-12', name:'Indianapolis 4-Location Vending Route', type:'ve', location:'Indianapolis, IN', asking:95000, sde:40000, down:95000, dscr70:null, dscrShocked:null, coc:29.5, score:70, stage:'stagger', carry:'Unknown', flags:['F2'], stageLabel:'Stagger only',
-    sliders:[2, 3, 4, 5, 0, 2, 3, 0, 2], sourceLabel:'BizQuest — URL needed', sourceUrl:'' },
-  { id:'SS-15', name:'Cold Storage Tampa FL', type:'ss', location:'Tampa, FL', asking:500000, sde:163280, down:350000, dscr70:6.57, dscrShocked:5.83, score:68, stage:'blocked', carry:'Confirmed', flags:['F2','F6'], stageLabel:'⚠️ Blocked — F6',
-    sliders:[2, 5, 3, 4, 3, 3, 2, 1, 2], sourceLabel:'BizBuySell — URL needed', sourceUrl:'' },
-  { id:'LM-15', name:'Houston Absentee Laundromat', type:'lm', location:'Houston, TX', asking:225000, sde:46000, down:200000, dscr70:11.1, dscrShocked:9.85, score:66, stage:'fallback', carry:'Unknown', flags:['F2'], stageLabel:'Fallback',
-    sliders:[1, 3, 2, 3, 0, 2, 2, 1, 2], sourceLabel:'BizQuest — URL needed', sourceUrl:'' },
+  { id:'LM-14', name:'FL Barrier Island Laundromat (Hedgestone)', type:'lm', location:'FL Barrier Island (coastal)', asking:825000, sde:182529, down:200000, dscr70:2.13, dscrShocked:1.89, score:72, stage:'hold', carry:'Unconfirmed', flags:['F2','F7'], stageLabel:'⚠️ On Hold — listing status unresolved (not found in FL laundromats or Hedgestone broker listings 2026-07-08)',
+    sliders:[2, 3, 3, 3, 1, 3, 2, 2, 2], sourceLabel:'Hedgestone Business Advisors (BizBuySell, HS Listing ID-70034) — listing URL not found; may be sold/expired 2026-07-08', sourceUrl:'' },
+  { id:'VE-12', name:'Indianapolis 4-Location Vending Route', type:'ve', location:'Indianapolis, IN', asking:95000, sde:40000, down:95000, dscr70:null, dscrShocked:null, coc:29.5, score:70, stage:'dead', carry:'Unknown', flags:['F2'], stageLabel:'💀 Dead — BizQuest BW2456934 expired 2026-07-08 (also Geographic KO: Indianapolis ≠ SW FL)',
+    sliders:[2, 3, 4, 5, 0, 2, 3, 0, 2], sourceLabel:'BizQuest BW2456934 — EXPIRED 2026-07-08 + Geographic KO (Indianapolis IN not SW Florida)', sourceUrl:'' },
+  { id:'SS-15', name:'RV Repair & Storage Clearwater FL', type:'ss', location:'Clearwater, FL', asking:400000, sde:163280, down:350000, dscr70:24.8, dscrShocked:22.0, score:68, stage:'blocked', carry:'Confirmed', flags:['F2','F6'], stageLabel:'⚠️ Blocked — F6 (type-corrected 2026-07-08: RV Repair & Storage, not cold storage)',
+    sliders:[2, 5, 3, 4, 3, 3, 2, 1, 2], sourceLabel:'BizBuySell 2436934 — CONFIRMED LIVE 2026-07-08', sourceUrl:'https://www.bizbuysell.com/business-opportunity/rv-repair-and-storage-with-huge-potential/2436934/' },
+  { id:'LM-15', name:'Houston Absentee Laundromat', type:'lm', location:'Houston, TX', asking:225000, sde:46000, down:200000, dscr70:11.1, dscrShocked:9.85, score:66, stage:'dead', carry:'Unknown', flags:['F2'], stageLabel:'💀 Dead — BizQuest BW2399921 expired 2026-07-08',
+    sliders:[1, 3, 2, 3, 0, 2, 2, 1, 2], sourceLabel:'BizQuest BW2399921 — EXPIRED 2026-07-08 (redirects to generic page)', sourceUrl:'' },
 
   // ── WATCH LIST — verified listings only ────────────────────────────
   { id:'SS-12', name:'Herman Mini Storage', type:'ss', location:'Herman, MN', asking:289000, sde:null, down:200000, dscr70:null, dscrShocked:null, score:54, stage:'watch', carry:'Signaled', flags:['F2'], stageLabel:'👀 Watch',
@@ -1195,8 +1199,8 @@ const PIPELINE = [
   // ── COIN-OP CAR WASH — new type added 2026-06-20 ──────────────────
   { id:'CW-4', name:'Crystal Clean Car Wash (6-Bay Self-Serve)', type:'cw', location:'Fort Worth, TX', asking:460000, sde:null, down:200000, dscr70:null, dscrShocked:null, score:58, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — verify SDE',
     sliders:[1, 2, 2, 4, 2, 3, 3, 3, 2], sourceLabel:'BizQuest BW2453331', sourceUrl:'https://www.bizquest.com/business-for-sale/crystal-clean-car-wash-self-serve-dfw/BW2453331/' },
-  { id:'CW-8', name:'NE Texas Self-Serve Car Wash (3-Bay + Vacuums)', type:'cw', location:'Northeast Texas', asking:325000, sde:84000, down:200000, dscr70:null, dscrShocked:null, score:62, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — best SDE',
-    sliders:[2, 3, 2, 3, 1, 3, 2, 2, 2], sourceLabel:'BizBuySell TX Car Washes', sourceUrl:'https://www.bizbuysell.com/texas/car-washes-for-sale/' },
+  { id:'CW-8', name:'NE Texas Self-Serve Car Wash (3-Bay + Vacuums)', type:'cw', location:'Northeast Texas', asking:325000, sde:84000, down:200000, dscr70:null, dscrShocked:null, score:62, stage:'dead', carry:'Unknown', flags:['F2'], stageLabel:'💀 Dead — BizBuySell ID-70983 returns 404 (2026-07-08)',
+    sliders:[2, 3, 2, 3, 1, 3, 2, 2, 2], sourceLabel:'BizBuySell ID-70983 — DEAD LINK (404 confirmed 2026-07-08 browser)', sourceUrl:'https://www.bizbuysell.com/business-opportunity/northeast-texas-car-wash/70983/' },
   { id:'CW-2', name:'SGV Coin-Op Car Wash (5-Bay, 24/7)', type:'cw', location:'San Gabriel Valley, CA', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, score:50, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — price unknown',
     sliders:[1, 2, 2, 4, 1, 2, 3, 2, 2], sourceLabel:'BizBuySell #2272026', sourceUrl:'https://www.bizbuysell.com/Business-Opportunity/unique-opportunity-to-own-a-coin-operated-car-wash/2272026/' },
 
@@ -1204,8 +1208,8 @@ const PIPELINE = [
   // All WebSearch-indexed; Cloudflare blocked automated URL verification — manual browser confirm required before advancing past Scored.
   { id:'LM-18', name:'Clearwater FL Laundromat', type:'lm', location:'Clearwater, FL', asking:350000, sde:80000, down:165000, dscr70:1.82, dscrShocked:1.82, score:60, stage:'watch', carry:'Confirmed', flags:['F2','F10'], stageLabel:'👀 Watch — F10 SDE floor',
     sliders:[2, 3, 5, 3, 3, 3, 3, 2, 2], sourceLabel:'BizBuySell — WebSearch-indexed; Cloudflare blocked; manual verify', sourceUrl:'' },
-  { id:'LM-19', name:'Volusia County FL Laundromat (Owner Overseas)', type:'lm', location:'Volusia County, FL', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:0, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'🔍 Raw — no SDE data',
-    sliders:[0, 0, 0, 0, 0, 0, 0, 0, 0], sourceLabel:'BizQuest BW2452722 — Cloudflare blocked; manual browser verify', sourceUrl:'' },
+  { id:'LM-19', name:'Volusia County FL Laundromat (Owner Overseas)', type:'lm', location:'Volusia County, FL', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:0, stage:'dead', carry:'Unknown', flags:['F2'], stageLabel:'💀 Dead — both listings expired 2026-07-08 (BizBuySell 2480220 + BizQuest BW2452722)',
+    sliders:[0, 0, 0, 0, 0, 0, 0, 0, 0], sourceLabel:'BizBuySell 2480220 / BizQuest BW2452722 — both EXPIRED 2026-07-08 (browser-confirmed)', sourceUrl:'' },
   { id:'LM-20', name:'LaGrange GA Absentee Laundromat (28W/20D, 20+ Yrs)', type:'lm', location:'LaGrange (Troup County), GA', asking:null, sde:null, down:30000, dscr70:null, dscrShocked:null, coc:null, score:52, stage:'watch', carry:'Confirmed', flags:['F2'], stageLabel:'👀 Watch — verify SDE',
     sliders:[1, 2, 4, 5, 3, 2, 2, 2, 3], sourceLabel:'BizBuySell #1808307 — Cloudflare blocked; manual browser verify', sourceUrl:'' },
   { id:'CW-9', name:'Coleman MI Self-Serve Car Wash (Only Wash in City)', type:'cw', location:'Coleman, MI', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:52, stage:'watch', carry:'Unknown', flags:['F2','F8'], stageLabel:'👀 Watch — F8 thin market',
@@ -1292,7 +1296,7 @@ function selectType(type, btn) {
     wrap.style.display = 'block';
     list.innerHTML = matches.map(p => {
       const scoreColor = p.score >= 70 ? 'var(--emerald-400)' : p.score >= 60 ? 'var(--amber-400)' : 'var(--red-400)';
-      const stageCls   = p.stage === 'advance' ? 'advance' : p.stage === 'blocked' ? 'blocked' : p.stage === 'stagger' ? 'stagger' : 'fallback';
+      const stageCls   = p.stage === 'advance' ? 'advance' : p.stage === 'blocked' ? 'blocked' : p.stage === 'stagger' ? 'stagger' : p.stage === 'dead' ? 'dead' : p.stage === 'hold' ? 'hold' : 'fallback';
       const dscrText   = p.dscr70 !== null ? `DSCR ${p.dscrShocked.toFixed(2)}x (shocked)` : p.coc != null ? `CoC ${p.coc}%` : '— unconfirmed';
       const srcLink = p.sourceUrl ? `<a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:11px;color:var(--blue-400);text-decoration:none;border-bottom:1px solid rgba(96,165,250,0.3);">${p.sourceLabel || p.sourceUrl}</a>` : '';
       return `<button class="deal-pick" onclick="loadDeal('${p.id}')">
@@ -1686,7 +1690,7 @@ function renderPipeline(filter) {
     const sPill = p.score >= 70 ? 'high' : p.score >= 60 ? 'mid' : 'low';
     const askingStr = p.asking ? `$${(p.asking/1000).toFixed(0)}K` : '—';
     const sdeStr = p.sde ? `$${(p.sde/1000).toFixed(0)}K` : '—';
-    const stageCls = ['advance','blocked','stagger','fallback','watch'].includes(p.stage) ? p.stage : 'fallback';
+    const stageCls = ['advance','blocked','stagger','fallback','watch','dead','hold'].includes(p.stage) ? p.stage : 'fallback';
     return `<tr onclick="loadDeal('${p.id}')">
       <td style="font-size:11px;color:var(--text-muted);">${i+1}</td>
       <td>
