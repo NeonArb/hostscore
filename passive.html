@@ -25,11 +25,11 @@
   --purple-500:  #a855f7;
   --purple-400:  #c084fc;
   /* Surface tokens — elevated dark */
-  --bg-base:    #0a0a0a;
-  --bg-surface: #111111;
-  --bg-card:    #141414;
-  --bg-elevated:#1a1a1a;
-  --bg-input:   #1a1a1a;
+  --bg-base:    #070c18;
+  --bg-surface: #0c1525;
+  --bg-card:    #101e34;
+  --bg-elevated:#162440;
+  --bg-input:   #162440;
   --border-subtle:  rgba(255,255,255,0.05);
   --border-default: rgba(255,255,255,0.09);
   --border-strong:  rgba(255,255,255,0.15);
@@ -53,9 +53,9 @@ body { font-family: var(--font); background: var(--bg-base); color: var(--text-p
 
 /* ── Header ──────────────────────────────────── */
 .site-header {
-  background: rgba(10,10,10,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, rgba(10,16,34,0.97) 0%, rgba(7,12,24,0.96) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #fff;
   padding: 0 2rem;
   display: flex;
@@ -65,7 +65,7 @@ body { font-family: var(--font); background: var(--bg-base); color: var(--text-p
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(99,153,255,0.14);
 }
 .site-header .logo { font-size: 15px; font-weight: 700; letter-spacing: -0.03em; color: #fff; text-decoration: none; }
 .site-header .logo span { color: var(--blue-400); }
@@ -130,7 +130,7 @@ body { font-family: var(--font); background: var(--bg-base); color: var(--text-p
 
 /* ── Hero ────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, #111111 0%, #0f0f14 100%);
+  background: linear-gradient(145deg, #0b2050 0%, #0c1a3a 35%, #090f22 70%, #070c18 100%);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: 3rem 2rem 2.5rem;
@@ -144,7 +144,7 @@ body { font-family: var(--font); background: var(--bg-base); color: var(--text-p
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(120,160,255,0.06) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
 }
@@ -154,7 +154,7 @@ body { font-family: var(--font); background: var(--bg-base); color: var(--text-p
   position: absolute;
   top: -60px; right: -60px;
   width: 260px; height: 260px;
-  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(99,102,241,0.06) 50%, transparent 70%);
   pointer-events: none;
 }
 .hero h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.04em; margin-bottom: 10px; color: #fff; position: relative; z-index: 1; }
