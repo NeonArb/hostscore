@@ -1104,7 +1104,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
     <div class="alert info" style="margin-top:1rem;">
       <span class="alert-icon">ℹ️</span>
-      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — send approved outreach emails: A — LM-10 (NYLaundromats.com), B — LM-14 (BizBuySell FL), C — SS-15 (F6 enquiry). (2) Manual browser: verify LM-21 not pending (F12, score 63 — Shortlist candidate if active), find VE-16 listing ID (F9 Fort Myers vending), verify LM-18 BizBuySell #2263736 still live, check LM-22 vs LM-14 (F13). (3) VE-12 go/no-go decision. Pipeline: 49 candidates · 5 Shortlist · 15 open red-team flags. Last scan: 2026-07-01 (Session 12). Do NOT contact any owner or broker without explicit approval.</span>
+      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — URGENT: send approved outreach emails A/B/C (LM-10, LM-14, SS-15) — approved since Session 9, unsent. (2) Manual browser: verify LM-21 not pending (F12), pull LM-24 (Martin County FL), LM-25 (Charlotte County FL), LM-26 (Hernando County FL + RE), LM-27 (Lubbock TX carry terms), F16 Sarasota dedup, VE-16 listing ID. (3) VE-12 go/no-go decision. Pipeline: 57 candidates · 5 Shortlist · 18 open red-team flags. Last scan: 2026-07-08 (Session 13). Do NOT contact any owner or broker without explicit approval.</span>
     </div>
 
     <!-- Flag tracker -->
@@ -1130,6 +1130,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
           <tr><td><strong>F13</strong></td><td>LM-22</td><td><span class="stage-badge blocked">OPEN</span></td><td>LM-22 Pensacola Beach — potential dedup with LM-14 (FL Barrier Island, $825K). Different price/island strongly suggests separate listing, but confirm before advancing.</td></tr>
           <tr><td><strong>F14</strong></td><td>SS-17</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-17 Berlin NH — recreational storage demand is seasonal (ATV/snowmobile/boat). NH winters limit boat/ATV usage. Verify NOI holds year-round before underwriting.</td></tr>
           <tr><td><strong>F15</strong></td><td>SS-19</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-19 Broken Bow OK — WebSearch snippet mentioned "$350K down" (unverified). If confirmed, equals capital ceiling. Kill before investing time if down > $200K confirmed.</td></tr>
+          <tr><td><strong>F16</strong></td><td>LM-NEW-C</td><td><span class="stage-badge blocked">OPEN</span></td><td>Sarasota County FL laundromat ($182,529 SDE) found in Session 13 sweep — identical SDE to LM-14 (FL Barrier Island). Likely same listing. Do NOT add as separate candidate. Browse BizBuySell Sarasota County laundromats to confirm before adding as LM-28.</td></tr>
+          <tr><td><strong>F17</strong></td><td>SS-20</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-20 Decatur TX ($1.2M, NOI $109K) — DSCR KO at our capital level. Stressed NOI $76.3K / SBA-stressed DS $92.6K (8%/25yr, $1M financed) = 0.82x. Fails 1.25x floor. Only viable with seller carry ≤5%/long-term AND verified NOI. Kill if no carry confirmed.</td></tr>
+          <tr><td><strong>F18</strong></td><td>SS-21</td><td><span class="stage-badge blocked">OPEN</span></td><td>SS-21 BizBuySell 2408925 — unknown location, $350K down claim (UNVERIFIED). If confirmed, equals or exceeds capital ceiling. Capital KO if down &gt; $200K. Pull listing immediately to verify location and down amount before investing time.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1228,6 +1231,23 @@ const PIPELINE = [
     sliders:[0, 0, 0, 5, 3, 3, 5, 2, 3], sourceLabel:'BizBuySell #2398728 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-asset/new-4-bay-car-wash-unmanned-no-employees-favorable-lease/2398728/' },
   { id:'CW-11', name:'Bellevue NE 2-Location Self-Serve Car Wash', type:'cw', location:'Bellevue (Omaha metro), NE', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:45, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — park until data confirmed',
     sliders:[0, 0, 0, 4, 1, 3, 3, 3, 3], sourceLabel:'BizBuySell #2388069 — Cloudflare blocked; manual browser verify', sourceUrl:'https://www.bizbuysell.com/business-opportunity/two-profitable-car-wash-businesses-in-bellevue-omaha-metro-area/2388069/' },
+
+  { id:'LM-24', name:'Martin County FL Laundromat (Publix Plaza, 30yr)', type:'lm', location:'Martin County, FL', asking:850000, sde:null, down:335000, dscr70:null, dscrShocked:null, coc:null, score:54, stage:'watch', carry:'Confirmed', flags:['F2'], stageLabel:'👀 Watch — SDE unknown, Publix anchor',
+    sliders:[1,1,2,4,3,4,4,2,3], sourceLabel:'BizBuySell Martin County FL — category page, listing ID not confirmed', sourceUrl:'' },
+  { id:'LM-25', name:'Charlotte County FL Laundromat (17yr, Coin+WF)', type:'lm', location:'Charlotte County, FL', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:48, stage:'watch', carry:'Confirmed', flags:['F2'], stageLabel:'👀 Watch — 60% down steep, SDE unknown',
+    sliders:[1,1,1,4,2,3,2,2,3], sourceLabel:'BizBuySell Charlotte County FL — category page, listing ID not confirmed', sourceUrl:'' },
+  { id:'LM-26', name:'Hernando County FL Laundromat + Real Estate', type:'lm', location:'Hernando County, FL', asking:550000, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:52, stage:'watch', carry:'Signaled', flags:['F2'], stageLabel:'👀 Watch — RE owned, SDE unknown',
+    sliders:[1,1,2,4,2,3,3,5,3], sourceLabel:'BizBuySell Hernando County FL — category page, listing ID not confirmed', sourceUrl:'' },
+  { id:'LM-27', name:'Lubbock TX Laundromat (30yr, $200K dn at 6%)', type:'lm', location:'Lubbock County, TX', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:50, stage:'watch', carry:'Confirmed', flags:['F2'], stageLabel:'👀 Watch — exceptional carry terms, SDE unknown',
+    sliders:[1,1,1,4,5,3,2,2,3], sourceLabel:'BizBuySell Lubbock County TX — category page, listing ID not confirmed', sourceUrl:'' },
+  { id:'SS-20', name:'Decatur TX Self-Storage (Hwy 380, 9.1% Cap, NOI $109K)', type:'ss', location:'Decatur (Wise County), TX', asking:1200000, sde:109454, down:200000, dscr70:0.82, dscrShocked:null, coc:null, score:42, stage:'watch', carry:'Unknown', flags:['F2','F17'], stageLabel:'⚠️ Watch — F17 DSCR KO at $200K capital',
+    sliders:[2,1,2,4,1,3,3,5,3], sourceLabel:'WebSearch-indexed Decatur TX highway storage NOI $109K — listing ID not confirmed', sourceUrl:'' },
+  { id:'SS-21', name:'Absentee Self-Storage (BizBuySell 2408925)', type:'ss', location:'Unknown — verify first', asking:null, sde:null, down:350000, dscr70:null, dscrShocked:null, coc:null, score:38, stage:'watch', carry:'Confirmed', flags:['F2','F18'], stageLabel:'⚠️ Watch — F18 $350K down = capital KO',
+    sliders:[1,1,1,4,2,1,2,2,2], sourceLabel:'BizBuySell 2408925 — absentee storage seller financing; Cloudflare blocked', sourceUrl:'https://www.bizbuysell.com/business-opportunity/attention-absentee-owners-self-storage-facility-for-sale/2408925/' },
+  { id:'CW-12', name:'Roswell NM Self-Serve + Auto Car Wash (2+6 Bay, RE Incl)', type:'cw', location:'Roswell, NM', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:52, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — RE owned, get SDE',
+    sliders:[1,1,2,4,1,3,4,5,3], sourceLabel:'BizBuySell 2459441 — Roswell NM car wash RE included; Cloudflare blocked', sourceUrl:'https://www.bizbuysell.com/business-opportunity/profitable-self-serve-and-automatic-car-wash-real-estate-roswell-nm/2459441/' },
+  { id:'CW-13', name:'Tolland County CT Self-Serve + In-Bay (RE Incl)', type:'cw', location:'Tolland County, CT', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:48, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — RE owned, cold-weather geography',
+    sliders:[1,1,1,3,1,3,3,5,3], sourceLabel:'BizBuySell 2504442 — Tolland CT car wash RE included; Cloudflare blocked', sourceUrl:'https://www.bizbuysell.com/business-opportunity/self-serve-car-wash-and-in-bay-automatics-with-the-real-estate/2504442/' },
 ];
 
 // ── State ────────────────────────────────────────
