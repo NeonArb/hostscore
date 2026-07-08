@@ -600,7 +600,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
   text-align: left;
   background: var(--bg-elevated);
   border-bottom: 1px solid var(--border-default);
-  position: sticky; top: 52px; z-index: 2;
 }
 .pipeline-table td {
   padding: 11px 14px;
@@ -616,7 +615,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
 .pipeline-table-wrap {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow-card);
   background: var(--bg-card);
 }
@@ -764,6 +765,122 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
   body { background: #fff; color: #000; }
   .card { box-shadow: none; border-color: #ddd; background: #fff; }
 }
+
+/* ── Guide / FAQ view ──────────────────────────────── */
+.faq-section { margin-bottom: 2rem; }
+.faq-section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-muted);
+  margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.faq-item {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.faq-q {
+  width: 100%; text-align: left; background: none; border: none;
+  padding: 14px 16px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  transition: background 0.1s;
+}
+.faq-q:hover { background: rgba(255,255,255,0.03); }
+.faq-q .faq-chevron { color: var(--text-muted); font-size: 16px; transition: transform 0.2s; flex-shrink: 0; }
+.faq-q.open .faq-chevron { transform: rotate(180deg); }
+.faq-a {
+  display: none; padding: 0 16px 14px;
+  font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+  border-top: 1px solid var(--border-subtle);
+}
+.faq-a.open { display: block; }
+.faq-a strong { color: var(--text-primary); }
+.faq-a ul { padding-left: 1.2rem; margin-top: 6px; }
+.faq-a li { margin-bottom: 4px; }
+
+/* Chatbot */
+.chat-wrap {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.chat-header {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-default);
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.chat-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-400), #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.chat-header-text { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.chat-header-sub  { font-size: 11px; color: var(--text-muted); }
+.chat-status { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald-400); margin-left: auto; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+.chat-messages {
+  height: 320px; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.chat-msg { display: flex; gap: 8px; max-width: 88%; }
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-bubble {
+  padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.55;
+  background: var(--bg-elevated); color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+.chat-msg.user .chat-bubble {
+  background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.25);
+  color: var(--text-primary);
+}
+.chat-msg-avatar {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  background: linear-gradient(135deg, var(--blue-400), #a855f7);
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
+}
+.chat-input-row {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+}
+.chat-input {
+  flex: 1; background: var(--bg-base); border: 1px solid var(--border-default);
+  border-radius: 20px; padding: 9px 16px; font-size: 13px; color: var(--text-primary);
+  outline: none; transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: rgba(59,130,246,0.4); }
+.chat-input::placeholder { color: var(--text-muted); }
+.chat-send {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--blue-400);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 15px; flex-shrink: 0; transition: background 0.15s;
+}
+.chat-send:hover { background: #3b82f6; }
+.chat-suggestions {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 0 16px 12px;
+}
+.chat-chip {
+  font-size: 11px; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  background: var(--bg-elevated); border: 1px solid var(--border-default);
+  color: var(--text-secondary); transition: all 0.15s;
+}
+.chat-chip:hover { border-color: rgba(59,130,246,0.4); color: var(--text-primary); }
+.guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+@media (max-width: 640px) { .guide-grid { grid-template-columns: 1fr; } }
+.guide-card {
+  background: var(--bg-card); border: 1px solid var(--border-default);
+  border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card);
+}
+.guide-card-icon { font-size: 22px; margin-bottom: 8px; }
+.guide-card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.guide-card-body { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
 </style>
 </head>
 <body>
@@ -775,6 +892,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
     <button class="nav-btn" onclick="window.location='https://gethostscore.com'">HostScore</button>
     <button class="nav-btn active" onclick="showView('score',this)">PassiveScore</button>
     <button class="nav-btn" onclick="showView('pipeline',this)">Pipeline</button>
+    <button class="nav-btn" onclick="showView('guide',this)">Guide &amp; FAQ</button>
   </nav>
 </header>
 
@@ -1137,7 +1255,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
 
     <div class="hero" style="margin-bottom:1rem;">
       <h1>PI Deal Pipeline</h1>
-      <p>All scored candidates — Session 6 · 2026-06-19. Click any row to load into the scorecard. All SDE figures UNVERIFIED — revenue gate not cleared.</p>
+      <p>All 34 scored candidates · last updated 2026-07-08. Click any row to load into the scorecard. All SDE figures UNVERIFIED — verify revenue before LOI.</p>
     </div>
 
     <div class="pipeline-stats">
@@ -1160,7 +1278,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
       <button class="pipeline-filter-btn" data-filter="cw" onclick="filterPipeline('cw',this)">🚿 Car Wash</button>
     </div>
 
-    <div class="pipeline-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <div class="pipeline-table-wrap">
       <table class="pipeline-table" id="pipeline-table" style="min-width:680px;">
         <thead>
           <tr>
@@ -1214,6 +1332,125 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
     </div>
 
   </div><!-- /view-pipeline -->
+
+
+  <div class="view" id="view-guide">
+    <div class="hero" style="margin-bottom:1.5rem;">
+      <h1>Guide &amp; FAQ</h1>
+      <p>How PassiveScore works, key metrics explained, and answers to common passive income acquisition questions.</p>
+    </div>
+
+    <!-- Quick-ref cards -->
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="guide-card-icon">🏆</div>
+        <div class="guide-card-title">Score ≥ 65 = Shortlist</div>
+        <div class="guide-card-body">Weighted across 10 criteria. Revenue quality (20%) and DSCR headroom (15%) carry the most weight. Under 50 = pass.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">📊</div>
+        <div class="guide-card-title">DSCR ≥ 1.25x (stressed)</div>
+        <div class="guide-card-body">Debt Service Coverage Ratio at 70% of stated SDE + 1.5% rate shock. This is the hard underwriting floor — no exceptions.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">💰</div>
+        <div class="guide-card-title">~$200K capital pool</div>
+        <div class="guide-card-body">Shared with the IP hospitality project. First verified, financeable deal wins. Seller carry near-mandatory to transact before mid-2027.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">🔒</div>
+        <div class="guide-card-title">Revenue gate</div>
+        <div class="guide-card-body">ALL SDE figures are unverified until 2 years of tax returns + bank/processor data are reviewed. No LOI without clearing this gate.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">📋</div>
+        <div class="guide-card-title">Pipeline → Scorecard</div>
+        <div class="guide-card-body">Click any row in the Pipeline tab to load that deal into the Scorecard. Adjust sliders to stress-test your own assumptions.</div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-icon">⚠️</div>
+        <div class="guide-card-title">No owner contact</div>
+        <div class="guide-card-body">Do not contact any seller or broker without Darrel + Lisa approval. All outreach drafts are reviewed before sending.</div>
+      </div>
+    </div>
+
+    <!-- FAQ accordion -->
+    <div class="faq-section">
+      <div class="faq-section-title">Using the app</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How do I score a new business? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Select a <strong>Business Type</strong> on the PassiveScore tab, then either click a pipeline candidate to auto-load it, or fill in the fields manually. Adjust the sliders for each criterion — the live score updates in real time. The DSCR and stress-test metrics calculate automatically once you enter Asking Price, SDE, and Down Payment.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What does "DSCR 70% / shock" mean in the pipeline table? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Two numbers: <strong>DSCR at 70% of stated SDE</strong> (stress scenario — assumes low season or underperformance) and <strong>DSCR after a +1.5% rate shock</strong> (tests how a rate increase hits payments). Both must stay above 1.25x. If the listing only has a CoC return, that's shown instead.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Why are some pipeline entries grayed out or "Dead"? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Browser verification confirmed the listing expired, sold, or was delisted. Dead candidates stay in the pipeline for reference (deal flow patterns, price benchmarking) but are not pursued. Use the filter buttons to hide dead entries.</div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <div class="faq-section-title">Passive income acquisition basics</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is SDE and why does it matter? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a"><strong>Seller's Discretionary Earnings</strong> — the total cash a business generates for one full-time owner-operator, including net profit + owner salary + non-cash add-backs. It's the raw earning power before debt service. Key caveat: seller-stated SDE is unverified until you review 2 years of tax returns and bank/processor statements. Over-stated SDE is the #1 fraud vector in small business sales.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is seller financing (carry) and why do we require it? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Seller financing means the seller takes back a note for part of the purchase price instead of requiring all cash at close. Benefits: <ul><li>Lower down payment required</li><li>Seller has skin in the game — proves confidence in the numbers</li><li>Faster closing vs SBA (6–12 weeks vs 60–90 days)</li><li>Flexible terms (rate, amortization, standby period)</li></ul>We require it because our ~$200K capital must close the deal — full bank financing alone rarely works for this deal size.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How does SBA financing work for these businesses? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">SBA 7(a) loans cover up to $5M with 10-year terms for business acquisitions. Key rules: <ul><li>Minimum 10% equity injection (down payment)</li><li>Seller notes must be on <strong>full standby</strong> for 24 months to count as equity</li><li>Personal guarantee required</li><li>3 years of tax returns from seller + 2 years of buyer financial statements</li></ul>SBA is best for larger, well-documented deals. For smaller deals (&lt;$300K), seller financing alone is often faster and cheaper.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What red flags should I watch for in a laundromat? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a"><ul><li><strong>Lease risk</strong> — short remaining term (&lt;5 years) with no renewal option is a dealbreaker</li><li><strong>Machine age</strong> — top-load washers, 15+ year machines signal near-term capex</li><li><strong>Coin-only</strong> — card reader absence limits revenue and attracts a declining demographic</li><li><strong>Utility costs</strong> — gas/water are the biggest line items; verify with utility bills, not seller estimates</li><li><strong>Competition</strong> — new laundromats opening nearby, or the property zoned for conversion</li><li><strong>Seasonal / neighborhood</strong> — student-area mats can swing 30–40% seasonally</li></ul></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What makes self-storage attractive as a passive investment? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Self-storage has some of the <strong>lowest operating costs</strong> of any real estate-adjacent business: no toilets, no kitchens, no daily tenant interaction. Key metrics to watch: <ul><li><strong>Occupancy ≥ 85%</strong> at underwriting (stabilized)</li><li><strong>Cap rate vs local market</strong> — compare to recent trades</li><li><strong>Climate control premium</strong> — CC units rent 20–30% higher</li><li><strong>Competition map</strong> — supply pipeline within 3 miles</li><li><strong>Management</strong> — on-site vs remote (software like Storagepug/Sitelink)</li></ul></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What should I know about buying a vending route? <span class="faq-chevron">⌄</span></button>
+        <div class="faq-a">Vending routes are only viable if you can service them economically. Our rule: <strong>SW Florida or same market as another PI/IP acquisition only</strong> — otherwise travel eats the margin. Key diligence items: <ul><li>Location contracts — are they transferable? How long do they run?</li><li>Machine age and condition — older machines need cash investment</li><li>Route density — machines per square mile determines efficiency</li><li>CoC ≥ 20% is our minimum (margins are thin; management is real)</li></ul></div>
+      </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="faq-section-title" style="margin-bottom:0.75rem;">Ask the PI Assistant</div>
+    <div class="chat-wrap">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-header-text">PI Acquisition Coach</div>
+          <div class="chat-header-sub">Scoring, metrics, deal evaluation &amp; financing</div>
+        </div>
+        <div class="chat-status"></div>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg">
+          <div class="chat-msg-avatar">🤖</div>
+          <div class="chat-bubble">Hi! I'm your PI acquisition assistant. Ask me about scoring deals, DSCR, seller financing, SBA loans, or what to look for in laundromats, self-storage, and vending routes.</div>
+        </div>
+      </div>
+      <div class="chat-suggestions">
+        <button class="chat-chip" onclick="chatAsk('What is DSCR?')">What is DSCR?</button>
+        <button class="chat-chip" onclick="chatAsk('How does seller financing work?')">Seller financing</button>
+        <button class="chat-chip" onclick="chatAsk('Laundromat red flags')">Laundromat red flags</button>
+        <button class="chat-chip" onclick="chatAsk('What score do I need to advance a deal?')">Score to advance</button>
+        <button class="chat-chip" onclick="chatAsk('SBA loan requirements')">SBA loans</button>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" type="text" placeholder="Ask about deals, metrics, financing…" onkeydown="if(event.key==='Enter') chatSend()">
+        <button class="chat-send" onclick="chatSend()">➤</button>
+      </div>
+    </div>
+  </div><!-- /view-guide -->
 
 </div><!-- /page -->
 
@@ -1856,6 +2093,71 @@ function addToPipeline() {
   const score = Math.round(CRITERIA.reduce((sum, c) => sum + scores[c.id] * c.weight * 20, 0));
   alert('✅ "' + name + '" (score: ' + score + '/100) would be added to the pipeline.\n\nIn the full app, this writes to Supabase → appears in the Pipeline tab immediately.');
 }
+
+// ── FAQ accordion ─────────────────────────────────
+function toggleFaq(btn) {
+  const ans = btn.nextElementSibling;
+  const isOpen = ans.classList.contains('open');
+  // close all in same section
+  btn.closest('.faq-section').querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  btn.closest('.faq-section').querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  if (!isOpen) { ans.classList.add('open'); btn.classList.add('open'); }
+}
+
+// ── Chatbot ───────────────────────────────────────
+const CHAT_KB = [
+  { keys:['hello','hi','hey','help','start'], ans:'Hi! Ask me anything about evaluating passive income businesses, scoring deals, or the PI acquisition process. Try one of the suggestion chips below, or just type your question.' },
+  { keys:['dscr','debt service','coverage ratio'], ans:'<strong>DSCR</strong> = Net Operating Income ÷ Annual Debt Service. Our minimum is <strong>1.25x at stressed SDE</strong> (70% of stated SDE) plus a 1.5% rate shock on the loan. Below 1.25x = automatic reject, no exceptions. A higher DSCR (2.0x+) scores maximum on criterion C2.' },
+  { keys:['sde','seller discretionary','discretionary earnings'], ans:'<strong>SDE (Seller's Discretionary Earnings)</strong> is net profit + owner salary + non-cash add-backs (depreciation, one-time expenses). It's the total earning power for one full-time owner. ⚠️ Treat all seller-stated SDE as <strong>unverified</strong> until you see 2 years of tax returns + bank/processor statements.' },
+  { keys:['score','scoring','advance','shortlist','how many points','threshold'], ans:'Our scoring model runs 0–100 across 10 weighted criteria. <strong>≥65 = Shortlist</strong> (advance to full underwriting). <strong>50–64 = Watch</strong> (track, don't pursue). <strong>&lt;50 = Pass</strong>. Revenue quality (20%) and DSCR headroom (15%) carry the most weight — a deal can't score its way past bad cash flow.' },
+  { keys:['seller financing','seller carry','carry','seller note'], ans:'Seller financing means the seller takes back a note for part of the purchase price. Advantages: lower down payment, faster close than SBA, proves seller confidence in the numbers. We require confirmed carry to advance most deals because our ~$200K capital pool can't cover full purchase prices. Ask sellers early: "Would you consider holding a note?" — many will if the price is fair.' },
+  { keys:['sba','small business administration','7a','7(a)'], ans:'SBA 7(a) loans cover acquisitions up to $5M, 10-year term, rates prime + 2–3%. Key rules: <strong>10% minimum equity injection</strong>, seller notes must be on <strong>full 24-month standby</strong> to count as equity (per 2025 rules), personal guarantee required, 3 years of seller tax returns needed. Best for well-documented deals above $300K. Below that, seller financing is faster and cheaper.' },
+  { keys:['laundromat','coin laundry','coin-op','washer','dryer'], ans:'Laundromat checklist: ✅ Lease ≥10 years remaining (or strong renewal option) ✅ Card readers installed ✅ Machines &lt;10 years old ✅ SDE verified via utility bills + coin counts ⚠️ Red flags: short lease, coin-only, 15+ year machines, rising utility costs, nearby competition opening, student-area seasonal swings (can be 30–40%).' },
+  { keys:['storage','self-storage','self storage','units','facility'], ans:'Self-storage checklist: ✅ Occupancy ≥85% at underwriting ✅ Cap rate competitive with local trades ✅ Climate control units (20–30% rent premium) ✅ Software management (Sitelink, Storagepug) ✅ Competition map — no major supply pipeline within 3 miles. Self-storage has the lowest operating cost of any business type we track.' },
+  { keys:['vending','vend','machine','route'], ans:'Vending routes are geography-constrained for us: <strong>SW Florida only, or same market as another PI/IP deal</strong> — otherwise travel eats the margin. Diligence: verify location contracts are transferable, check machine age/condition, calculate route density (machines per mile), target CoC ≥20%. Margins are thin; management is real.' },
+  { keys:['car wash','carwash','coin wash','self-serve wash'], ans:'We focus on <strong>self-serve coin-op bays only</strong> — not express/full-service. Key metrics: bay count, wash-per-bay revenue, equipment age, lease vs owned real estate. Express/full-service car washes are excluded from our focus types (too labor-intensive for passive income).' },
+  { keys:['capital','how much','budget','pool','money'], ans:'Our capital pool is ~$200K cash, available mid–late 2027. It's shared with the IP hospitality project — first verified, financeable deal wins. Because of this constraint, seller financing is near-mandatory to transact early. We target deals where $200K covers the full down payment or equity injection.' },
+  { keys:['red flag','warning','risk','avoid','bad sign'], ans:'Top red flags across all types: ❌ Seller-stated SDE with no tax returns ❌ Lease &lt;5 years remaining, no renewal option ❌ Owner works full-time in the business (not passive) ❌ Revenue trending down 2+ years ❌ DSCR &lt;1.25x at stressed SDE ❌ Seller won't provide bank statements ❌ Business listed on multiple platforms for 12+ months ❌ Geographic KO (vending outside SW FL).' },
+  { keys:['revenue gate','verify','verification','tax return','bank statement'], ans:'The revenue gate: <strong>no deal passes Underwriting without 2 years of tax returns + bank statements or processor data</strong>. Seller P&Ls and BizBuySell listings are marketing documents — not evidence. Once you have the CIM/offering memo, request 1065/1120S tax returns + 24 months of business bank statements + (for card-heavy businesses) processor reports.' },
+  { keys:['pipeline','how many','candidates','how many deals'], ans:'The pipeline currently tracks <strong>34 scored candidates</strong> across laundromat, self-storage, vending, and car wash. Use the filter buttons on the Pipeline tab to sort by stage (Advance, Watch, Blocked, Dead, Hold) or by type. Click any row to load the deal into the Scorecard.' },
+  { keys:['contact','owner','broker','outreach','email'], ans:'<strong>Do not contact any seller or broker without Darrel + Lisa's explicit approval.</strong> All outreach is drafted first and reviewed before sending. This protects negotiating position and prevents premature commitment.' },
+  { keys:['coc','cash on cash','return','yield'], ans:'<strong>Cash-on-Cash (CoC)</strong> return = Annual pre-debt-service cash flow ÷ Total cash invested. Our minimum target is ≥15% CoC at stressed SDE. For all-cash deals (no financing), CoC replaces DSCR as the primary return metric — target ≥20%. CoC of 30%+ scores maximum on criterion C3.' },
+  { keys:['asking','price','multiple','valuation','how much is it worth'], ans:'Small passive businesses typically sell at 2–4× SDE. Laundromats: 2–3× SDE. Self-storage: valued on cap rate (NOI/cap rate), typically 6–8% cap. Vending routes: 2–3× SDE. Always sanity-check the multiple against verified (not stated) SDE. A 3× multiple on inflated SDE is actually a 5× multiple on real earnings.' },
+  { keys:['lease','landlord','rent','real estate'], ans:'Lease risk is often underweighted. Check: <strong>remaining term + renewal options</strong> (want ≥10 years total), rent escalations, landlord approval for business transfer, triple-net vs gross lease terms. A laundromat or coin car wash with a short lease and a hostile landlord can kill the investment even if the machines are perfect.' },
+  { keys:['loi','letter of intent','offer','bid'], ans:'Before submitting an LOI: ✅ Revenue gate cleared (tax returns reviewed) ✅ DSCR ≥1.25x at 70% stress + rate shock ✅ Score ≥65 ✅ Lease term confirmed ✅ Seller carry structure agreed in principle ✅ Darrel + Lisa approval. LOI should include price, terms, due diligence period (30–45 days), and financing contingency.' },
+];
+
+function chatMatch(q) {
+  const ql = q.toLowerCase();
+  for (const item of CHAT_KB) {
+    if (item.keys.some(k => ql.includes(k))) return item.ans;
+  }
+  return "I don't have a specific answer for that yet. Try asking about: DSCR, SDE, seller financing, SBA loans, laundromat/storage/vending specifics, red flags, scoring thresholds, or the revenue gate.";
+}
+
+function chatAddMsg(text, fromUser) {
+  const box = document.getElementById('chat-messages');
+  const msg = document.createElement('div');
+  msg.className = 'chat-msg' + (fromUser ? ' user' : '');
+  if (!fromUser) msg.innerHTML = '<div class="chat-msg-avatar">🤖</div><div class="chat-bubble">' + text + '</div>';
+  else msg.innerHTML = '<div class="chat-bubble">' + text + '</div>';
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
+}
+
+function chatAsk(q) {
+  chatAddMsg(q, true);
+  setTimeout(() => { chatAddMsg(chatMatch(q), false); }, 220);
+  document.getElementById('chat-input').value = '';
+}
+
+function chatSend() {
+  const inp = document.getElementById('chat-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  chatAsk(q);
+}
+
 </script>
 </body>
 </html>
