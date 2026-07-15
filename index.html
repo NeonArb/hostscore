@@ -28,8 +28,13 @@
     color: white;
     padding: 24px 32px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 540px) {
+    header { padding: 14px 18px; justify-content: space-between; }
+    header span { display: none; }
   }
   header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; }
   header span { font-size: 0.9rem; opacity: 0.8; }
@@ -290,7 +295,7 @@
   </div>
   <nav class="site-nav">
     <a href="/index.html" class="active">HostScore</a>
-    <a href="/passive.html">PassiveScore</a>
+    <a href="#" onclick="return false;" title="Coming soon" style="opacity:0.5;cursor:default;">PassiveScore</a>
   </nav>
 </header>
 
@@ -605,15 +610,15 @@ const PIPELINE = [
   // ── WATCH ──────────────────────────────────────────────────────────────────
   { id: 'P01', scanNum: 3, scanDate: '2026-06-17',
     sourceUrl: 'https://www.innshopper.com/ViewListing.aspx?ListingID=10229',
-    group: 'VERIFY', name: 'Myers Inn', type: "B&B / Inn",
+    group: 'Dead / No-Go', name: 'Myers Inn', type: "B&B / Inn",
     location: 'Myers Flat, Humboldt County, CA', price: '$899,000', units: '10 rooms',
-    score: 68, band: 'watch',
+    score: 68, band: 'dead',
     scores: [2, 4, 5, 3, 2, 5, 4, 3, 3],
     // financial=2: DSCR<1 at 15% occ; turnaround needed | financeability=4: clean SBA+USDA B&I
     // dealterms=5: confirmed SF | operating=3: rural thin labor | condition=2: 1876 bldg/2010 reno unknown
     // location=5: Avenue of Giants, constrained market | regulatory=4: operating inn
     // resale=3: rural B&B | seasonality=3: redwood coast, wildfire risk
-    note: 'Confirmed seller-finance. Turnaround — 15% occ today, major upside. Structural inspection + P&L needed before LOI.' },
+    note: '❌ DEAD — Session 14 (2026-07-02). Property-type KO: B&B format does not match principal preference (RV/campsite preferred). B&Bs re-enter pipeline only as unicorn exceptions. No contact made.' },
 
   { id: 'P02', scanNum: 3, scanDate: '2026-06-17',
     sourceUrl: 'https://www.loopnet.com/Listing/40-N-300-W-Escalante-UT/17171418/',
