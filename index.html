@@ -1364,8 +1364,445 @@ function resetAll() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+
+</script>
+
+<!-- ===== HostScore FAQ + Chat Widget ===== -->
+<style>
+/* Widget button */
+#hs-help-btn {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #0f766e; color: white; border: none; cursor: pointer;
+  font-size: 1.5rem; box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.18s, background 0.18s;
+}
+#hs-help-btn:hover { background: #0d6058; transform: scale(1.07); }
+#hs-help-btn .hs-close-x { display: none; font-size: 1.2rem; font-weight: 700; }
+#hs-help-btn.open .hs-open-ico { display: none; }
+#hs-help-btn.open .hs-close-x { display: block; }
+
+/* Widget panel */
+#hs-help-panel {
+  position: fixed; bottom: 92px; right: 24px; z-index: 9998;
+  width: 360px; max-height: 540px;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  display: none; flex-direction: column; overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  border: 1px solid #e2e8f0;
+}
+#hs-help-panel.open { display: flex; }
+
+/* Panel header */
+.hs-panel-header {
+  background: #0f766e; color: white;
+  padding: 14px 18px; font-size: 0.95rem; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.hs-panel-header span { opacity: 0.8; font-size: 0.78rem; font-weight: 400; margin-left: auto; }
+
+/* Tab switcher */
+.hs-tabs {
+  display: flex; border-bottom: 1px solid #e2e8f0; flex-shrink: 0;
+}
+.hs-tab {
+  flex: 1; padding: 9px 0; font-size: 0.82rem; font-weight: 600;
+  border: none; background: none; cursor: pointer; color: #64748b;
+  border-bottom: 2px solid transparent; transition: color 0.15s;
+}
+.hs-tab.active { color: #0f766e; border-bottom-color: #0f766e; }
+
+/* Search */
+.hs-search-wrap { padding: 10px 14px 6px; flex-shrink: 0; }
+.hs-search-wrap input {
+  width: 100%; padding: 8px 12px; border-radius: 8px;
+  border: 1px solid #e2e8f0; font-size: 0.85rem; outline: none;
+  color: #1e293b;
+}
+.hs-search-wrap input:focus { border-color: #0f766e; }
+
+/* FAQ list */
+#hs-faq-pane { overflow-y: auto; flex: 1; padding: 6px 0 10px; }
+.hs-faq-item { border-bottom: 1px solid #f1f5f9; }
+.hs-faq-q {
+  width: 100%; text-align: left; padding: 11px 16px;
+  font-size: 0.84rem; font-weight: 600; color: #1e293b;
+  background: none; border: none; cursor: pointer; display: flex;
+  justify-content: space-between; align-items: center;
+  transition: background 0.12s;
+}
+.hs-faq-q:hover { background: #f0fdfa; }
+.hs-faq-q .hs-chevron { font-size: 0.7rem; color: #94a3b8; transition: transform 0.18s; flex-shrink: 0; margin-left: 8px; }
+.hs-faq-q.open .hs-chevron { transform: rotate(180deg); }
+.hs-faq-a {
+  display: none; padding: 0 16px 12px 16px;
+  font-size: 0.81rem; line-height: 1.55; color: #475569;
+}
+.hs-faq-a.open { display: block; }
+.hs-faq-item.hidden { display: none; }
+.hs-no-match { text-align: center; padding: 24px 16px; font-size: 0.83rem; color: #94a3b8; }
+
+/* Category label */
+.hs-cat-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.7px;
+  color: #94a3b8; padding: 10px 16px 4px; font-weight: 700;
+}
+
+/* Chat pane */
+#hs-chat-pane { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+#hs-chat-pane.active { display: flex; }
+#hs-faq-pane.active { display: block; }
+#hs-faq-pane { display: none; }
+
+.hs-chat-messages {
+  flex: 1; overflow-y: auto; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hs-msg {
+  max-width: 88%; padding: 9px 12px; border-radius: 10px;
+  font-size: 0.82rem; line-height: 1.5;
+}
+.hs-msg.bot {
+  background: #f0fdfa; color: #134e4a; align-self: flex-start;
+  border: 1px solid #ccfbf1;
+}
+.hs-msg.user {
+  background: #0f766e; color: white; align-self: flex-end;
+}
+.hs-typing { font-style: italic; color: #94a3b8; font-size: 0.78rem; padding: 4px 16px; }
+
+.hs-chat-input-row {
+  display: flex; gap: 8px; padding: 10px 12px;
+  border-top: 1px solid #e2e8f0; flex-shrink: 0;
+}
+.hs-chat-input-row input {
+  flex: 1; padding: 8px 12px; border-radius: 8px;
+  border: 1px solid #e2e8f0; font-size: 0.83rem; outline: none;
+}
+.hs-chat-input-row input:focus { border-color: #0f766e; }
+.hs-chat-input-row button {
+  padding: 8px 14px; background: #0f766e; color: white;
+  border: none; border-radius: 8px; cursor: pointer; font-size: 0.83rem;
+  font-weight: 600; transition: background 0.15s;
+}
+.hs-chat-input-row button:hover { background: #0d6058; }
+
+/* Suggested chips */
+.hs-suggestions { padding: 6px 12px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.hs-chip {
+  padding: 4px 10px; border-radius: 20px; background: #f0fdfa;
+  border: 1px solid #99f6e4; color: #0f766e; font-size: 0.76rem;
+  cursor: pointer; font-weight: 500; transition: background 0.12s;
+}
+.hs-chip:hover { background: #ccfbf1; }
+
+/* Responsive */
+@media (max-width: 420px) {
+  #hs-help-panel { width: calc(100vw - 32px); right: 16px; bottom: 84px; }
+  #hs-help-btn { right: 16px; bottom: 16px; }
+}
+</style>
+
+<!-- Floating help button -->
+<button id="hs-help-btn" onclick="hsTogglePanel()" title="Help & FAQ" aria-label="Open help">
+  <span class="hs-open-ico">💬</span>
+  <span class="hs-close-x">✕</span>
+</button>
+
+<!-- Help panel -->
+<div id="hs-help-panel" role="dialog" aria-label="HostScore Help">
+  <div class="hs-panel-header">
+    🏨 HostScore Help
+    <span>FAQ &amp; Chat</span>
+  </div>
+
+  <!-- Tab switcher -->
+  <div class="hs-tabs">
+    <button class="hs-tab active" id="hs-tab-faq" onclick="hsSwitchTab('faq')">📖 FAQ</button>
+    <button class="hs-tab" id="hs-tab-chat" onclick="hsSwitchTab('chat')">💬 Ask a question</button>
+  </div>
+
+  <!-- FAQ pane -->
+  <div id="hs-faq-pane">
+    <div class="hs-search-wrap">
+      <input type="text" id="hs-faq-search" placeholder="Search questions…" oninput="hsFilterFAQ(this.value)" autocomplete="off">
+    </div>
+    <div id="hs-faq-list"></div>
+  </div>
+
+  <!-- Chat pane -->
+  <div id="hs-chat-pane">
+    <div class="hs-suggestions" id="hs-chips"></div>
+    <div class="hs-chat-messages" id="hs-chat-msgs"></div>
+    <div class="hs-chat-input-row">
+      <input type="text" id="hs-chat-input" placeholder="Type your question…" onkeydown="if(event.key==='Enter') hsSendChat()">
+      <button onclick="hsSendChat()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// HostScore FAQ + Chat Widget
+// ==========================================
+
+const HS_FAQ = [
+  // --- Getting Started ---
+  { cat: 'Getting Started', q: 'What is HostScore?',
+    a: 'HostScore is a structured investment scorecard for hospitality properties — B&Bs, inns, motels, boutique hotels, RV parks, campgrounds, and lodges. It rates a property on 9 weighted criteria, checks for deal-killing knock-out conditions, and returns a verdict: <strong>Advance</strong> (≥75), <strong>Watch</strong> (60–74), or <strong>Pass</strong> (&lt;60).',
+    tags: 'what is hostscore about tool' },
+
+  { cat: 'Getting Started', q: 'Who is this tool for?',
+    a: 'HostScore is built for small hospitality investors evaluating owner-operator acquisitions — typically B&Bs, small motels, RV parks, or campgrounds in the $500K–$1.5M range. It enforces a conservative underwriting bar suited to SBA-financed or seller-carry deals.',
+    tags: 'who use audience investor buyer' },
+
+  { cat: 'Getting Started', q: 'How do I score a property?',
+    a: '1. Fill in <strong>Property Info</strong> (name, type, price, units). <br>2. Enter <strong>Financial Underwriting</strong> data — use verified numbers only (tax returns, STR platform data). <br>3. Rate each of the <strong>9 Scoring Criteria</strong> from 0–5. <br>4. Check any <strong>Knock-Out Conditions</strong> that apply. <br>5. Click <strong>Score This Property</strong>.',
+    tags: 'how score start use fill in steps' },
+
+  { cat: 'Getting Started', q: 'What property types does HostScore evaluate?',
+    a: 'B&amp;B / Inn, Motel, Boutique Hotel, RV Park / Campground, Glamping / Eco-resort, Lodge / Retreat, and Mixed-use lodging. The scoring criteria apply across all these types; weights don\'t change by type.',
+    tags: 'property type bb inn motel hotel rv park campground glamping lodge' },
+
+  // --- Scoring & Verdicts ---
+  { cat: 'Scoring & Verdicts', q: 'What do Advance, Watch, and Pass mean?',
+    a: '<strong>Advance (≥75)</strong> — the property clears the bar; proceed to deeper due diligence and broker contact.<br><strong>Watch (60–74)</strong> — borderline; something specific is weak. Identify the gap and see if it can be resolved.<br><strong>Pass (&lt;60)</strong> — the deal doesn\'t meet the standard at current terms. Walk away or restructure significantly.',
+    tags: 'advance watch pass verdict score result meaning' },
+
+  { cat: 'Scoring & Verdicts', q: 'What are the 9 scoring criteria?',
+    a: '1. Financial Performance &amp; DSCR (25%) <br>2. Financeability — SBA/USDA (15%) <br>3. Owner-Finance / Deal Terms (15%) <br>4. Operating Intensity &amp; Manager Fit (7%) <br>5. Condition &amp; Capex Risk (10%) <br>6. Location &amp; Demand (10%) <br>7. Regulatory / Zoning (8%) <br>8. Resale / Exit &amp; Convertibility (5%) <br>9. Seasonality &amp; Climate Resilience (5%)',
+    tags: 'criteria weight categories scoring 9' },
+
+  { cat: 'Scoring & Verdicts', q: 'How are the weights determined?',
+    a: 'Weights reflect investment risk priorities for a small-cap hospitality acquisition. Cash flow and deal structure (Financial 25% + Financeability 15% + Owner-Finance 15% = 55%) dominate because a deal that can\'t be financed or doesn\'t cash-flow is a non-starter regardless of other factors.',
+    tags: 'weight percentage why criteria priority' },
+
+  { cat: 'Scoring & Verdicts', q: 'Can I change the scoring weights?',
+    a: 'The weights are currently fixed and calibrated for the specific use case (SBA/seller-financed small hospitality acquisition). A future version may support custom weights.',
+    tags: 'change custom weight adjust slider' },
+
+  // --- Knock-Out Conditions ---
+  { cat: 'Knock-Out Conditions', q: 'What are knock-out conditions?',
+    a: 'Knock-outs are deal-killing conditions that force a <strong>NO-GO</strong> verdict regardless of the numeric score. If even one is checked, the property is disqualified. They cover: SBA eligibility failure, unverifiable revenue, zoning/permit problems, capital overrun, and DSCR failure.',
+    tags: 'knockout knock out ko nogo disqualify' },
+
+  { cat: 'Knock-Out Conditions', q: 'What is the SBA active-operation test?',
+    a: 'SBA 7(a) and 504 loans require the business to be actively operated — not purely passive. A purely passive lodging property (e.g., triple-net lease) fails this test and cannot use SBA financing. If you plan to operate the property yourself or hire a manager, you likely pass the test.',
+    tags: 'sba active operation test passive loan 504 7a eligibility' },
+
+  { cat: 'Knock-Out Conditions', q: 'Why does unverifiable revenue trigger a knock-out?',
+    a: 'Seller pro-formas and verbal claims are not evidence. Revenue must be verified through <em>2+ years of tax returns, STR platform data (Airbnb/VRBO payouts), or bank statements</em> before you commit capital. If a seller won\'t provide this, the deal is too risky to proceed.',
+    tags: 'revenue verify unverifiable seller proforma evidence tax' },
+
+  // --- Financial Underwriting ---
+  { cat: 'Financial Data', q: 'What is DSCR and why does it matter?',
+    a: '<strong>DSCR (Debt Service Coverage Ratio)</strong> = NOI ÷ Annual Debt Service. It measures whether the property\'s income is enough to cover loan payments. HostScore requires DSCR ≥ 1.25 at a conservative (stressed) revenue estimate — meaning income covers debt payments with 25% headroom. Below 1.25x is a knock-out condition.',
+    tags: 'dscr debt service coverage ratio formula loan payment' },
+
+  { cat: 'Financial Data', q: 'What is NOI?',
+    a: '<strong>NOI (Net Operating Income)</strong> = Gross Revenue − Operating Expenses. It\'s the property\'s pre-debt cash flow. Enter gross revenue and operating expenses in the Financial Underwriting section and NOI updates live. HostScore targets NOI ≥ $50K/yr as a sourcing floor.',
+    tags: 'noi net operating income formula calculate' },
+
+  { cat: 'Financial Data', q: 'What is Cap Rate?',
+    a: '<strong>Cap Rate</strong> = NOI ÷ Purchase Price. It\'s a quick measure of how much income the property produces relative to its cost, independent of financing. HostScore targets ≥ 8% — properties below this are priced too richly relative to their income.',
+    tags: 'cap rate capitalization rate formula calculate' },
+
+  { cat: 'Financial Data', q: 'What is Cash-on-Cash ROI?',
+    a: '<strong>Cash-on-Cash ROI</strong> = (NOI − Debt Service) ÷ Cash Invested. It shows your actual cash return on the money you put in, after loan payments. HostScore targets ≥ 10%. Unlike cap rate, it accounts for your financing structure.',
+    tags: 'cash on cash roi return formula calculate equity' },
+
+  { cat: 'Financial Data', q: 'What financial data do I need to enter?',
+    a: 'You\'ll need: <br>• Gross annual revenue (from verified sources — not seller\'s claims) <br>• Annual operating expenses <br>• Annual debt service (or use the Debt Service Estimator) <br>• Purchase / asking price <br>• Down payment / cash invested <br>Leave blank if data isn\'t available yet — fields show "—" when empty.',
+    tags: 'financial data enter need revenue expenses debt service' },
+
+  { cat: 'Financial Data', q: 'What is the Debt Service Estimator?',
+    a: 'The Debt Service Estimator calculates your estimated annual loan payment. Enter <strong>Loan Amount</strong>, <strong>Interest Rate</strong>, and <strong>Amortization Term</strong> (10–30 years). It will calculate the annual debt service, which you can then copy into the Debt Service field above to update DSCR and Cash-on-Cash live.',
+    tags: 'debt service estimator loan payment calculate mortgage annual' },
+
+  { cat: 'Financial Data', q: 'Should I use seller-provided financials?',
+    a: 'No. Seller pro-formas are not evidence. Always require 2 years of tax returns (Schedule C or corporate returns), STR platform data (Airbnb/VRBO payout statements), or bank statements before advancing a deal. If a seller won\'t provide these, that\'s a red flag and a knock-out condition.',
+    tags: 'seller proforma financials trust verify evidence tax returns' },
+
+  // --- The Pipeline ---
+  { cat: 'The Pipeline', q: 'What is the IP Pipeline tab?',
+    a: 'The <strong>IP Pipeline</strong> tab is a private deal pipeline for the property owner\'s active hospitality property search. It contains scored candidates from their deal flow. Selecting a property from the dropdown auto-fills the scorecard with previously entered data.',
+    tags: 'pipeline ip tab private deal candidates' },
+
+  { cat: 'The Pipeline', q: 'How do I load a property from the pipeline?',
+    a: 'Click the <strong>IP Pipeline</strong> tab button at the top, then select a property from the dropdown. The scorecard, financial fields, and sliders will auto-populate with the stored data for that property.',
+    tags: 'load pipeline property dropdown autofill populate' },
+
+  // --- Results & Saving ---
+  { cat: 'Results & Saving', q: 'How do I save or share my results?',
+    a: 'Click <strong>Print / Save PDF</strong> in the Results section. This opens your browser\'s print dialog where you can save to PDF. The PDF captures the full scorecard including your scores, financial metrics, and verdict.',
+    tags: 'save print pdf export results share' },
+
+  { cat: 'Results & Saving', q: 'How do I start over / score a different property?',
+    a: 'Click the <strong>Reset</strong> button below the scorecard. This clears all fields, sliders, and knock-out checkboxes and scrolls back to the top.',
+    tags: 'reset clear start over new property' },
+
+  { cat: 'Results & Saving', q: 'What does "Edit Scores" do?',
+    a: '"Edit Scores" appears after you\'ve scored a property and hides the results section so you can go back and adjust your ratings without losing the property info data you\'ve already entered.',
+    tags: 'edit scores go back adjust change' },
+];
+
+// ---- Build FAQ DOM ----
+function hsBuildFAQ() {
+  const list = document.getElementById('hs-faq-list');
+  const cats = [...new Set(HS_FAQ.map(f => f.cat))];
+  let html = '';
+  cats.forEach(cat => {
+    html += `<div class="hs-cat-label">${cat}</div>`;
+    HS_FAQ.filter(f => f.cat === cat).forEach((item, i) => {
+      const idx = HS_FAQ.indexOf(item);
+      html += `<div class="hs-faq-item" data-idx="${idx}" data-tags="${item.tags} ${item.q.toLowerCase()}">
+        <button class="hs-faq-q" onclick="hsToggleFAQ(${idx})">
+          ${item.q}
+          <span class="hs-chevron">▼</span>
+        </button>
+        <div class="hs-faq-a" id="hs-ans-${idx}">${item.a}</div>
+      </div>`;
+    });
+  });
+  list.innerHTML = html;
+}
+
+function hsToggleFAQ(idx) {
+  const btn = document.querySelector(`.hs-faq-item[data-idx="${idx}"] .hs-faq-q`);
+  const ans = document.getElementById('hs-ans-' + idx);
+  const isOpen = btn.classList.contains('open');
+  // close all
+  document.querySelectorAll('.hs-faq-q.open').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.hs-faq-a.open').forEach(a => a.classList.remove('open'));
+  if (!isOpen) { btn.classList.add('open'); ans.classList.add('open'); }
+}
+
+function hsFilterFAQ(term) {
+  const q = term.toLowerCase().trim();
+  const items = document.querySelectorAll('.hs-faq-item');
+  const labels = document.querySelectorAll('.hs-cat-label');
+  let anyMatch = false;
+  items.forEach(item => {
+    const match = !q || item.dataset.tags.includes(q);
+    item.classList.toggle('hidden', !match);
+    if (match) anyMatch = true;
+  });
+  // Show/hide category labels
+  labels.forEach(label => {
+    const catName = label.textContent;
+    const hasCatMatch = [...items].some(item => {
+      const idx = item.dataset.idx;
+      return HS_FAQ[idx].cat === catName && !item.classList.contains('hidden');
+    });
+    label.style.display = hasCatMatch ? '' : 'none';
+  });
+  let noMatch = document.getElementById('hs-no-match');
+  if (!anyMatch) {
+    if (!noMatch) {
+      noMatch = document.createElement('div');
+      noMatch.id = 'hs-no-match';
+      noMatch.className = 'hs-no-match';
+      noMatch.innerHTML = 'No FAQ match — <a href="#" onclick="hsSwitchTab(\'chat\');return false;" style="color:#0f766e;font-weight:600;">ask in chat →</a>';
+      document.getElementById('hs-faq-list').appendChild(noMatch);
+    }
+    noMatch.style.display = '';
+  } else if (noMatch) { noMatch.style.display = 'none'; }
+}
+
+// ---- Tab switching ----
+function hsSwitchTab(tab) {
+  document.getElementById('hs-faq-pane').style.display = tab === 'faq' ? 'block' : 'none';
+  document.getElementById('hs-chat-pane').style.display = tab === 'chat' ? 'flex' : 'none';
+  document.getElementById('hs-tab-faq').classList.toggle('active', tab === 'faq');
+  document.getElementById('hs-tab-chat').classList.toggle('active', tab === 'chat');
+  if (tab === 'chat' && !document.querySelector('.hs-msg')) hsInitChat();
+}
+
+// ---- Toggle panel ----
+function hsTogglePanel() {
+  const panel = document.getElementById('hs-help-panel');
+  const btn = document.getElementById('hs-help-btn');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    // Default to FAQ tab
+    hsSwitchTab('faq');
+  }
+}
+
+// ---- Smart chat (pattern-match FAQ) ----
+const HS_CHIPS = [
+  'What is DSCR?', 'What does Advance mean?', 'What are knock-out conditions?',
+  'How do I save results?', 'What data do I need?'
+];
+
+function hsInitChat() {
+  const msgs = document.getElementById('hs-chat-msgs');
+  const chips = document.getElementById('hs-chips');
+  msgs.innerHTML = '';
+  chips.innerHTML = '';
+  hsAddMsg('bot', "Hi! I'm the HostScore helper. Ask me anything about how the tool works, or pick a common question below.");
+  HS_CHIPS.forEach(c => {
+    const chip = document.createElement('button');
+    chip.className = 'hs-chip'; chip.textContent = c;
+    chip.onclick = () => hsAskChat(c);
+    chips.appendChild(chip);
+  });
+}
+
+function hsSendChat() {
+  const input = document.getElementById('hs-chat-input');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  hsAskChat(q);
+}
+
+function hsAskChat(question) {
+  document.getElementById('hs-chips').style.display = 'none';
+  hsAddMsg('user', question);
+  // Pattern match against FAQ
+  const qLower = question.toLowerCase();
+  let best = null, bestScore = 0;
+  HS_FAQ.forEach(item => {
+    const searchText = (item.tags + ' ' + item.q).toLowerCase();
+    const words = qLower.split(/\s+/).filter(w => w.length > 2);
+    let score = 0;
+    words.forEach(w => { if (searchText.includes(w)) score++; });
+    if (score > bestScore) { bestScore = score; best = item; }
+  });
+  setTimeout(() => {
+    if (best && bestScore >= 1) {
+      hsAddMsg('bot', `<strong>${best.q}</strong><br><br>${best.a}`);
+      if (bestScore < 2) {
+        setTimeout(() => hsAddMsg('bot', 'Not quite what you needed? Try rephrasing, or <a href="mailto:darrel@example.com?subject=HostScore+Question&body=' + encodeURIComponent(question) + '" style="color:#0f766e;font-weight:600;">email us</a>.'), 400);
+      }
+    } else {
+      hsAddMsg('bot', "I don't have a specific answer for that. Try the <a href='#' onclick=\"hsSwitchTab('faq');return false;\" style='color:#0f766e;font-weight:600;'>FAQ tab</a> or <a href='mailto:darrel@example.com?subject=HostScore+Question&body=" + encodeURIComponent(question) + "' style='color:#0f766e;font-weight:600;'>email us</a>.");
+    }
+  }, 320);
+}
+
+function hsAddMsg(role, html) {
+  const msgs = document.getElementById('hs-chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'hs-msg ' + role;
+  div.innerHTML = html;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ---- Init ---- (keep buildUI + buildPipelineSelect last — canary guard)
+hsBuildFAQ();
+hsSwitchTab('faq');
 buildUI();
 buildPipelineSelect();
 </script>
+<!-- ===== End HostScore FAQ + Chat Widget ===== -->
+
 </body>
 </html>
