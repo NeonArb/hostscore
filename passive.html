@@ -1605,7 +1605,7 @@ function selectType(type, btn) {
 
   const typeMap = { laundromat: 'lm', storage: 'ss', vending: 've', carwash: 'cw' };
   const key = typeMap[type];
-  const matches = PIPELINE.filter(p => p.type === key);
+  const matches = PIPELINE.filter(p => p.type === key && p.sourceUrl);
 
   const wrap = document.getElementById('type-deals');
   const list = document.getElementById('type-deal-list');
@@ -1618,13 +1618,13 @@ function selectType(type, btn) {
     list.innerHTML = matches.map(p => {
       const scoreColor = p.score >= 70 ? 'var(--emerald-400)' : p.score >= 60 ? 'var(--amber-400)' : 'var(--red-400)';
       const stageCls   = p.stage === 'advance' ? 'advance' : p.stage === 'blocked' ? 'blocked' : p.stage === 'stagger' ? 'stagger' : p.stage === 'dead' ? 'dead' : p.stage === 'hold' ? 'hold' : 'fallback';
-      const dscrText   = p.dscr70 !== null ? `DSCR ${p.dscrShocked.toFixed(2)}x (shocked)` : p.coc != null ? `CoC ${p.coc}%` : '— unconfirmed';
+      const dscrText   = p.dscrShocked !== null ? `DSCR ${p.dscrShocked.toFixed(2)}x (shocked)` : p.dscr70 !== null ? `DSCR ${p.dscr70.toFixed(2)}x (unstressed)` : p.coc != null ? `CoC ${p.coc}%` : '— unconfirmed';
       const srcLink = p.sourceUrl ? `<a href="${p.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:11px;color:var(--blue-400);text-decoration:none;border-bottom:1px solid rgba(96,165,250,0.3);">${p.sourceLabel || p.sourceUrl}</a>` : '';
       return `<button class="deal-pick" onclick="loadDeal('${p.id}')">
         <div class="dp-id">${p.id}</div>
         <div style="flex:1;">
           <div class="dp-name">${p.name}</div>
-          <div class="dp-loc">${p.location} · $${(p.asking/1000).toFixed(0)}K asking · SDE $${(p.sde/1000).toFixed(0)}K · ${dscrText}</div>
+          <div class="dp-loc">${p.location} · ${p.asking ? "$" + (p.asking/1000).toFixed(0) + "K asking" : "asking —"} · SDE ${p.sde ? "$" + (p.sde/1000).toFixed(0) + "K" : "—"} · ${dscrText}</div>
           ${srcLink ? `<div style="margin-top:3px;">${srcLink}</div>` : ''}
         </div>
         <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
@@ -1991,6 +1991,7 @@ let pipelineFilter = 'all';
 function renderPipeline(filter) {
   filter = filter || pipelineFilter;
   const filtered = PIPELINE.filter(p => {
+    if (!p.sourceUrl) return false;           // hide entries with no source link
     if (filter === 'all') return true;
     if (filter === 'lm' || filter === 'ss' || filter === 've' || filter === 'cw') return p.type === filter;
     return p.stage === filter;
