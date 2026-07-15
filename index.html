@@ -1778,13 +1778,39 @@ function hsAskChat(question) {
   setTimeout(() => {
     if (best && bestScore >= 1) {
       hsAddMsg('bot', `<strong>${best.q}</strong><br><br>${best.a}`);
+      // Low-confidence match — offer suggested prompts so user can self-correct
       if (bestScore < 2) {
-        setTimeout(() => hsAddMsg('bot', 'Not quite what you needed? Try rephrasing, or <a href="mailto:darrel@example.com?subject=HostScore+Question&body=' + encodeURIComponent(question) + '" style="color:#0f766e;font-weight:600;">email us</a>.'), 400);
+        setTimeout(() => hsShowFallbackChips("Not quite right? Try one of these:"), 400);
       }
     } else {
-      hsAddMsg('bot', "I don't have a specific answer for that. Try the <a href='#' onclick=\"hsSwitchTab('faq');return false;\" style='color:#0f766e;font-weight:600;'>FAQ tab</a> or <a href='mailto:darrel@example.com?subject=HostScore+Question&body=" + encodeURIComponent(question) + "' style='color:#0f766e;font-weight:600;'>email us</a>.");
+      // No match — show a friendly message and re-surface the suggested prompts
+      hsAddMsg('bot', "I'm not sure about that one. Here are some things I can help with:");
+      setTimeout(() => hsShowFallbackChips(), 200);
     }
   }, 320);
+}
+
+function hsShowFallbackChips(label) {
+  const msgs = document.getElementById('hs-chat-msgs');
+  // Remove any existing fallback chip rows to avoid stacking
+  msgs.querySelectorAll('.hs-fallback-chips').forEach(el => el.remove());
+  const wrap = document.createElement('div');
+  wrap.className = 'hs-fallback-chips';
+  wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 8px;';
+  if (label) {
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'width:100%;font-size:0.78rem;color:#94a3b8;padding-bottom:2px;';
+    lbl.textContent = label;
+    wrap.appendChild(lbl);
+  }
+  HS_CHIPS.forEach(c => {
+    const chip = document.createElement('button');
+    chip.className = 'hs-chip'; chip.textContent = c;
+    chip.onclick = () => { wrap.remove(); hsAskChat(c); };
+    wrap.appendChild(chip);
+  });
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function hsAddMsg(role, html) {
