@@ -1301,7 +1301,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
 
     <div class="alert info" style="margin-top:1rem;">
       <span class="alert-icon">ℹ️</span>
-      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — URGENT: send approved outreach emails A/B/C (LM-10, LM-14, SS-15) — approved since Session 9, unsent. (2) Evaluate VE-17 (BizBuySell 2492775 — Lee County FL 300-machine vending route, $125K, SDE $36K, CoC 29%). (3) LM-18/LM-19 browser verification. (4) VE-12 go/no-go decision. Pipeline: 55 candidates · 5 Shortlist · 16 open red-team flags. Last updated: 2026-07-08 (Session 14 — browser verification). Do NOT contact any owner or broker without explicit approval.</span>
+      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — URGENT: send approved outreach A (LM-10 NYLaundromats) and C (SS-15 RV Repair &amp; Storage) — approved since Session 9, unsent; B (LM-14) on hold pending listing status. (2) Browser-verify Session 17 Raws: SS-22, LM-28, LM-29, LM-32. (3) Evaluate VE-17 (BBS 2492775 — Lee County FL 300-machine vending, $125K, SDE $36K). (4) LM-18 browser verification (BBS 2263736). Pipeline: 60 candidates · 3 active Shortlist · 16 open red-team flags. Last updated: 2026-07-15 (Session 17 — automated sourcing scan). Do NOT contact any owner or broker without explicit approval.</span>
     </div>
 
     <!-- Flag tracker -->
@@ -1561,6 +1561,18 @@ const PIPELINE = [
     sliders:[1,1,2,4,1,3,4,5,3], sourceLabel:'BizBuySell 2459441 — Roswell NM car wash RE included; Cloudflare blocked', sourceUrl:'https://www.bizbuysell.com/business-opportunity/profitable-self-serve-and-automatic-car-wash-real-estate-roswell-nm/2459441/' },
   { id:'CW-13', name:'Tolland County CT Self-Serve + In-Bay (RE Incl)', type:'cw', location:'Tolland County, CT', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:48, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'👀 Watch — RE owned, cold-weather geography',
     sliders:[1,1,1,3,1,3,3,5,3], sourceLabel:'BizBuySell 2504442 — Tolland CT car wash RE included; Cloudflare blocked', sourceUrl:'https://www.bizbuysell.com/business-opportunity/self-serve-car-wash-and-in-bay-automatics-with-the-real-estate/2504442/' },
+
+  // ── Session 17 additions — 2026-07-15 (automated scan) ────────────────────
+  { id:'SS-22', name:'Cookeville TN Climate-Control Storage (173 Units)', type:'ss', location:'Cookeville, TN', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:44, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'🔍 Raw — F2 unverified; Cloudflare blocked; browser-verify active + get NOI',
+    sliders:[0,0,0,3,1,3,3,2,2], sourceLabel:'BizBuySell 2477833 — 173 units Cookeville TN; Cloudflare blocked; browser verify needed', sourceUrl:'' },
+  { id:'LM-28', name:'FL Laundromat — Low Rent + Owner Financing', type:'lm', location:'FL (location unverified)', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:40, stage:'watch', carry:'Confirmed', flags:['F2'], stageLabel:'🔍 Raw — F2 unverified; carry confirmed; verify location + SDE',
+    sliders:[0,0,0,2,3,1,1,1,1], sourceLabel:'BizBuySell 2264755 — low rent + owner financing FL laundromat; Cloudflare blocked', sourceUrl:'' },
+  { id:'LM-29', name:'Volusia County FL Commercial Laundromat', type:'lm', location:'Volusia County, FL', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:42, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'🔍 Raw — F2 unverified; PRIORITY verify active (BW2005233 is very old listing ID)',
+    sliders:[0,0,0,3,1,3,2,1,2], sourceLabel:'BizQuest BW2005233 — very old listing ID, likely expired; priority browser verify 2026-07-15', sourceUrl:'' },
+  { id:'LM-32', name:'Absentee Laundromat — Busy Area + Parking', type:'lm', location:'Unknown — verify', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:44, stage:'watch', carry:'Unknown', flags:['F2'], stageLabel:'🔍 Raw — F2 unverified; absentee + parking; browser-verify location + SDE',
+    sliders:[0,0,0,4,1,2,2,1,2], sourceLabel:'BizQuest BW2521655 — absentee laundromat busy area parking; Cloudflare blocked', sourceUrl:'' },
+  { id:'VE-18', name:'Hillsborough County FL Vending Route (136 Machines, Cashless)', type:'ve', location:'Tampa, FL (Hillsborough County)', asking:345000, sde:101040, down:200000, dscr70:null, dscrShocked:null, coc:29.3, score:0, stage:'dead', carry:'Unconfirmed', flags:['F2'], stageLabel:'💀 Dead — Geographic KO: Tampa/Hillsborough County is NOT SW Florida target (Lee/Collier/Charlotte/Sarasota/Manatee only)',
+    sliders:[0,0,0,4,1,3,3,1,3], sourceLabel:'BizBuySell 1581680 — Tampa FL 136-machine cashless vending; Geographic KO logged 2026-07-15', sourceUrl:'' },
 ];
 
 // ── State ────────────────────────────────────────
