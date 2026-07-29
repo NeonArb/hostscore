@@ -1255,7 +1255,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
 
     <div class="hero" style="margin-bottom:1rem;">
       <h1>PI Deal Pipeline</h1>
-      <p>All 34 scored candidates · last updated 2026-07-08. Click any row to load into the scorecard. All SDE figures UNVERIFIED — verify revenue before LOI.</p>
+      <p>All 68 pipeline candidates (19 scored) · last updated 2026-07-29. Click any row to load into the scorecard. All SDE figures UNVERIFIED — verify revenue before LOI.</p>
     </div>
 
     <div class="pipeline-stats">
@@ -1301,7 +1301,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-sha
 
     <div class="alert info" style="margin-top:1rem;">
       <span class="alert-icon">ℹ️</span>
-      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — URGENT: send approved outreach A (LM-10 NYLaundromats) and C (SS-15 RV Repair &amp; Storage) — approved since Session 9, unsent; B (LM-14) on hold pending listing status. (2) Browser-verify Session 17 Raws: SS-22, LM-28, LM-29, LM-32. (3) Evaluate VE-17 (BBS 2492775 — Lee County FL 300-machine vending, $125K, SDE $36K). (4) LM-18 browser verification (BBS 2263736). Pipeline: 63 candidates · 3 active Shortlist · 16 open red-team flags. Last updated: 2026-07-15 (Session 17 — automated sourcing scan). Do NOT contact any owner or broker without explicit approval.</span>
+      <span><strong>Next critical path:</strong> (1) Darrel/Lisa — URGENT: send approved outreach A (LM-10 NYLaundromats) and C (SS-15 RV Repair &amp; Storage) — approved since Session 9, unsent; B (LM-14) on hold pending listing status. (2) ⚡ Claude: resolve F21 — browser-verify BizBuySell 2099163 (LM-34, Oakland Park Broward FL) against the original $600K/$195K CF/$335K carry profile. (3) Browser-verify VE-19 (BusinessMart #179621, SW FL snack route) — first vending candidate to clear the geographic gate. (4) Browser-verify LM-35, VE-20, SS-24. Pipeline: 68 candidates · 3 active Shortlist · 21 open red-team flags. Last updated: 2026-07-29 (Session 19 — automated sourcing scan). Do NOT contact any owner or broker without explicit approval.</span>
     </div>
 
     <!-- Flag tracker -->
@@ -1579,6 +1579,16 @@ const PIPELINE = [
     sliders:[2,3,2,10,3,5,8,4,3], sourceLabel:'BizBuySell 2515504 — Elgin OK 321-unit self-storage 2021 build 65% occupied (WebSearch-indexed 2026-07-22)', sourceUrl:'https://www.bizbuysell.com/business-opportunity/self-storage-facility-321-units-65-occupied/2515504/' },
   { id:'CW-14', name:'Car Wash — Seller Financing + Real Estate (Format Unconfirmed)', type:'cw', location:'Unknown — browser verify', asking:null, sde:null, down:200000, dscr70:null, dscrShocked:null, coc:null, score:44, stage:'watch', carry:'Confirmed (title)', flags:['F2','F20'], stageLabel:'🔍 Raw — F20: format unconfirmed (KO if express/full-service); carry + RE in title; verify format FIRST',
     sliders:[0,0,0,5,4,3,3,4,2], sourceLabel:'BizBuySell 2512479 — car wash seller financing + real estate included; format/location/price unknown (WebSearch-indexed 2026-07-22)', sourceUrl:'https://www.bizbuysell.com/business-opportunity/established-car-wash-real-estate-seller-financing-opportunity/2512479/' },
+  { id:'LM-34', name:'Oakland Park Broward FL Laundromat', type:'lm', location:'Oakland Park, FL', asking:750000, sde:195000, down:335000, dscr70:null, dscrShocked:null, coc:null, score:61, stage:'watch', carry:'Signaled', flags:['F21'], stageLabel:'🟡 Watch — price/CF/carry discrepancy (F21), needs browser verify',
+    sliders:[2, 2, 2, 2, 1, 2, 3, 1, 1], sourceLabel:'BizBuySell 2099163 — resolves Session 18 priority flag but shows $750K not ~$600K; $195K CF/$335K carry may belong to a different listing (WebSearch 2026-07-29)', sourceUrl:'https://www.bizbuysell.com/Business-Opportunity/Oakland-Park-Laundromat-for-Sale/2099163/' },
+  { id:'LM-35', name:'Miami Springs FL Semi-Absentee Laundromat', type:'lm', location:'Miami Springs, FL', asking:null, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:null, stage:'watch', carry:'Unknown', flags:[], stageLabel:'⚪ Raw — no price/SDE yet',
+    sliders:[0, 0, 0, 2, 0, 2, 0, 1, 1], sourceLabel:'BizBuySell 2159815 — 24 washers/26 Dexter dryers, 3yr lease + 5+5 option, semi-absentee (WebSearch 2026-07-29)', sourceUrl:'https://www.bizbuysell.com/Business-Opportunity/profitable-semi-absentee-laundromat-in-prime-location-for-sale/2159815/' },
+  { id:'VE-19', name:'Collier/Lee County FL Snack Route', type:'ve', location:'Collier/Lee Counties, FL', asking:137000, sde:65000, down:null, dscr70:null, dscrShocked:null, coc:0.474, score:58, stage:'watch', carry:'Signaled', flags:[], stageLabel:'🟡 Watch — first vending to clear SW FL geo gate',
+    sliders:[2, 3, 3, 2, 1, 1, 1, 1, 1], sourceLabel:'BusinessMart #179621 — $137K asking, $65K CF stated, van + software included, owner financing may be available (WebSearch 2026-07-29)', sourceUrl:'https://www.businessmart.com/business-for-sale/bid/179621/snack-route-naples--ft--myers--cape-coral--lee---collier-counties-florida' },
+  { id:'VE-20', name:'SW Florida Multi-City Vending Route', type:'ve', location:'Ft. Myers/Cape Coral/Bonita Springs/Estero/Naples, FL', asking:295000, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:null, stage:'watch', carry:'Unknown', flags:[], stageLabel:'⚪ Raw — no SDE yet',
+    sliders:[0, 0, 0, 2, 0, 1, 0, 1, 1], sourceLabel:'BizQuest BW2454950 — 53 Wittern combo/beverage machines (48 active), Ford Transit van included, SW FL geo fit (WebSearch 2026-07-29)', sourceUrl:'https://www.bizquest.com/business-for-sale/profitable-vending-business-with-van-included-southwest-florida/BW2454950' },
+  { id:'SS-24', name:'Duval County FL Self-Storage', type:'ss', location:'Duval County, FL', asking:878000, sde:null, down:null, dscr70:null, dscrShocked:null, coc:null, score:null, stage:'watch', carry:'Signaled', flags:[], stageLabel:'⚪ Raw — Crexi category lead, individual listing not isolated',
+    sliders:[0, 0, 0, 2, 1, 2, 0, 3, 1], sourceLabel:'Crexi Duval County FL self-storage category page — ~$878K per snippet, seller financing opportunity stated, individual listing not yet isolated (WebSearch 2026-07-29)', sourceUrl:'' },
 ];
 
 // ── State ────────────────────────────────────────
