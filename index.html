@@ -1025,6 +1025,38 @@ const PIPELINE = [
     // location=4: Olympic Peninsula rain-shadow microclimate, established tourism market | regulatory=3: standard B&B
     // resale=3: moderate B&B market depth | seasonality=3: PNW shoulder-season spread, drier microclimate than coastal WA average
     note: '🚩 STATUS AMBIGUOUS: listing detail page \'Sale or Lease?\' field reads "sold" while state index still shows active at $1,275,000 — CONFIRM STATUS FIRST before any other action. Disclosed revenue $286K is just under the $300K B&B unicorn gate and no seller carry disclosed — does not currently clear the unicorn rule even if still for sale. VERIFY test: Cat 1 → 4/5 if revenue verified $300K+ AND OWC confirmed → score 64 → Watch (contingent on status + both unicorn gates). Requires Darrel/Lisa approval before contacting broker Michele Jaeger (360-582-6396) — this is a status check, not a revenue-package request.' },
+
+  // ── VERIFY (Scan #20) ──────────────────────────────────────────────────────
+  { id: 'P41', scanNum: 20, scanDate: '2026-08-10',
+    sourceUrl: 'https://www.bizbuysell.com/colorado/hotel-for-sale/',
+    group: 'VERIFY', name: 'Old Tale Inn', type: 'Hotel (Boutique)',
+    location: 'Leadville, CO', state: 'CO', price: 1150000, score: 53,
+    status: 'VERIFY — revenue unverified. Score 53 with unverified Cat 1. VERIFY test: if gross ≥50K → Cat 1 to 4/5 → score ~63 (Watch). One email to listing broker resolves.',
+    // Cat breakdown: financial=1(25%=5), financeability=4(15%=12), dealterms=2(15%=6), operating=4(7%=5.6), condition=3(10%=6), location=4(10%=8), regulatory=3(8%=4.8), resale=3(5%=3), seasonality=3(5%=3) = 53.4
+    // Strengths: self-service format (keypad/no housekeeping), Leadville CO mountain town 10,152ft (ski Cooper + summer), RE included in price
+    // Risks: revenue unverified; no OWC disclosed; price at ceiling; 10K ft altitude limits some guest/staff pool
+    note: 'VERIFY — revenue unverified. 11-unit self-service boutique hotel. Price ,150,000 RE included. Leadville CO mountain town (10,152 ft, highest incorporated city in US) — near Ski Cooper, Turquoise Lake. Self-service model (keypad entry, no daily housekeeping) reduces operating intensity. VERIFY test: one inquiry to listing broker for gross revenue + occupancy ballpark. If gross ≥50K → re-score to ~63 Watch. Requires Darrel/Lisa approval before contact.' },
+
+  { id: 'P42', scanNum: 20, scanDate: '2026-08-10',
+    sourceUrl: 'https://www.bizbuysell.com/colorado/hotel-for-sale/',
+    group: 'VERIFY', name: 'Delaware Hotel', type: 'Hotel (Full-Service)',
+    location: 'Leadville, CO', state: 'CO', price: null, score: 67,
+    status: 'VERIFY — price undisclosed. EBITDA 47K confirmed. Price almost certainly over .2M cap at 5–8× EBITDA multiple (~.7M–.8M). VERIFY purpose: price discovery ONLY.',
+    // Cat breakdown: financial=4(25%=20), financeability=4(15%=12), dealterms=2(15%=6), operating=2(7%=2.8), condition=3(10%=6), location=4(10%=8), regulatory=3(8%=4.8), resale=4(5%=4), seasonality=3(5%=3) = 66.6
+    // Strengths: EBITDA 47K disclosed (strong); in-region CO mountain; historic hotel established brand; restaurant/bar/café multi-revenue streams
+    // Risks: price undisclosed (likely .7M–.8M at 5–8× EBITDA = over cap); restaurant high operating intensity; historic building capex risk
+    note: 'VERIFY — price undisclosed (NDA required). 36-key historic hotel + restaurant + bar + café. EBITDA 47,083 confirmed. Leadville CO mountain town (same market as P41). Score 67 at current assumptions. CRITICAL: price almost certainly over .2M cap. VERIFY purpose is PRICE DISCOVERY ONLY — if price ≤.2M proceed; if >.2M → immediate DEAD. Requires Darrel/Lisa approval before NDA/CA contact with broker.' },
+
+  { id: 'P43', scanNum: 20, scanDate: '2026-08-10',
+    sourceUrl: 'https://www.bizbuysell.com/utah/hotel-for-sale/',
+    group: 'VERIFY', name: 'Panguitch UT 5-Star Hotel+Restaurant', type: 'Hotel / Inn + Restaurant',
+    location: 'Panguitch, UT', state: 'UT', price: 900000, score: 54,
+    status: 'VERIFY — RE-separate KO risk (Scan #16 flag). Business listing 00K + SDE 50K. If RE is separate ~+00K total = .7M → immediate DEAD. Confirm price structure first.',
+    // Cat breakdown: financial=3(25%=15), financeability=4(15%=12), dealterms=2(15%=6), operating=2(7%=2.8), condition=4(10%=8), location=4(10%=8), regulatory=3(8%=4.8), resale=3(5%=3), seasonality=3(5%=3) = 62.6 (if RE-inclusive + verified SDE); 45 if Cat 1 unverified
+    // Strengths: SDE 50K disclosed; near Bryce Canyon NP; Panguitch ~6,623ft meets ≥5,500ft threshold; S. Utah high-elevation target ✓; 5-star rating established reputation
+    // Risks: CRITICAL Scan #16 flag — RE may be separate +00K making total .7M (price KO); restaurant operating intensity; Bryce Canyon seasonal (spring-fall peak)
+    note: '⚠️ SCAN #16 FLAG: RE may be separate +00K → total ~.7M (price KO). Business listing price 00K, SDE 50K. Panguitch UT ~6,623ft elevation meets ≥5,500ft S. Utah high-elevation threshold. Near Bryce Canyon NP. VERIFY test: if 00K is RE-inclusive + SDE verified → re-score Cat 1 to 4/5 → score ~74 Watch. FIRST QUESTION: is 00K RE-inclusive or business-only? If RE separate → DEAD immediately. Requires Darrel/Lisa approval before broker contact.' },
+
 ];
 
 function buildPipelineSelect() {
